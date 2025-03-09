@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "./components/Navbar";
+import { Navbar } from "@/components/Navbar";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Travelovers",
   description: "Let's travel",
   icons: {
-    icon: "/travelogo.png",
+    icon: "/assets/travelogo.png",
   },
 };
 
