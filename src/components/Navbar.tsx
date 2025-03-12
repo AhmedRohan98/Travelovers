@@ -10,12 +10,12 @@ import Image from "next/image";
 import ForumIcon from "@mui/icons-material/Forum";
 
 const pages = [
-  "GLOBAL TOURISM",
-  "STUDY",
-  "NATIONAL TOURISM",
   "VISIT",
-  "UMRAH",
+  "STUDY",
   "IMMIGRATION",
+  "GLOBAL TOURISM",
+  "NATIONAL TOURISM",
+  "UMRAH",
 ];
 
 export function Navbar() {
