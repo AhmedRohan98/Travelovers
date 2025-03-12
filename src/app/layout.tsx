@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar";
+import ClientTemplate from "./template";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Travelovers",
   description: "Let's travel",
   icons: {
@@ -24,8 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${plusJakartaSans.variable} antialiased`}>
-        <Navbar />
-        {children}
+        <ClientTemplate>{children}</ClientTemplate>
       </body>
     </html>
   );
