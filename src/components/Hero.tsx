@@ -18,7 +18,7 @@ export function Hero() {
   return (
     <Box sx={styles.container}>
       {/* Background Carousel */}
-      <Carousel indicators={false} interval={10000} animation="slide">
+      <Carousel indicators={false} interval={2000} animation="slide">
         {carouselImages.map((image, index) => (
           <Paper
             key={index}

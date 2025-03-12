@@ -47,7 +47,7 @@ const AnimatedCounter = ({ target }: { target: number; suffix?: string }) => {
 
   useEffect(() => {
     let current = 0;
-    const increment = target / 100;
+    const increment = target / 200;
     const interval = setInterval(() => {
       current += increment;
       if (current >= target) {
