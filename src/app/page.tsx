@@ -1,7 +1,24 @@
+import { Footer } from "@/components/Footer";
+import { Hero } from "@/components/Hero";
+import { WhyChooseUs } from "@/components/WhyChooseUs";
+import { Box } from "@mui/material";
+
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <h1>Travelovers</h1>
-    </div>
+    <main>
+      <Hero />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          px: 2,
+        }}
+      >
+        <WhyChooseUs />
+      </Box>
+      <Footer />
+    </main>
   );
 }
