@@ -1,3 +1,5 @@
+import Adventure from "@/components/Adventure";
+import BlogSection from "@/components/Blogs";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
@@ -17,6 +19,8 @@ export default function Home() {
         }}
       >
         <WhyChooseUs />
+        <Adventure />
+        <BlogSection />
       </Box>
       <Footer />
     </main>
