@@ -9,6 +9,8 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 
 const blogs = [
   {
@@ -48,13 +50,24 @@ const BlogSection = () => {
     <Box sx={{ width: "80%", mx: "auto", p: 4 }}>
       {/* Title & Button */}
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-        <Typography variant="subtitle1" color="green">
-          RECENT BLOGS
-        </Typography>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography variant="inherit" color="primary">
+            RECENT BLOGS
+          </Typography>
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            gutterBottom
+            color="secondary"
+          >
+            Adventure Thrills and Excitement Await
+          </Typography>
+        </Box>
         <Button
           variant="contained"
           sx={{
-            backgroundColor: "red",
+            height: "fit-content",
+            backgroundColor: "secondary.main",
             borderRadius: "20px",
             "&:hover": { backgroundColor: "darkred" },
           }}
@@ -62,10 +75,6 @@ const BlogSection = () => {
           All Blogs →
         </Button>
       </Box>
-
-      <Typography variant="h4" fontWeight="bold" gutterBottom>
-        Adventure Thrills and Excitement Await
-      </Typography>
 
       {/* Blog Grid */}
       <Grid container spacing={3}>
@@ -77,19 +86,32 @@ const BlogSection = () => {
                 component="img"
                 image={blogs[0].image}
                 alt={blogs[0].title}
-                sx={{ "&:hover": { opacity: 0.9 } }}
+                sx={{
+                  height: "260px",
+                  objectFit: "cover",
+                  "&:hover": { opacity: 0.9 },
+                }}
               />
               <CardContent>
-                <Typography variant="caption" color="text.secondary">
-                  {blogs[0].date} • {blogs[0].author}
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                >
+                  <CalendarMonthIcon fontSize="inherit" />
+                  {blogs[0].date}
+                  <PersonOutlineOutlinedIcon fontSize="inherit" />
+                  {blogs[0].author}
                 </Typography>
-                <Typography variant="h6" color="red" fontWeight="bold">
+                <Typography variant="h6" color="secondary" fontWeight="bold">
                   {blogs[0].title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {blogs[0].description}
                 </Typography>
-                <Button size="small" color="success">
+                <Button size="small" color="primary">
                   Read More →
                 </Button>
               </CardContent>
@@ -119,22 +141,39 @@ const BlogSection = () => {
                 <CardActionArea sx={{ display: "flex" }}>
                   <CardMedia
                     component="img"
-                    height={100}
                     image={blog.image}
                     alt={blog.title}
-                    sx={{ width: "100px", "&:hover": { opacity: 0.9 } }}
+                    sx={{
+                      width: "100px",
+                      height: "100%",
+                      objectFit: "cover",
+                      "&:hover": { opacity: 0.9 },
+                    }}
                   />
                   <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                      {blog.date} • {blog.author}
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                    >
+                      <CalendarMonthIcon fontSize="inherit" />
+                      {blog.date}
+                      <PersonOutlineOutlinedIcon fontSize="inherit" />
+                      {blog.author}
                     </Typography>
-                    <Typography variant="h6" color="red" fontWeight="bold">
+                    <Typography
+                      variant="h6"
+                      color="secondary"
+                      fontWeight="bold"
+                    >
                       {blog.title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       {blog.description}
                     </Typography>
-                    <Button size="small" color="success">
+                    <Button size="small" color="primary">
                       Read More →
                     </Button>
                   </CardContent>

@@ -10,7 +10,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import LanguageIcon from "@mui/icons-material/Language";
 import Image from "next/image";
 
-export function Footer() {
+const Footer = () => {
   return (
     <Box
       component="footer"
@@ -162,4 +162,6 @@ export function Footer() {
       </Container>
     </Box>
   );
-}
+};
+
+export default Footer;

@@ -14,7 +14,7 @@ const carouselImages = [
   "/assets/hero5.jpg",
 ];
 
-export function Hero() {
+const Hero = () => {
   return (
     <Box sx={styles.container}>
       {/* Background Carousel */}
@@ -46,7 +46,7 @@ export function Hero() {
       <HeroQuickBar />
     </Box>
   );
-}
+};
 
 /** Quick Bar Component */
 const HeroQuickBar = () => {
@@ -150,3 +150,5 @@ const styles = {
     boxShadow: "none",
   },
 };
+
+export default Hero;

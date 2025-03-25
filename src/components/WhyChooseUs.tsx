@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 
-export function WhyChooseUs() {
+const WhyChooseUs = () => {
   const counters = [
     { label: "Happy Clients", target: 300 },
     { label: "Successful Trips", target: 1200 },
@@ -40,7 +40,7 @@ export function WhyChooseUs() {
       </Stack>
     </Box>
   );
-}
+};
 
 const AnimatedCounter = ({ target }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -66,3 +66,5 @@ const AnimatedCounter = ({ target }: { target: number; suffix?: string }) => {
     </Typography>
   );
 };
+
+export default WhyChooseUs;
