@@ -1,9 +1,13 @@
-import { Footer } from "@/components/Footer";
-import { Hero } from "@/components/Hero";
-import { WhyChooseUs } from "@/components/WhyChooseUs";
+import Adventure from "@/components/Adventure";
+import BlogSection from "@/components/Blogs";
+import Faqs from "@/components/Faqs";
+import Footer from "@/components/Footer";
+import Hero from "@/components/Hero";
+import Testimonials from "@/components/Testimonials";
+import WhyChooseUs from "@/components/WhyChooseUs";
 import { Box } from "@mui/material";
 
-export default function Home() {
+const Home = () => {
   return (
     <main>
       <Hero />
@@ -17,8 +21,14 @@ export default function Home() {
         }}
       >
         <WhyChooseUs />
+        <Adventure />
+        <BlogSection />
+        <Testimonials />
+        <Faqs />
       </Box>
       <Footer />
     </main>
   );
-}
+};
+
+export default Home;
