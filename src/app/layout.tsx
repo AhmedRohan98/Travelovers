@@ -23,6 +23,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0"
+        />
+      </head>
       <body className={`${plusJakartaSans.variable} antialiased`}>
         <Navbar />
         <ClientTemplate>{children}</ClientTemplate>
@@ -30,3 +36,4 @@ export default function RootLayout({
     </html>
   );
 }
+
