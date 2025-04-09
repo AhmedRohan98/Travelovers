@@ -68,29 +68,45 @@ const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const images = tabSections[activeTab];
 
+  // Determine the number of columns based on screen size
+  const getColumnCount = () => {
+    if (typeof window !== "undefined") {
+      if (window.innerWidth < 600) return 1; // Mobile
+      if (window.innerWidth < 900) return 2; // Tablet
+      return 3; // Desktop
+    }
+    return 3; // Default to 3 columns
+  };
+
+  // Calculate rows based on column count
+  const columnCount = getColumnCount();
+  const rows = Math.ceil(images.length / columnCount);
+
   return (
-    <Box sx={{ width: "80%", margin: "auto", paddingY: 4 }}>
-      <Grid container spacing={2} columns={12}>
-        {[0, 1].map((row) => (
-          <Grid
-            key={row}
-            container
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 4, sm: 8, md: 12 }}
-            sx={{ width: "100%", margin: "auto" }}
-          >
-            {images.slice(row * 3, row * 3 + 3).map((image, index) => {
-              const actualIndex = row * 3 + index;
+    <Box sx={{ width: "90%", margin: "auto", paddingY: 4 }}>
+      {[...Array(rows)].map((_, row) => (
+        <Grid
+          key={row}
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: columnCount, sm: columnCount, md: columnCount }}
+          sx={{ marginBottom: 2 }}
+        >
+          {images
+            .slice(row * columnCount, (row + 1) * columnCount)
+            .map((image, index) => {
+              const actualIndex = row * columnCount + index;
 
               return (
                 <Grid
                   key={actualIndex}
+                  size={{xs: 1}}
                   sx={{
                     display: "flex",
                     flex:
                       hoveredRow === row
                         ? hoveredIndex === actualIndex
-                          ? "4"
+                          ? { xs: "2", sm: "4" } 
                           : "1"
                         : "1",
                     transition: "flex 0.3s ease-in-out",
@@ -107,7 +123,6 @@ const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
                     }}
                     sx={{
                       position: "relative",
-                      height: "250px",
                       width: "100%",
                       backgroundImage: `url(${image.src})`,
                       backgroundSize: "cover",
@@ -120,7 +135,18 @@ const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
                       p: 2,
                       fontWeight: "bold",
                       textShadow: "0px 0px 10px rgba(0,0,0,0.7)",
-                      transition: "all 0.3s ease-in-out",
+                      height: {
+                        xs: "200px",
+                        sm: "250px",
+                      },
+                      ...(hoveredIndex === actualIndex && {
+                        height: {
+                          xs: "300px",
+                          sm: "250px",
+                        },
+                      }),
+                      transition:
+                        "height 0.3s ease-in-out, flex 0.3s ease-in-out",
                       cursor: "pointer",
                     }}
                   >
@@ -148,9 +174,8 @@ const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
                 </Grid>
               );
             })}
-          </Grid>
-        ))}
-      </Grid>
+        </Grid>
+      ))}
     </Box>
   );
 };

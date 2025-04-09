@@ -47,10 +47,23 @@ const blogs = [
 
 const BlogSection = () => {
   return (
-    <Box sx={{ width: "80%", mx: "auto", p: 4 }}>
+    <Box sx={{ 
+      width: { xs: "95%", sm: "90%", md: "80%" }, 
+      mx: "auto", 
+      p: { xs: 2, md: 4 } 
+    }}>
       {/* Title & Button */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Box sx={{ 
+        display: { xs: "block", sm: "flex" }, 
+        justifyContent: "space-between", 
+        mb: 3,
+        textAlign: { xs: "center", sm: "left" }
+      }}>
+        <Box sx={{ 
+          display: "flex", 
+          flexDirection: "column",
+          mb: { xs: 2, sm: 0 }
+        }}>
           <Typography variant="inherit" color="primary">
             RECENT BLOGS
           </Typography>
@@ -59,6 +72,7 @@ const BlogSection = () => {
             fontWeight="bold"
             gutterBottom
             color="secondary"
+            sx={{ fontSize: { xs: "1.5rem", md: "2rem" } }}
           >
             Adventure Thrills and Excitement Await
           </Typography>
@@ -70,6 +84,7 @@ const BlogSection = () => {
             backgroundColor: "secondary.main",
             borderRadius: "20px",
             "&:hover": { backgroundColor: "darkred" },
+            alignSelf: { xs: "center", sm: "flex-start" }
           }}
         >
           All Blogs →
@@ -77,17 +92,35 @@ const BlogSection = () => {
       </Box>
 
       {/* Blog Grid */}
-      <Grid container spacing={3}>
-        {/* Main Blog - Spans 2 Columns */}
-        <Grid size={{ xs: 6, md: 8 }}>
-          <Card sx={{ borderRadius: "12px", overflow: "hidden" }}>
+      <Grid 
+        container 
+        spacing={{ xs: 2, md: 3 }}
+        sx={{ 
+          flexDirection: { xs: "column", md: "row" },
+          display: "flex",
+          flexWrap: "wrap"
+        }}
+      >
+        {/* Main Blog - Left Side on Large Screens, Full Width on Mobile */}
+        <Grid 
+        size={{xs: 12, md: 8}}
+          sx={{ 
+            order: { xs: 2, md: 1 },
+            pr: { md: 2 }
+          }}
+        >
+          <Card sx={{ 
+            borderRadius: "12px", 
+            overflow: "hidden",
+            height: "100%"
+          }}>
             <CardActionArea>
               <CardMedia
                 component="img"
                 image={blogs[0].image}
                 alt={blogs[0].title}
                 sx={{
-                  height: "260px",
+                  height: { xs: "200px", sm: "260px", md: "400px" },
                   objectFit: "cover",
                   "&:hover": { opacity: 0.9 },
                 }}
@@ -105,7 +138,12 @@ const BlogSection = () => {
                   <PersonOutlineOutlinedIcon fontSize="inherit" />
                   {blogs[0].author}
                 </Typography>
-                <Typography variant="h6" color="secondary" fontWeight="bold">
+                <Typography 
+                  variant="h6" 
+                  color="secondary" 
+                  fontWeight="bold"
+                  sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+                >
                   {blogs[0].title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -119,33 +157,44 @@ const BlogSection = () => {
           </Card>
         </Grid>
 
-        {/* Smaller Blog Cards */}
-        <Grid container spacing={1} size={{ xs: 6, md: 4 }}>
+        {/* Smaller Blog Cards - Right Side on Large Screens, Stacked on Mobile */}
+        <Grid 
+          container 
+          size={{xs: 12, md: 4}}
+          spacing={2}
+          sx={{ 
+            order: { xs: 1, md: 2 },
+            flexDirection: { xs: "column", md: "column" }
+          }}
+        >
           {blogs.slice(1).map((blog) => (
-            <Grid
-              key={blog.id}
-              height="fit-content"
-              sx={{ marginBottom: "auto" }}
+            <Grid 
+              key={blog.id} 
+              size={{xs: 12}}
+              sx={{ height: "auto" }}
             >
               <Card
-                key={blog.id}
                 sx={{
                   borderRadius: "12px",
-                  height: "200px",
+                  height: "100%",
                   overflow: "hidden",
                   display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
+                  flexDirection: { xs: "column", md: "row" },
                 }}
               >
-                <CardActionArea sx={{ display: "flex" }}>
+                <CardActionArea 
+                  sx={{ 
+                    display: "flex", 
+                    flexDirection: { xs: "row", md: "row" } 
+                  }}
+                >
                   <CardMedia
                     component="img"
                     image={blog.image}
                     alt={blog.title}
                     sx={{
-                      width: "100px",
-                      height: "100%",
+                      width: "100%",
+                      height: { xs: "200px", md: "250px" },
                       objectFit: "cover",
                       "&:hover": { opacity: 0.9 },
                     }}
@@ -167,10 +216,14 @@ const BlogSection = () => {
                       variant="h6"
                       color="secondary"
                       fontWeight="bold"
+                      sx={{ fontSize: { xs: "0.9rem", md: "1rem" } }}
                     >
                       {blog.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary"
+                    >
                       {blog.description}
                     </Typography>
                     <Button size="small" color="primary">
