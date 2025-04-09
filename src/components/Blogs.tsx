@@ -11,6 +11,7 @@ import {
 import Grid from "@mui/material/Grid2";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import Link from "next/link";
 
 const blogs = [
   {
@@ -63,17 +64,19 @@ const BlogSection = () => {
             Adventure Thrills and Excitement Await
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          sx={{
-            height: "fit-content",
-            backgroundColor: "secondary.main",
-            borderRadius: "20px",
-            "&:hover": { backgroundColor: "darkred" },
-          }}
-        >
-          All Blogs →
-        </Button>
+        <Link href="/blogs">
+          <Button
+            variant="contained"
+            sx={{
+              height: "fit-content",
+              backgroundColor: "secondary.main",
+              borderRadius: "20px",
+              "&:hover": { backgroundColor: "darkred" },
+            }}
+          >
+            All Blogs →
+          </Button>
+        </Link>
       </Box>
 
       {/* Blog Grid */}
