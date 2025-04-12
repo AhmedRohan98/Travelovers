@@ -30,7 +30,7 @@ export function Navbar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Image src="/travelogo.png" width={60} height={60} alt="Logo" />
+          <Image src="/assets/travelogo.png" width={60} height={60} alt="Logo" />
 
           <Box
             sx={{
