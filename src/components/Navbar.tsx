@@ -9,13 +9,15 @@ import Button from "@mui/material/Button";
 import Image from "next/image";
 import ForumIcon from "@mui/icons-material/Forum";
 
+import Link from "next/link";
+
 const pages = [
-  "VISIT",
-  "STUDY",
-  "IMMIGRATION",
-  "GLOBAL TOURISM",
-  "NATIONAL TOURISM",
-  "UMRAH",
+  { name: "VISIT", path: "/visit" },
+  { name: "STUDY", path: "/study" },
+  { name: "IMMIGRATION", path: "/countries" },
+  { name: "GLOBAL TOURISM", path: "/tourism" },
+  { name: "NATIONAL TOURISM", path: "/national-tourism" },
+  { name: "UMRAH", path: "/umrah" },
 ];
 
 export function Navbar() {
@@ -30,7 +32,9 @@ export function Navbar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Image src="/travelogo.png" width={60} height={60} alt="Logo" />
+          <Link href="/">
+            <Image src="/travelogo.png" width={60} height={60} alt="Logo" />
+          </Link>
 
           <Box
             sx={{
@@ -40,12 +44,11 @@ export function Navbar() {
             }}
           >
             {pages.map((page) => (
-              <Button
-                key={page}
-                sx={{ color: "#8B0000", fontWeight: "bold", mx: 2 }}
-              >
-                {page}
-              </Button>
+              <Link key={page.name} href={page.path} passHref>
+                <Button sx={{ color: "#8B0000", fontWeight: "bold", mx: 2 }}>
+                  {page.name}
+                </Button>
+              </Link>
             ))}
           </Box>
 
