@@ -2,8 +2,8 @@ import { Country } from "@/components/Countries";
 
 export const studyCountries: Country[] = [
   {
-    name: "UK",
-    flag: "/assets/countries/study/flags/uk.png",
+    name: "United-Kingdom",
+    flag: "/assets/countries/study/flags/united_kingdom.png",
     continent: "Europe",
   },
   {

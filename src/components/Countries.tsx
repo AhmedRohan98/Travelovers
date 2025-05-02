@@ -110,7 +110,12 @@ export default function Countries({
           bgcolor="white"
           borderRadius={2}
           sx={{
-            height: "100%",
+            height: "fit-content",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            border: "1px solid #e0e0e0",
+            borderRadius: 2,
+            overflow: "hidden",
+            display: { xs: "none", sm: "block" },
           }}
         >
           <List>
@@ -121,6 +126,7 @@ export default function Countries({
                 onClick={() => setSelectedContinent(continent)}
                 sx={{
                   borderBottom: "1px solid #e0e0e0",
+                  color: "black"
                 }}
               >
                 <ListItemText
@@ -213,7 +219,7 @@ export default function Countries({
                           fontWeight="medium"
                           color="black"
                         >
-                          {country.name}
+                          {country.name.replace("-", " ")}
                         </Typography>
                       </CardContent>
                     </Card>

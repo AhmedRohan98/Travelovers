@@ -4,11 +4,21 @@
 import { useParams } from "next/navigation";
 import { getCountriesByCategory } from "@/lib/data/countries";
 import Link from "next/link";
+import Image from 'next/image';
+import { Box, Container, Typography } from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import React from "react";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 export default function CountryDetailPage() {
   const params = useParams();
   const category = params.category as string;
   const countryName = params.country as string;
+
+  const [expanded, setExpanded] = React.useState<string | false>("panel1");
 
   const countries = getCountriesByCategory(category);
   const country = countries.find(
@@ -19,61 +29,194 @@ export default function CountryDetailPage() {
     return <div className="container mx-auto py-8">Country not found</div>;
   }
 
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
+
   return (
-    <div className="container mx-auto py-8">
-      <Link
-        href={`/${category}`}
-        className="text-blue-500 hover:underline mb-6 block"
+    <Container maxWidth="xl" sx={{ py: 5 }}>
+      {/* Banner */}
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          height: 600,
+          mb: 4,
+          backgroundImage: `url('/assets/countries/study/place/${countryName}.jpg')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "black",
+          zIndex: 0,
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
       >
-        &larr; Back to {category.replace("-", " ")}
-      </Link>
-
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <div className="flex items-center mb-4">
-          <img src={country.flag} alt={country.name} className="h-12 mr-4" />
-          <h1 className="text-3xl font-bold">{country.name}</h1>
-        </div>
-
-        <div className="mb-4">
-          <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-            {country.continent}
-          </span>
-        </div>
-
-        <h2 className="text-xl font-semibold mb-2">
-          {category === "study"
-            ? "Study Opportunities in"
-            : category === "tourism"
-            ? "Tourism Information for"
-            : "Global Tourism Insights for"}{" "}
-          {country.name}
-        </h2>
-
-        <p className="text-gray-700 mb-4">
-          This is detailed information about {country.name} specific to the{" "}
-          {category.replace("-", " ")} category.
-          {/* You would fetch and display real data here based on country and category */}
-        </p>
-
-        {/* Additional sections based on category */}
-        {category === "study" && (
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Universities</h3>
-            <p className="text-gray-700">
-              List of universities in {country.name}...
-            </p>
-          </div>
-        )}
-
-        {(category === "tourism" || category === "global-tourism") && (
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Popular Attractions</h3>
-            <p className="text-gray-700">
-              Top tourist destinations in {country.name}...
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
+        {/* Overlay Content */}
+        <Box
+          sx={{
+            position: "absolute",
+            width: "50%",
+            top: "50%",
+            left: "5%",
+            transform: "translateY(-50%)",
+            color: "white",
+            zIndex: 2,
+          }}
+        >
+          <Box
+            sx={{
+              color: "white",
+              zIndex: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <Link href={`/${category}`}>
+              <ArrowBackIosIcon
+                sx={{
+                  color: "white",
+                  fontSize: "2rem",
+                  "&:hover": {
+                    color: "#660D17",
+                  },
+                  transition: "color 0.3s",
+                }}
+              />
+            </Link>
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
+                textTransform: "uppercase",
+                fontStyle: "italic",
+              }}
+            >
+              {country.name.replace("-", " ")}
+            </Typography>
+            <Box>
+              <Image
+                src={country.flag}
+                alt="country"
+                width={80}
+                height={60}
+                style={{
+                  borderRadius: "10%",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                }}
+              />
+            </Box>
+          </Box>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontSize: 16,
+              fontStyle: "italic",
+            }}
+          >
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis
+            perspiciatis ducimus excepturi quo! Molestiae illum corrupti eius
+            praesentium excepturi. Quod obcaecati eius repudiandae quis nemo!
+            Praesentium dolores perferendis beatae animi corporis? Sequi aliquam
+            repellat in mollitia placeat labore quisquam.
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            zIndex: 1,
+            borderRadius: "12px",
+          }}
+        />
+      </Box>
+      <Accordion
+        expanded={expanded === "panel1"}
+        onChange={handleChange("panel1")}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1bh-content"
+          id="panel1bh-header"
+        >
+          <Typography component="span" sx={{ width: "33%", flexShrink: 0 }}>
+            General settings
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat.
+            Aliquam eget maximus est, id dignissim quam.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        expanded={expanded === "panel2"}
+        onChange={handleChange("panel2")}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2bh-content"
+          id="panel2bh-header"
+        >
+          <Typography component="span" sx={{ width: "33%", flexShrink: 0 }}>
+            Users
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            Donec placerat, lectus sed mattis semper, neque lectus feugiat
+            lectus, varius pulvinar diam eros in elit. Pellentesque convallis
+            laoreet laoreet.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        expanded={expanded === "panel3"}
+        onChange={handleChange("panel3")}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel3bh-content"
+          id="panel3bh-header"
+        >
+          <Typography component="span" sx={{ width: "33%", flexShrink: 0 }}>
+            Advanced settings
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
+            sit amet egestas eros, vitae egestas augue. Duis vel est augue.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        expanded={expanded === "panel4"}
+        onChange={handleChange("panel4")}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel4bh-content"
+          id="panel4bh-header"
+        >
+          <Typography component="span" sx={{ width: "33%", flexShrink: 0 }}>
+            Personal data
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
+            sit amet egestas eros, vitae egestas augue. Duis vel est augue.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+    </Container>
   );
 }
