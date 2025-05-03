@@ -4,7 +4,7 @@
 import { useParams } from "next/navigation";
 import { getCountriesByCategory } from "@/lib/data/countries";
 import Link from "next/link";
-import Image from 'next/image';
+import Image from "next/image";
 import { Box, Container, Typography } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -43,7 +43,7 @@ export default function CountryDetailPage() {
           width: "100%",
           height: 600,
           mb: 4,
-          backgroundImage: `url('/assets/countries/study/place/${countryName}.jpg')`,
+          backgroundImage: `url('/assets/countries/${category}/place/${countryName}.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

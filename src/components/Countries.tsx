@@ -34,14 +34,7 @@ export default function Countries({
   const [selectedContinent, setSelectedContinent] = useState<string>("All");
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  const continents = [
-    "Asia",
-    "Europe",
-    "North America",
-    "Australia",
-    "Latine America",
-    "Africa",
-  ];
+  const continents = ["Asia", "Europe", "North America", "Oceania", "Africa"];
 
   const filteredCountries =
     selectedContinent === "All"
@@ -126,7 +119,7 @@ export default function Countries({
                 onClick={() => setSelectedContinent(continent)}
                 sx={{
                   borderBottom: "1px solid #e0e0e0",
-                  color: "black"
+                  color: "black",
                 }}
               >
                 <ListItemText
