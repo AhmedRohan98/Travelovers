@@ -6,19 +6,14 @@ import { getCountriesByCategory } from "@/lib/data/countries";
 import Link from "next/link";
 import Image from "next/image";
 import { Box, Container, Typography } from "@mui/material";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { Accordion } from "@/components/Accordion";
 
 export default function CountryDetailPage() {
   const params = useParams();
   const category = params.category as string;
   const countryName = params.country as string;
-
-  const [expanded, setExpanded] = React.useState<string | false>("panel1");
 
   const countries = getCountriesByCategory(category);
   const country = countries.find(
@@ -28,11 +23,6 @@ export default function CountryDetailPage() {
   if (!country) {
     return <div className="container mx-auto py-8">Country not found</div>;
   }
-
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
 
   return (
     <Container maxWidth="xl" sx={{ py: 5 }}>
@@ -136,86 +126,36 @@ export default function CountryDetailPage() {
           }}
         />
       </Box>
-      <Accordion
-        expanded={expanded === "panel1"}
-        onChange={handleChange("panel1")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
-          <Typography component="span" sx={{ width: "33%", flexShrink: 0 }}>
-            General settings
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat.
-            Aliquam eget maximus est, id dignissim quam.
-          </Typography>
-        </AccordionDetails>
+      <Accordion title="Eligibility Criteria">
+        <p>
+          You can return any item within 30 days of purchase. Please ensure the
+          item is in its original condition.
+        </p>
       </Accordion>
-      <Accordion
-        expanded={expanded === "panel2"}
-        onChange={handleChange("panel2")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2bh-content"
-          id="panel2bh-header"
-        >
-          <Typography component="span" sx={{ width: "33%", flexShrink: 0 }}>
-            Users
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Donec placerat, lectus sed mattis semper, neque lectus feugiat
-            lectus, varius pulvinar diam eros in elit. Pellentesque convallis
-            laoreet laoreet.
-          </Typography>
-        </AccordionDetails>
+      <Accordion title="Required Documents for Admission">
+        <p>
+          Shipping usually takes 5-7 business days depending on your location.
+        </p>
       </Accordion>
-      <Accordion
-        expanded={expanded === "panel3"}
-        onChange={handleChange("panel3")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel3bh-content"
-          id="panel3bh-header"
-        >
-          <Typography component="span" sx={{ width: "33%", flexShrink: 0 }}>
-            Advanced settings
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
-            sit amet egestas eros, vitae egestas augue. Duis vel est augue.
-          </Typography>
-        </AccordionDetails>
+      <Accordion title="Required Documents for Visa">
+        <p>
+          Shipping usually takes 5-7 business days depending on your location.
+        </p>
       </Accordion>
-      <Accordion
-        expanded={expanded === "panel4"}
-        onChange={handleChange("panel4")}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel4bh-content"
-          id="panel4bh-header"
-        >
-          <Typography component="span" sx={{ width: "33%", flexShrink: 0 }}>
-            Personal data
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
-            sit amet egestas eros, vitae egestas augue. Duis vel est augue.
-          </Typography>
-        </AccordionDetails>
+      <Accordion title="Finances & Expenses">
+        <p>
+          Shipping usually takes 5-7 business days depending on your location.
+        </p>
+      </Accordion>
+      <Accordion title="Terms & Conditions">
+        <p>
+          Shipping usually takes 5-7 business days depending on your location.
+        </p>
+      </Accordion>
+      <Accordion title="Application Process">
+        <p>
+          Shipping usually takes 5-7 business days depending on your location.
+        </p>
       </Accordion>
     </Container>
   );

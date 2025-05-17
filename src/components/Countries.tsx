@@ -175,7 +175,7 @@ export default function Countries({
               return (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={country.name}>
                   <Link
-                    href={`/countries/${category}/${country.name
+                    href={`/${category}/${country.name
                       .toLowerCase()
                       .replace(/\s+/g, "-")}`}
                     onClick={() => setSelectedCountry(country.name)}
