@@ -9,6 +9,7 @@ import { Box, Container, Typography } from "@mui/material";
 import React from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Accordion } from "@/components/Accordion";
+import { supabase } from "@/lib/supabase/server";
 
 export default function CountryDetailPage() {
   const params = useParams();
@@ -23,6 +24,20 @@ export default function CountryDetailPage() {
   if (!country) {
     return <div className="container mx-auto py-8">Country not found</div>;
   }
+
+  const fetchCountries = async () => {
+    const { data, error } = await supabase
+      .from("visa_country")
+      .select("*")
+      .eq("name", countryName);
+    if (error) {
+      console.error("Error fetching countries:", error);
+      return [];
+    }
+    if (data) console.log("Fetched countries:", data);
+  };
+
+  fetchCountries();
 
   return (
     <Container maxWidth="xl" sx={{ py: 5 }}>
