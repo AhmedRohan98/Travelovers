@@ -6,10 +6,22 @@ import { getCountriesByCategory } from "@/lib/data/countries";
 import Link from "next/link";
 import Image from "next/image";
 import { Box, Container, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Accordion } from "@/components/Accordion";
 import { supabase } from "@/lib/supabase/server";
+
+interface CountryVisaData {
+  id: number;
+  name: string;
+  overview: string;
+  req_docs: string;
+  employed: string;
+  self_employed: string;
+  unemployed: string;
+  additional: string;
+  terms: string;
+}
 
 export default function CountryDetailPage() {
   const params = useParams();
@@ -21,23 +33,29 @@ export default function CountryDetailPage() {
     (c) => c.name.toLowerCase() === countryName.toLowerCase()
   );
 
+  const [countryData, setCountryData] = useState<CountryVisaData | null>(null);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      const { data, error } = await supabase
+        .from("visa_country")
+        .select("*")
+        .eq("name", countryName)
+        .single();
+
+      if (error) {
+        console.error("Error fetching countries:", error);
+      } else {
+        setCountryData(data);
+      }
+    };
+
+    fetchCountries();
+  }, [countryName]);
+
   if (!country) {
     return <div className="container mx-auto py-8">Country not found</div>;
   }
-
-  const fetchCountries = async () => {
-    const { data, error } = await supabase
-      .from("visa_country")
-      .select("*")
-      .eq("name", countryName);
-    if (error) {
-      console.error("Error fetching countries:", error);
-      return [];
-    }
-    if (data) console.log("Fetched countries:", data);
-  };
-
-  fetchCountries();
 
   return (
     <Container maxWidth="xl" sx={{ py: 5 }}>
@@ -121,11 +139,12 @@ export default function CountryDetailPage() {
               fontStyle: "italic",
             }}
           >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis
-            perspiciatis ducimus excepturi quo! Molestiae illum corrupti eius
-            praesentium excepturi. Quod obcaecati eius repudiandae quis nemo!
-            Praesentium dolores perferendis beatae animi corporis? Sequi aliquam
-            repellat in mollitia placeat labore quisquam.
+            {/* {countryData?.overview} */}
+            {` ${
+              countryData?.overview === null
+                ? " Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis perspiciatis ducimus excepturi quo! Molestiae illum corrupti eius praesentium excepturi. Quod obcaecati eius repudiandae quis nemo! Praesentium dolores perferendis beatae animi corporis? Sequi aliquam repellat in mollitia placeat labore quisquam."
+                : countryData?.overview
+            }`}
           </Typography>
         </Box>
         <Box
