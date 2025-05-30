@@ -35,10 +35,13 @@ export default function CountryDetailPage() {
 
   const [countryData, setCountryData] = useState<CountryVisaData | null>(null);
 
+  
   useEffect(() => {
     const fetchCountries = async () => {
+        const tableName = category === "study" ? "study_country" : "visa_country";
+
       const { data, error } = await supabase
-        .from("visa_country")
+        .from(tableName)
         .select("*")
         .eq("name", countryName)
         .single();
@@ -52,6 +55,29 @@ export default function CountryDetailPage() {
 
     fetchCountries();
   }, [countryName]);
+
+const renderBulletList = (text: string | null | undefined) => {
+    if (!text || typeof text !== "string") return null;
+
+    // Check if bullets are present
+    if (text.includes("•")) {
+      const items = text
+        .split("•")
+        .map((item) => item.trim())
+        .filter((item) => item);
+
+      return (
+        <ul style={{ paddingLeft: "1.25rem", listStyleType: "disc" }}>
+          {items.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ul>
+      );
+    }
+
+    // Fallback to paragraph
+    return <p>{text}</p>;
+  };
 
   if (!country) {
     return <div className="container mx-auto py-8">Country not found</div>;
@@ -160,36 +186,47 @@ export default function CountryDetailPage() {
           }}
         />
       </Box>
-      <Accordion title="Eligibility Criteria">
-        <p>
-          You can return any item within 30 days of purchase. Please ensure the
-          item is in its original condition.
-        </p>
+      <Accordion title="Required Documents">
+        {renderBulletList(
+          countryData?.req_docs === null
+            ? "You can return any item within 30 days of purchase. Please ensure the item is in its original condition."
+            : countryData?.req_docs
+        )}
       </Accordion>
-      <Accordion title="Required Documents for Admission">
-        <p>
-          Shipping usually takes 5-7 business days depending on your location.
-        </p>
+      <Accordion title="Employed">
+        {renderBulletList(
+          countryData?.employed === null
+            ? "Shipping usually takes 5-7 business days depending on your location."
+            : countryData?.employed
+        )}
       </Accordion>
-      <Accordion title="Required Documents for Visa">
-        <p>
-          Shipping usually takes 5-7 business days depending on your location.
-        </p>
+      <Accordion title="Self Employed">
+        {renderBulletList(
+          countryData?.self_employed === null
+            ? "Shipping usually takes 5-7 business days depending on your location."
+            : countryData?.self_employed
+        )}
       </Accordion>
-      <Accordion title="Finances & Expenses">
-        <p>
-          Shipping usually takes 5-7 business days depending on your location.
-        </p>
+      <Accordion title="Unemployed">
+        {renderBulletList(
+          countryData?.unemployed === null
+            ? "Shipping usually takes 5-7 business days depending on your location."
+            : countryData?.unemployed
+        )}
       </Accordion>
       <Accordion title="Terms & Conditions">
-        <p>
-          Shipping usually takes 5-7 business days depending on your location.
-        </p>
+        {renderBulletList(
+          countryData?.terms === null
+            ? "Shipping usually takes 5-7 business days depending on your location."
+            : countryData?.terms
+        )}
       </Accordion>
-      <Accordion title="Application Process">
-        <p>
-          Shipping usually takes 5-7 business days depending on your location.
-        </p>
+      <Accordion title="Additional Information">
+        {renderBulletList(
+          countryData?.additional === null
+            ? "Shipping usually takes 5-7 business days depending on your location."
+            : countryData?.additional
+        )}
       </Accordion>
     </Container>
   );
