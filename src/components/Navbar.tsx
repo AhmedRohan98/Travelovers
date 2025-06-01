@@ -14,10 +14,9 @@ import Link from "next/link";
 const pages = [
   { name: "VISIT", path: "/visit" },
   { name: "STUDY", path: "/study" },
-  { name: "IMMIGRATION", path: "/countries" },
   { name: "GLOBAL TOURISM", path: "/tourism" },
   { name: "NATIONAL TOURISM", path: "/national-tourism" },
-  { name: "UMRAH", path: "/umrah" },
+  { name: "BLOGS", path: "/blogs" },
 ];
 
 export function Navbar() {
