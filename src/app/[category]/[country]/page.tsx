@@ -35,10 +35,9 @@ export default function CountryDetailPage() {
 
   const [countryData, setCountryData] = useState<CountryVisaData | null>(null);
 
-  
   useEffect(() => {
     const fetchCountries = async () => {
-        const tableName = category === "study" ? "study_country" : "visa_country";
+      const tableName = category === "study" ? "study_country" : "visa_country";
 
       const { data, error } = await supabase
         .from(tableName)
@@ -56,29 +55,6 @@ export default function CountryDetailPage() {
     fetchCountries();
   }, [countryName]);
 
-const renderBulletList = (text: string | null | undefined) => {
-    if (!text || typeof text !== "string") return null;
-
-    // Check if bullets are present
-    if (text.includes("•")) {
-      const items = text
-        .split("•")
-        .map((item) => item.trim())
-        .filter((item) => item);
-
-      return (
-        <ul style={{ paddingLeft: "1.25rem", listStyleType: "disc" }}>
-          {items.map((item, idx) => (
-            <li key={idx}>{item}</li>
-          ))}
-        </ul>
-      );
-    }
-
-    // Fallback to paragraph
-    return <p>{text}</p>;
-  };
-
   if (!country) {
     return <div className="container mx-auto py-8">Country not found</div>;
   }
@@ -90,7 +66,7 @@ const renderBulletList = (text: string | null | undefined) => {
         sx={{
           position: "relative",
           width: "100%",
-          height: 600,
+          height: 450,
           mb: 4,
           backgroundImage: `url('/assets/countries/${category}/place/${countryName}.jpg')`,
           backgroundSize: "cover",
@@ -158,20 +134,6 @@ const renderBulletList = (text: string | null | undefined) => {
               />
             </Box>
           </Box>
-          <Typography
-            variant="subtitle2"
-            sx={{
-              fontSize: 16,
-              fontStyle: "italic",
-            }}
-          >
-            {/* {countryData?.overview} */}
-            {` ${
-              countryData?.overview === null
-                ? " Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis perspiciatis ducimus excepturi quo! Molestiae illum corrupti eius praesentium excepturi. Quod obcaecati eius repudiandae quis nemo! Praesentium dolores perferendis beatae animi corporis? Sequi aliquam repellat in mollitia placeat labore quisquam."
-                : countryData?.overview
-            }`}
-          </Typography>
         </Box>
         <Box
           sx={{
@@ -186,47 +148,163 @@ const renderBulletList = (text: string | null | undefined) => {
           }}
         />
       </Box>
+      <Box
+        sx={{
+          marginBottom: "12px",
+          width: "80%",
+        }}
+      >
+        <Typography
+          variant="h1"
+          sx={{
+            color: "#660D17",
+            textTransform: "uppercase",
+            marginBottom: "16px",
+          }}
+        >
+          {category} {category === "visit" ? "" : "In"} {country.name.replace("-", " ")}
+        </Typography>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            fontSize: 18,
+            fontStyle: "italic",
+            padding: "8px",
+          }}
+        >
+          {`${
+            countryData?.overview === null
+              ? " Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis perspiciatis ducimus excepturi quo! Molestiae illum corrupti eius praesentium excepturi. Quod obcaecati eius repudiandae quis nemo! Praesentium dolores perferendis beatae animi corporis? Sequi aliquam repellat in mollitia placeat labore quisquam."
+              : countryData?.overview
+          }`}
+        </Typography>
+      </Box>
+
       <Accordion title="Required Documents">
-        {renderBulletList(
-          countryData?.req_docs === null
-            ? "You can return any item within 30 days of purchase. Please ensure the item is in its original condition."
-            : countryData?.req_docs
-        )}
+        <Box
+          sx={{
+            "& ul": {
+              listStyleType: "disc",
+              paddingLeft: "1.5rem",
+            },
+            "& li": {
+              marginBottom: "0.5rem",
+            },
+            "& p": {
+              marginBottom: "1rem",
+            },
+          }}
+          dangerouslySetInnerHTML={{
+            __html:
+              countryData?.req_docs ??
+              "<p>You can return any item within 30 days of purchase.</p><ul><li>Passport</li><li>CNIC</li></ul>",
+          }}
+        />
       </Accordion>
       <Accordion title="Employed">
-        {renderBulletList(
-          countryData?.employed === null
-            ? "Shipping usually takes 5-7 business days depending on your location."
-            : countryData?.employed
-        )}
+        <Box
+          sx={{
+            "& ul": {
+              listStyleType: "disc",
+              paddingLeft: "1.5rem",
+            },
+            "& li": {
+              marginBottom: "0.5rem",
+            },
+            "& p": {
+              marginBottom: "1rem",
+            },
+          }}
+          dangerouslySetInnerHTML={{
+            __html:
+              countryData?.employed ??
+              "<p>You can return any item within 30 days of purchase. Please ensure the item is in its original condition.</p>",
+          }}
+        />
       </Accordion>
       <Accordion title="Self Employed">
-        {renderBulletList(
-          countryData?.self_employed === null
-            ? "Shipping usually takes 5-7 business days depending on your location."
-            : countryData?.self_employed
-        )}
+        <Box
+          sx={{
+            "& ul": {
+              listStyleType: "disc",
+              paddingLeft: "1.5rem",
+            },
+            "& li": {
+              marginBottom: "0.5rem",
+            },
+            "& p": {
+              marginBottom: "1rem",
+            },
+          }}
+          dangerouslySetInnerHTML={{
+            __html:
+              countryData?.self_employed ??
+              "<p>You can return any item within 30 days of purchase. Please ensure the item is in its original condition.</p>",
+          }}
+        />
       </Accordion>
       <Accordion title="Unemployed">
-        {renderBulletList(
-          countryData?.unemployed === null
-            ? "Shipping usually takes 5-7 business days depending on your location."
-            : countryData?.unemployed
-        )}
+        <Box
+          sx={{
+            "& ul": {
+              listStyleType: "disc",
+              paddingLeft: "1.5rem",
+            },
+            "& li": {
+              marginBottom: "0.5rem",
+            },
+            "& p": {
+              marginBottom: "1rem",
+            },
+          }}
+          dangerouslySetInnerHTML={{
+            __html:
+              countryData?.unemployed ??
+              "<p>You can return any item within 30 days of purchase. Please ensure the item is in its original condition.</p>",
+          }}
+        />
       </Accordion>
       <Accordion title="Terms & Conditions">
-        {renderBulletList(
-          countryData?.terms === null
-            ? "Shipping usually takes 5-7 business days depending on your location."
-            : countryData?.terms
-        )}
+        <Box
+          sx={{
+            "& ul": {
+              listStyleType: "disc",
+              paddingLeft: "1.5rem",
+            },
+            "& li": {
+              marginBottom: "0.5rem",
+            },
+            "& p": {
+              marginBottom: "1rem",
+            },
+          }}
+          dangerouslySetInnerHTML={{
+            __html:
+              countryData?.terms ??
+              "<p>You can return any item within 30 days of purchase. Please ensure the item is in its original condition.</p>",
+          }}
+        />
       </Accordion>
       <Accordion title="Additional Information">
-        {renderBulletList(
-          countryData?.additional === null
-            ? "Shipping usually takes 5-7 business days depending on your location."
-            : countryData?.additional
-        )}
+        <Box
+          sx={{
+            "& ul": {
+              listStyleType: "disc",
+              paddingLeft: "1.5rem",
+            },
+            "& li": {
+              marginBottom: "0.5rem",
+            },
+            "& p": {
+              marginBottom: "1rem",
+            },
+          }}
+          dangerouslySetInnerHTML={{
+            __html:
+              countryData?.additional ??
+              "<p>You can return any item within 30 days of purchase. Please ensure the item is in its original condition.</p>",
+          }}
+        />
       </Accordion>
     </Container>
   );
