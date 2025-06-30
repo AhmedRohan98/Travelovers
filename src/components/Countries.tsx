@@ -24,22 +24,53 @@ export type Country = {
   continent: string;
 };
 
+export interface TouristPlace {
+  name: string;
+  imageUrl: string;
+  region: string;
+}
+
+type CommonLocation = {
+  name: string;
+  imageUrl: string;
+  category: string;
+};
+
 export default function Countries({
-  countries,
+  countries = [],
+  touristPlaces = [],
   category,
 }: {
-  countries: Country[];
+  countries?: Country[];
+  touristPlaces?: TouristPlace[];
   category: string;
 }) {
-  const [selectedContinent, setSelectedContinent] = useState<string>("All");
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<string>("All");
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
 
-  const continents = ["Asia", "Europe", "North America", "Oceania", "Africa"];
+  // Normalize data into common structure
+  const locations: CommonLocation[] =
+    category === "national-tourism"
+      ? touristPlaces.map((place) => ({
+          name: place.name,
+          imageUrl: place.imageUrl,
+          category: place.region,
+        }))
+      : countries.map((country) => ({
+          name: country.name,
+          imageUrl: country.flag,
+          category: country.continent,
+        }));
 
-  const filteredCountries =
-    selectedContinent === "All"
-      ? countries
-      : countries.filter((c) => c.continent === selectedContinent);
+  const filters = [
+    "All",
+    ...Array.from(new Set(locations.map((loc) => loc.category))),
+  ];
+
+  const filteredLocations =
+    selectedFilter === "All"
+      ? locations
+      : locations.filter((loc) => loc.category === selectedFilter);
 
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
@@ -72,13 +103,15 @@ export default function Countries({
           }}
         >
           <Typography variant="h3" fontWeight="bold">
-            Countries
+            {category === "national-tourism" ? "Tourist Places" : "Countries"}
           </Typography>
           <Breadcrumbs aria-label="breadcrumb" sx={{ color: "white" }}>
             <Link href="/" passHref>
               Home
             </Link>
-            <Typography color="white">Countries</Typography>
+            <Typography color="white">
+              {category === "national-tourism" ? "Places" : "Countries"}
+            </Typography>
           </Breadcrumbs>
         </Box>
         <Box
@@ -96,7 +129,7 @@ export default function Countries({
       </Box>
 
       <Box display="flex" gap={4}>
-        {/* Sidebar */}
+        {/* Sidebar Filter */}
         <Box
           flexShrink={0}
           width={250}
@@ -106,17 +139,16 @@ export default function Countries({
             height: "fit-content",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
             border: "1px solid #e0e0e0",
-            borderRadius: 2,
             overflow: "hidden",
             display: { xs: "none", sm: "block" },
           }}
         >
           <List>
-            {continents.map((continent) => (
+            {filters.map((filter) => (
               <ListItemButton
-                key={continent}
-                selected={selectedContinent === continent}
-                onClick={() => setSelectedContinent(continent)}
+                key={filter}
+                selected={selectedFilter === filter}
+                onClick={() => setSelectedFilter(filter)}
                 sx={{
                   borderBottom: "1px solid #e0e0e0",
                   color: "black",
@@ -127,12 +159,11 @@ export default function Countries({
                     <Typography
                       sx={{
                         fontWeight:
-                          selectedContinent === continent ? "bold" : "normal",
-                        color:
-                          selectedContinent === continent ? "red" : "inherit",
+                          selectedFilter === filter ? "bold" : "normal",
+                        color: selectedFilter === filter ? "red" : "inherit",
                       }}
                     >
-                      {continent}
+                      {filter}
                     </Typography>
                   }
                 />
@@ -142,45 +173,61 @@ export default function Countries({
           </List>
         </Box>
 
-        {/* Country Cards */}
+        {/* Cards */}
         <Grid container spacing={2} flex={3}>
-          {filteredCountries.length === 0 ? (
-            <Grid size={{ xs: 12 }} textAlign="center" mt={4}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                gap={2}
-              >
-                <Avatar
-                  sx={{
-                    bgcolor: "transparent",
-                    width: 80,
-                    height: 80,
-                  }}
-                >
-                  <SentimentVeryDissatisfiedIcon
-                    sx={{ fontSize: 60, color: "#e0e0e0" }}
-                  />
-                </Avatar>
-                <Typography variant="h6" color="textSecondary">
-                  No countries found
-                </Typography>
-              </Box>
-            </Grid>
-          ) : (
-            filteredCountries.map((country) => {
-              const isSelected = selectedCountry === country.name;
+          {filteredLocations.map((loc) => {
+            const isSelected = selectedLocation === loc.name;
+            const href = `/${category}/${loc.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`;
 
-              return (
-                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={country.name}>
-                  <Link
-                    href={`/${category}/${country.name
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")}`}
-                    onClick={() => setSelectedCountry(country.name)}
-                    style={{ textDecoration: "none" }}
-                  >
+            return (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={loc.name}>
+                <Link
+                  href={href}
+                  onClick={() => setSelectedLocation(loc.name)}
+                  style={{ textDecoration: "none" }}
+                >
+                  {category === "national-tourism" ? (
+                    <Card
+                      sx={{
+                        borderRadius: 4,
+                        border: isSelected
+                          ? "2px solid red"
+                          : "1px solid #e0e0e0",
+                        overflow: "hidden",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src={loc.imageUrl}
+                        alt={loc.name}
+                        sx={{
+                          width: "100%",
+                          height: 180,
+                          objectFit: "cover",
+                        }}
+                      />
+                      <CardContent>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          color="text.primary"
+                          align="center"
+                        >
+                          {loc.name.replace("-", " ")}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          align="center"
+                        >
+                          {loc.category}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  ) : (
                     <Card
                       sx={{
                         display: "flex",
@@ -196,8 +243,8 @@ export default function Countries({
                       }}
                     >
                       <Avatar
-                        src={country.flag}
-                        alt={country.name}
+                        src={loc.imageUrl}
+                        alt={loc.name}
                         sx={{ width: 48, height: 48 }}
                       />
                       <CardContent
@@ -212,15 +259,15 @@ export default function Countries({
                           fontWeight="medium"
                           color="black"
                         >
-                          {country.name.replace("-", " ")}
+                          {loc.name.replace("-", " ")}
                         </Typography>
                       </CardContent>
                     </Card>
-                  </Link>
-                </Grid>
-              );
-            })
-          )}
+                  )}
+                </Link>
+              </Grid>
+            );
+          })}
         </Grid>
       </Box>
     </Container>

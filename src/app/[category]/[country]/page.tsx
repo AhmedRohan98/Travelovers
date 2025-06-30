@@ -1,4 +1,3 @@
-// /app/(routes)/countries/[category]/[country]/page.tsx
 "use client";
 
 import { useParams } from "next/navigation";
@@ -10,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Accordion } from "@/components/Accordion";
 import { supabase } from "@/lib/supabase/server";
+import { text } from "stream/consumers";
 
 interface CountryVisaData {
   id: number;
@@ -35,6 +35,8 @@ export default function CountryDetailPage() {
 
   const [countryData, setCountryData] = useState<CountryVisaData | null>(null);
 
+  console.log("Country Name: ", country);
+  console.log("countries: ", countries);
   useEffect(() => {
     const fetchCountries = async () => {
       const tableName = category === "study" ? "study_country" : "visa_country";
@@ -68,7 +70,11 @@ export default function CountryDetailPage() {
           width: "100%",
           height: 450,
           mb: 4,
-          backgroundImage: `url('/assets/countries/${category}/place/${countryName}.jpg')`,
+          backgroundImage: `url('${
+            category === "national-tourism"
+              ? `/assets/places/${countryName}.jpg`
+              : `/assets/countries/${category}/place/${countryName}.jpg`
+          }')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -121,18 +127,20 @@ export default function CountryDetailPage() {
             >
               {country.name.replace("-", " ")}
             </Typography>
-            <Box>
-              <Image
-                src={country.flag}
-                alt="country"
-                width={80}
-                height={60}
-                style={{
-                  borderRadius: "10%",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                }}
-              />
-            </Box>
+            {category !== "national-tourism" && "flag" in country && (
+              <Box>
+                <Image
+                  src={country.flag}
+                  alt="country"
+                  width={80}
+                  height={60}
+                  style={{
+                    borderRadius: "10%",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                />
+              </Box>
+            )}
           </Box>
         </Box>
         <Box
@@ -162,7 +170,8 @@ export default function CountryDetailPage() {
             marginBottom: "16px",
           }}
         >
-          {category} {category === "visit" ? "" : "In"} {country.name.replace("-", " ")}
+          {category.replace("-", " ")} {category === "visit" ? "" : "In"}{" "}
+          {country.name.replace("-", " ")}
         </Typography>
         <Typography
           variant="subtitle2"
@@ -170,6 +179,7 @@ export default function CountryDetailPage() {
             fontSize: 18,
             fontStyle: "italic",
             padding: "8px",
+            color: "#000000",
           }}
         >
           {`${
@@ -186,11 +196,14 @@ export default function CountryDetailPage() {
             "& ul": {
               listStyleType: "disc",
               paddingLeft: "1.5rem",
+              color: "#000000",
             },
             "& li": {
+              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
+              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -205,13 +218,16 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
+              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
+              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
+              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -226,13 +242,16 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
+              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
+              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
+              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -247,13 +266,16 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
+              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
+              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
+              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -268,13 +290,16 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
+              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
+              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
+              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -289,13 +314,16 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
+              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
+              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
+              color: "#000000",
               marginBottom: "1rem",
             },
           }}
