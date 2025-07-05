@@ -13,7 +13,7 @@ const theme = createTheme({
       paper: "#EDEDED",
     },
     text: {
-      primary: "#FFFFFF",
+      primary: "#8B0000",
       secondary: "#333333",
     },
   },

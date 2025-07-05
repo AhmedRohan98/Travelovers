@@ -1,4 +1,4 @@
-import { Country } from "@/components/Countries";
+import { Country, TouristPlace } from "@/components/Countries";
 
 export const studyCountries: Country[] = [
   {
@@ -349,8 +349,58 @@ export const globalTourismCountries: Country[] = [
   // Add more global tourism destinations as needed
 ];
 
+export const touristPlaces: TouristPlace[] = [
+  {
+    name: "Hunza",
+    imageUrl: "/assets/places/hunza.jpg",
+    region: "Gilgit-Baltistan",
+  },
+  {
+    name: "Naran",
+    imageUrl: "/assets/places/naran.jpg",
+    region: "Khyber Pakhtunkhwa",
+  },
+  {
+    name: "Gilgit",
+    imageUrl: "/assets/places/gilgit.jpg",
+    region: "Gilgit-Baltistan",
+  },
+  {
+    name: "Skardu",
+    imageUrl: "/assets/places/skardu.jpg",
+    region: "Gilgit-Baltistan",
+  },
+  {
+    name: "Kumrat",
+    imageUrl: "/assets/places/kumrat.jpg",
+    region: "Khyber Pakhtunkhwa",
+  },
+  {
+    name: "Shogran",
+    imageUrl: "/assets/places/shogran.jpg",
+    region: "Khyber Pakhtunkhwa",
+  },
+  {
+    name: "Swat-Valley",
+    imageUrl: "/assets/places/swat-valley.jpg",
+    region: "Khyber Pakhtunkhwa",
+  },
+  {
+    name: "Neelum-Valley",
+    imageUrl: "/assets/places/neelum-valley.jpg",
+    region: "Azad Kashmir",
+  },
+  {
+    name: "Fairy-Meadow",
+    imageUrl: "/assets/places/fairy-meadow.jpg",
+    region: "Gilgit-Baltistan",
+  },
+];
+
 // Function to get countries based on category
-export function getCountriesByCategory(category: string): Country[] {
+export function getCountriesByCategory(
+  category: string
+): Country[] | TouristPlace[] {
   switch (category) {
     case "study":
       return studyCountries;
@@ -358,7 +408,9 @@ export function getCountriesByCategory(category: string): Country[] {
       return visitCountries;
     case "global-tourism":
       return globalTourismCountries;
+    case "national-tourism":
+      return touristPlaces;
     default:
-      return studyCountries; // Default to study countries
+      return studyCountries;
   }
 }

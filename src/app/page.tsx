@@ -1,7 +1,6 @@
 import Adventure from "@/components/Adventure";
 import BlogSection from "@/components/Blogs";
 import Faqs from "@/components/Faqs";
-import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Testimonials from "@/components/Testimonials";
 import WhyChooseUs from "@/components/WhyChooseUs";
@@ -26,7 +25,6 @@ const Home = () => {
         <Testimonials />
         <Faqs />
       </Box>
-      <Footer />
     </main>
   );
 };
