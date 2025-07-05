@@ -9,7 +9,6 @@ import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Accordion } from "@/components/Accordion";
 import { supabase } from "@/lib/supabase/server";
-import { text } from "stream/consumers";
 
 interface CountryVisaData {
   id: number;
@@ -35,8 +34,6 @@ export default function CountryDetailPage() {
 
   const [countryData, setCountryData] = useState<CountryVisaData | null>(null);
 
-  console.log("Country Name: ", country);
-  console.log("countries: ", countries);
   useEffect(() => {
     const fetchCountries = async () => {
       const tableName = category === "study" ? "study_country" : "visa_country";
@@ -55,7 +52,7 @@ export default function CountryDetailPage() {
     };
 
     fetchCountries();
-  }, [countryName]);
+  }, [countryName, category]);
 
   if (!country) {
     return <div className="container mx-auto py-8">Country not found</div>;

@@ -98,7 +98,7 @@ export default function CountryDetailPage() {
             </Typography>
             <Box>
               <Image
-                src={country.flag}
+                src={'flag' in country ? country.flag : country.imageUrl}
                 alt="country"
                 width={80}
                 height={60}
