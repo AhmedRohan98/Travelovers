@@ -64,9 +64,6 @@ const BlogSection = () => {
           flexDirection: "column",
           mb: { xs: 2, sm: 0 }
         }}>
-          <Typography variant="inherit" color="primary">
-            RECENT BLOGS
-          </Typography>
           <Typography
             variant="h4"
             fontWeight="bold"
@@ -80,14 +77,14 @@ const BlogSection = () => {
         <Button
           variant="contained"
           sx={{
-            height: "fit-content",
+            height: "100%",
             backgroundColor: "secondary.main",
             borderRadius: "20px",
             "&:hover": { backgroundColor: "darkred" },
             alignSelf: { xs: "center", sm: "flex-start" }
           }}
         >
-          All Blogs →
+          All Blogs
         </Button>
       </Box>
 
@@ -112,7 +109,6 @@ const BlogSection = () => {
           <Card sx={{ 
             borderRadius: "12px", 
             overflow: "hidden",
-            height: "100%"
           }}>
             <CardActionArea>
               <CardMedia
@@ -139,20 +135,21 @@ const BlogSection = () => {
                   <PersonOutlineOutlinedIcon fontSize="inherit" />
                   {blogs[0].author}
                 </Typography>
-                <Typography 
-                  variant="h6" 
-                  color="secondary" 
+                <Typography
+                  variant="h6"
+                  color="secondary"
                   fontWeight="bold"
-                  sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+                  sx={{
+                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                    wordBreak: "break-word",
+                    lineHeight: 1.2,
+                  }}
                 >
                   {blogs[0].title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {blogs[0].description}
                 </Typography>
-                <Button size="small" color="primary">
-                  Read More →
-                </Button>
               </CardContent>
             </CardActionArea>
           </Card>
@@ -163,16 +160,15 @@ const BlogSection = () => {
           container 
           size={{xs: 12, md: 4}}
           spacing={2}
-          sx={{ 
-            order: { xs: 1, md: 2 },
-            flexDirection: { xs: "column", md: "column" }
-          }}
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+          order={{xs: 2, md: 2}}
         >
           {blogs.slice(1).map((blog) => (
             <Grid 
               key={blog.id} 
               size={{xs: 12}}
-              sx={{ height: "auto" }}
             >
               <Card
                 sx={{
@@ -183,10 +179,11 @@ const BlogSection = () => {
                   flexDirection: { xs: "column", md: "row" },
                 }}
               >
-                <CardActionArea 
-                  sx={{ 
-                    display: "flex", 
-                    flexDirection: { xs: "row", md: "row" } 
+                <CardActionArea
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    height: "100%",
                   }}
                 >
                   <CardMedia
@@ -195,13 +192,14 @@ const BlogSection = () => {
                     alt={blog.title}
                     loading="lazy"
                     sx={{
-                      width: "100%",
-                      height: { xs: "200px", md: "250px" },
+                      width: { xs: "100%", md: 140 },
+                      height: { xs: 200, md: "100%" },
                       objectFit: "cover",
                       "&:hover": { opacity: 0.9 },
+                      flexShrink: 0,
                     }}
                   />
-                  <CardContent>
+                  <CardContent sx={{ flex: 1 }}>
                     <Typography
                       variant="caption"
                       color="text.secondary"
@@ -218,7 +216,11 @@ const BlogSection = () => {
                       variant="h6"
                       color="secondary"
                       fontWeight="bold"
-                      sx={{ fontSize: { xs: "0.9rem", md: "1rem" } }}
+                      sx={{
+                        fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" },
+                        wordBreak: "break-word",
+                        lineHeight: 1.2,
+                      }}
                     >
                       {blog.title}
                     </Typography>
@@ -228,9 +230,6 @@ const BlogSection = () => {
                     >
                       {blog.description}
                     </Typography>
-                    <Button size="small" color="primary">
-                      Read More →
-                    </Button>
                   </CardContent>
                 </CardActionArea>
               </Card>
