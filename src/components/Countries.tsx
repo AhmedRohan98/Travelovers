@@ -16,6 +16,7 @@ import {
   Container,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
+import Image from "next/image";
 
 export type Country = {
   name: string;
@@ -80,17 +81,34 @@ export default function Countries({
           width: "100%",
           height: 300,
           mb: 4,
-          backgroundImage: "url('/assets/countries/countries_header.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: "black",
-          zIndex: 0,
           borderRadius: "12px",
           overflow: "hidden",
         }}
       >
-        {/* Overlay Content */}
+        {/* Lazy loaded background image */}
+        <Image
+          src={category === "national-tourism"
+            ? "/assets/countries/national_tourism_header.png"
+            : "/assets/countries/countries_header.png"}
+          alt="Banner"
+          fill
+          style={{ objectFit: "cover", zIndex: 0 }}
+          loading="lazy"
+          priority={false}
+        />
+        {/* Overlay and content here */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.4)",
+            zIndex: 1,
+            borderRadius: "12px",
+          }}
+        />
         <Box
           sx={{
             position: "absolute",
@@ -113,18 +131,6 @@ export default function Countries({
             </Typography>
           </Breadcrumbs>
         </Box>
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
-            zIndex: 1,
-            borderRadius: "12px",
-          }}
-        />
       </Box>
 
       <Box display="flex" gap={4}>
