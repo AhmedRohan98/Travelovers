@@ -31,21 +31,37 @@ export default function TripPackagesPage() {
           width: "100%",
           height: 450,
           mb: 4,
-          backgroundImage: `url('${heroImage}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: "black",
-          zIndex: 0,
           borderRadius: "12px",
           overflow: "hidden",
         }}
       >
+        {/* Lazy loaded background image */}
+        <Image
+          src={heroImage}
+          alt="Banner"
+          fill
+          style={{ objectFit: "cover", zIndex: 0 }}
+          loading="lazy"
+          priority={false}
+        />
+        {/* Overlay for darkening */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.7)",
+            zIndex: 1,
+            borderRadius: "12px",
+          }}
+        />
         {/* Overlay Content */}
         <Box
           sx={{
             position: "absolute",
-            width: { xs: "90%", sm: "70%", md: "100%" },
+            width: { xs: "90%", sm: "70%", md: "50%" },
             top: "50%",
             left: { xs: "5%", md: "5%" },
             transform: "translateY(-50%)",
@@ -92,18 +108,6 @@ export default function TripPackagesPage() {
             Packages
           </Typography>
         </Box>
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            zIndex: 1,
-            borderRadius: "12px",
-          }}
-        />
       </Box>
 
       {/* Title */}
