@@ -235,7 +235,7 @@ export default function Countries({
                         p: 2,
                         gap: 2,
                         border: isSelected
-                          ? "2px solid red"
+                          ? "1px solid #B90C17"
                           : "1px solid #e0e0e0",
                         transition: "all 0.2s ease",
                         boxShadow: "none",
