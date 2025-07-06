@@ -192,7 +192,7 @@ export default function Countries({
                       sx={{
                         borderRadius: 4,
                         border: isSelected
-                          ? "2px solid red"
+                          ? "1px solid #B90C17"
                           : "1px solid #e0e0e0",
                         overflow: "hidden",
                         transition: "all 0.2s ease",
@@ -202,6 +202,7 @@ export default function Countries({
                         component="img"
                         src={loc.imageUrl}
                         alt={loc.name}
+                        loading="lazy"
                         sx={{
                           width: "100%",
                           height: 180,
