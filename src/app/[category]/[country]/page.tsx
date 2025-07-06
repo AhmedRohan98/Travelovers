@@ -9,6 +9,9 @@ import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Accordion } from "@/components/Accordion";
 import { supabase } from "@/lib/supabase/server";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Skeleton from "@mui/material/Skeleton";
 
 interface CountryVisaData {
   id: number;
@@ -33,26 +36,40 @@ export default function CountryDetailPage() {
   );
 
   const [countryData, setCountryData] = useState<CountryVisaData | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
-    const fetchCountries = async () => {
-      const tableName = category === "study" ? "study_country" : "visa_country";
+    if (category === "study" || category === "visit") {
+      const fetchCountries = async () => {
+        const tableName =
+          category === "study" ? "study_country" : "visa_country";
+        const { data, error } = await supabase
+          .from(tableName)
+          .select("*")
+          .eq("name", countryName)
+          .single();
 
-      const { data, error } = await supabase
-        .from(tableName)
-        .select("*")
-        .eq("name", countryName)
-        .single();
+        if (error && Object.keys(error).length > 0) {
+          setFetchError(
+            "Failed to fetch country data. Please try again later."
+          );
+          setOpenSnackbar(true);
+        } else if (!data) {
+          setFetchError("No country data found for this selection.");
+          setOpenSnackbar(true);
+          setCountryData(null);
+        } else {
+          setCountryData(data);
+          setFetchError(null);
+        }
+      };
 
-      if (error) {
-        console.error("Error fetching countries:", error);
-      } else {
-        setCountryData(data);
-      }
-    };
-
-    fetchCountries();
-  }, [countryName, category]);
+      fetchCountries();
+    } else {
+      setCountryData(null);
+    }
+  }, [category, countryName]);
 
   if (!country) {
     return <div className="container mx-auto py-8">Country not found</div>;
@@ -60,6 +77,21 @@ export default function CountryDetailPage() {
 
   return (
     <Container maxWidth="xl" sx={{ py: 5 }}>
+      {/* Snackbar for fetch errors */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          severity="error"
+          sx={{ width: "100%" }}
+          onClose={() => setOpenSnackbar(false)}
+        >
+          {fetchError}
+        </Alert>
+      </Snackbar>
       {/* Banner */}
       <Box
         sx={{
@@ -85,7 +117,7 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             position: "absolute",
-            width: "50%",
+            width: "100%",
             top: "50%",
             left: "5%",
             transform: "translateY(-50%)",
@@ -120,6 +152,11 @@ export default function CountryDetailPage() {
                 fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
                 textTransform: "uppercase",
                 fontStyle: "italic",
+                wordBreak: "break-word",
+                whiteSpace: "normal",
+                lineHeight: 1.1,
+                hyphens: "auto",
+                textAlign: { xs: "center", sm: "left" },
               }}
             >
               {country.name.replace("-", " ")}
@@ -170,21 +207,51 @@ export default function CountryDetailPage() {
           {category.replace("-", " ")} {category === "visit" ? "" : "In"}{" "}
           {country.name.replace("-", " ")}
         </Typography>
-        <Typography
-          variant="subtitle2"
-          sx={{
-            fontSize: 18,
-            fontStyle: "italic",
-            padding: "8px",
-            color: "#000000",
-          }}
-        >
-          {`${
-            countryData?.overview === null
-              ? " Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis perspiciatis ducimus excepturi quo! Molestiae illum corrupti eius praesentium excepturi. Quod obcaecati eius repudiandae quis nemo! Praesentium dolores perferendis beatae animi corporis? Sequi aliquam repellat in mollitia placeat labore quisquam."
-              : countryData?.overview
-          }`}
-        </Typography>
+        {/* Skeleton loader for overview */}
+        {(category === "study" || category === "visit") &&
+        !countryData &&
+        !fetchError ? (
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height={60}
+            sx={{ mb: 2, borderRadius: 2 }}
+          />
+        ) : (
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontSize: 18,
+              fontStyle: "italic",
+              padding: "8px",
+              color: "#000000",
+            }}
+          >
+            {countryData?.overview ??
+              "No description available for this country at the moment."}
+          </Typography>
+        )}
+        {/* Add Trip Packages button for national tourism */}
+        {category === "national-tourism" && (
+          <Box sx={{ mb: 3 }}>
+            <Link
+              href={`/national-tourism/${countryName}/trip-packages`}
+              style={{
+                display: "inline-block",
+                background: "#AB142A",
+                color: "white",
+                padding: "12px 32px",
+                borderRadius: "8px",
+                fontWeight: 600,
+                fontSize: "1.1rem",
+                textDecoration: "none",
+                transition: "background 0.2s",
+              }}
+            >
+              View Trip Packages
+            </Link>
+          </Box>
+        )}
       </Box>
 
       <Accordion title="Required Documents">

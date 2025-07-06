@@ -119,6 +119,7 @@ const BlogSection = () => {
                 component="img"
                 image={blogs[0].image}
                 alt={blogs[0].title}
+                loading="lazy"
                 sx={{
                   height: { xs: "200px", sm: "260px", md: "400px" },
                   objectFit: "cover",
@@ -192,6 +193,7 @@ const BlogSection = () => {
                     component="img"
                     image={blog.image}
                     alt={blog.title}
+                    loading="lazy"
                     sx={{
                       width: "100%",
                       height: { xs: "200px", md: "250px" },
