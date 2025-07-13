@@ -87,9 +87,11 @@ export default function Countries({
       >
         {/* Lazy loaded background image */}
         <Image
-          src={category === "national-tourism"
-            ? "/assets/countries/national_tourism_header.png"
-            : "/assets/countries/countries_header.png"}
+          src={
+            category === "national-tourism"
+              ? "/assets/countries/national_tourism_header.png"
+              : "/assets/countries/countries_header.png"
+          }
           alt="Banner"
           fill
           style={{ objectFit: "cover", zIndex: 0 }}
@@ -182,9 +184,12 @@ export default function Countries({
         <Grid container spacing={2} flex={3}>
           {filteredLocations.map((loc) => {
             const isSelected = selectedLocation === loc.name;
-            const href = `/${category}/${loc.name
-              .toLowerCase()
-              .replace(/\s+/g, "-")}`;
+            const href =
+              category === "national-tourism"
+                ? `/national-tourism/${loc.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}/trip-packages`
+                : `/${category}/${loc.name.toLowerCase().replace(/\s+/g, "-")}`;
 
             return (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={loc.name}>
