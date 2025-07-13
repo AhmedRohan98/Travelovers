@@ -13,8 +13,8 @@ const theme = createTheme({
       paper: "#EDEDED",
     },
     text: {
-      primary: "#8B0000",
-      secondary: "#333333",
+      primary: "#333333", 
+      secondary: "#666666",
     },
   },
   typography: {
@@ -22,17 +22,34 @@ const theme = createTheme({
     h1: {
       fontSize: "3rem",
       fontWeight: 700,
-      color: "#FFFFFF",
     },
     h2: {
       fontSize: "2.5rem",
       fontWeight: 600,
-      color: "#FFFFFF",
+    },
+    h3: {
+      fontSize: "2rem",
+      fontWeight: 600,
+    },
+    h4: {
+      fontSize: "1.75rem",
+      fontWeight: 600,
+    },
+    h5: {
+      fontSize: "1.5rem",
+      fontWeight: 600,
+    },
+    h6: {
+      fontSize: "1.25rem",
+      fontWeight: 600,
     },
     body1: {
       fontSize: "1rem",
       fontWeight: 400,
-      color: "#FFFFFF",
+    },
+    body2: {
+      fontSize: "0.875rem",
+      fontWeight: 400,
     },
     button: {
       textTransform: "uppercase",
@@ -68,7 +85,7 @@ const theme = createTheme({
     MuiDivider: {
       styleOverrides: {
         root: {
-          borderColor: "white",
+          borderColor: "#E0E0E0",
         },
       },
     },

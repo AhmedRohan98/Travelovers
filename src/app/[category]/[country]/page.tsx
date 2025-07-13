@@ -224,7 +224,6 @@ export default function CountryDetailPage() {
               fontSize: 18,
               fontStyle: "italic",
               padding: "8px",
-              color: "#000000",
             }}
           >
             {countryData?.overview ??
@@ -239,14 +238,11 @@ export default function CountryDetailPage() {
             "& ul": {
               listStyleType: "disc",
               paddingLeft: "1.5rem",
-              color: "#000000",
             },
             "& li": {
-              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
-              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -261,16 +257,13 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
-              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
-              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
-              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -285,16 +278,13 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
-              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
-              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
-              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -309,16 +299,13 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
-              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
-              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
-              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -333,16 +320,13 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
-              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
-              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
-              color: "#000000",
               marginBottom: "1rem",
             },
           }}
@@ -357,16 +341,13 @@ export default function CountryDetailPage() {
         <Box
           sx={{
             "& ul": {
-              color: "#000000",
               listStyleType: "disc",
               paddingLeft: "1.5rem",
             },
             "& li": {
-              color: "#000000",
               marginBottom: "0.5rem",
             },
             "& p": {
-              color: "#000000",
               marginBottom: "1rem",
             },
           }}
