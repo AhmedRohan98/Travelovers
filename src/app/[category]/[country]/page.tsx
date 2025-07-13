@@ -231,27 +231,6 @@ export default function CountryDetailPage() {
               "No description available for this country at the moment."}
           </Typography>
         )}
-        {/* Add Trip Packages button for national tourism */}
-        {category === "national-tourism" && (
-          <Box sx={{ mb: 3 }}>
-            <Link
-              href={`/national-tourism/${countryName}/trip-packages`}
-              style={{
-                display: "inline-block",
-                background: "#AB142A",
-                color: "white",
-                padding: "12px 32px",
-                borderRadius: "8px",
-                fontWeight: 600,
-                fontSize: "1.1rem",
-                textDecoration: "none",
-                transition: "background 0.2s",
-              }}
-            >
-              View Trip Packages
-            </Link>
-          </Box>
-        )}
       </Box>
 
       <Accordion title="Required Documents">
