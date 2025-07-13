@@ -235,6 +235,7 @@ export default function TripPackagesPage() {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
+                padding: "0 10px",
               }}
             >
               {typeof place === "string" ? place.replace(/-/g, " ") : ""}
