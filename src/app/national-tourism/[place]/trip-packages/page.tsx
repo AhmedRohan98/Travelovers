@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { notFound, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -126,7 +126,7 @@ export default function TripPackagesPage() {
             No trip packages found
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={4}>
-            We couldn't find any trip packages for this destination.
+            We couldn&apos;t find any trip packages for this destination.
           </Typography>
           <Link href="/national-tourism">
             <Button

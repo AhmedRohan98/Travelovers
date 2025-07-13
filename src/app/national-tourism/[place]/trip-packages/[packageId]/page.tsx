@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { notFound, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -10,7 +10,7 @@ import {
   Typography,
   Grid2,
   Card,
-  CardContent,
+  
   Button,
   Divider,
   Skeleton,
@@ -546,7 +546,7 @@ export default function PackageDetailPage() {
             <Divider sx={{ mb: 3 }} />
 
             <Typography variant="h6" fontWeight="bold" mb={2}>
-              What's Included:
+              What&apos;s Included:
             </Typography>
             <Box sx={{ mb: 3 }}>
               {[
