@@ -10,7 +10,6 @@ import {
   Typography,
   Grid2,
   Card,
-  
   Button,
   Divider,
   Skeleton,
@@ -385,17 +384,12 @@ export default function PackageDetailPage() {
             {itinerary.length > 0 && (
               <Box sx={{ mb: 4 }}>
                 <Typography
-                  variant="h5"
+                  variant="body1"
                   sx={{
                     lineHeight: 1.8,
-                    color: "#000",
                     fontSize: "1.1rem",
                     "& p": {
                       mb: 2,
-                      color: "#000 !important",
-                    },
-                    "& *": {
-                      color: "#000 !important",
                     },
                   }}
                   dangerouslySetInnerHTML={{
@@ -418,7 +412,7 @@ export default function PackageDetailPage() {
                       "& h2": {
                         fontSize: "1.3rem",
                         fontWeight: "bold",
-                        color: "#B90C1C !important",
+                        color: "#B90C1C",
                         mb: 2,
                         mt: 3,
                         "&:first-of-type": { mt: 0 },
@@ -429,10 +423,6 @@ export default function PackageDetailPage() {
                         mb: 1.5,
                         lineHeight: 1.7,
                         fontSize: "1rem",
-                        color: "#000 !important",
-                      },
-                      "& *": {
-                        color: "#000 !important",
                       },
                     }}
                   >
@@ -453,12 +443,8 @@ export default function PackageDetailPage() {
                         mb: 1,
                         lineHeight: 1.6,
                         fontSize: "0.95rem",
-                        color: "#000 !important",
                         listStyleType: "disc",
                         ml: 2,
-                      },
-                      "& *": {
-                        color: "#000 !important",
                       },
                     }}
                   >
@@ -481,12 +467,8 @@ export default function PackageDetailPage() {
                         mb: 1,
                         lineHeight: 1.6,
                         fontSize: "0.95rem",
-                        color: "#000 !important",
                         listStyleType: "disc",
                         ml: 2,
-                      },
-                      "& *": {
-                        color: "#000 !important",
                       },
                     }}
                   >
@@ -509,7 +491,6 @@ export default function PackageDetailPage() {
                         mb: 1.5,
                         lineHeight: 1.7,
                         fontSize: "0.95rem",
-                        color: "#000 !important",
                         pl: 2,
                         borderLeft: "2px solid #E0E0E0",
                         "&:hover": {
@@ -517,9 +498,6 @@ export default function PackageDetailPage() {
                           bgcolor: "rgba(185, 12, 28, 0.02)",
                         },
                         transition: "all 0.3s ease",
-                      },
-                      "& *": {
-                        color: "#000 !important",
                       },
                     }}
                   >
