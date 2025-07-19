@@ -46,6 +46,7 @@ interface CountryVisaData {
     interview?: string;
     submission?: string;
   };
+  considerations: string;
 }
 
 interface CountryStudyData {
@@ -383,7 +384,7 @@ export default function CountryDetailPage() {
                 sx={{
                   p: 3,
                   bgcolor: "background.paper",
-                  borderRadius: 3,
+                  borderRadius: 10,
                   border: "1px solid #e0e0e0",
                   mb: 4,
                 }}
@@ -561,7 +562,7 @@ export default function CountryDetailPage() {
               ) : (
                 /* Visit category accordions */
                 <>
-                  <Accordion title="Required Documents">
+                  <Accordion title="General Checklist (All Applicants)">
                     <Box
                       sx={{
                         "& ul": {
@@ -576,6 +577,13 @@ export default function CountryDetailPage() {
                         "& p": {
                           marginBottom: "1rem",
                           lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
                         },
                       }}
                       dangerouslySetInnerHTML={{
@@ -586,7 +594,7 @@ export default function CountryDetailPage() {
                     />
                   </Accordion>
 
-                  <Accordion title="For Employed Applicants">
+                  <Accordion title="Employed Applicants (Job Holders)">
                     <Box
                       sx={{
                         "& ul": {
@@ -601,6 +609,13 @@ export default function CountryDetailPage() {
                         "& p": {
                           marginBottom: "1rem",
                           lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
                         },
                       }}
                       dangerouslySetInnerHTML={{
@@ -611,7 +626,7 @@ export default function CountryDetailPage() {
                     />
                   </Accordion>
 
-                  <Accordion title="For Self-Employed Applicants">
+                  <Accordion title="Self-Employed Applicants (Business Owners)">
                     <Box
                       sx={{
                         "& ul": {
@@ -626,6 +641,13 @@ export default function CountryDetailPage() {
                         "& p": {
                           marginBottom: "1rem",
                           lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
                         },
                       }}
                       dangerouslySetInnerHTML={{
@@ -636,7 +658,7 @@ export default function CountryDetailPage() {
                     />
                   </Accordion>
 
-                  <Accordion title="For Unemployed Applicants">
+                  <Accordion title="Unemployed, Retired, or Dependent Applicants">
                     <Box
                       sx={{
                         "& ul": {
@@ -651,12 +673,50 @@ export default function CountryDetailPage() {
                         "& p": {
                           marginBottom: "1rem",
                           lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
                         },
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
                           ? countryData.unemployed
                           : "<p>Requirements for unemployed applicants:</p><ul><li>Sponsor documents</li><li>Financial support proof</li><li>Relationship certificates</li><li>Sponsor&apos;s income proof</li></ul>",
+                      }}
+                    />
+                  </Accordion>
+                  <Accordion title="Additional Supporting Documents">
+                    <Box
+                      sx={{
+                        "& ul": {
+                          listStyleType: "disc",
+                          paddingLeft: "1.5rem",
+                          mb: 2,
+                        },
+                        "& li": {
+                          marginBottom: "0.5rem",
+                          lineHeight: 1.6,
+                        },
+                        "& p": {
+                          marginBottom: "1rem",
+                          lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
+                        },
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html: isVisaData(countryData)
+                          ? countryData.additional
+                          : "<p>Additional helpful information:</p><ul><li>Processing times and fees</li><li>Embassy contact details</li><li>Important deadlines and schedules</li><li>FAQ and support resources</li></ul>",
                       }}
                     />
                   </Accordion>
@@ -693,7 +753,7 @@ export default function CountryDetailPage() {
                     />
                   </Accordion>
 
-                  <Accordion title="Additional Information">
+                  <Accordion title="Key Considerations">
                     <Box
                       sx={{
                         "& ul": {
@@ -708,12 +768,19 @@ export default function CountryDetailPage() {
                         "& p": {
                           marginBottom: "1rem",
                           lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
                         },
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
-                          ? countryData.additional
-                          : "<p>Additional helpful information:</p><ul><li>Processing times and fees</li><li>Embassy contact details</li><li>Important deadlines and schedules</li><li>FAQ and support resources</li></ul>",
+                          ? countryData.considerations
+                          : "<p>Please read the following Key Considerations:</p><ul><li>All documents must be original or properly attested</li><li>Application processing time may vary</li><li>Fees are non-refundable</li><li>Additional documents may be requested</li></ul>",
                       }}
                     />
                   </Accordion>
