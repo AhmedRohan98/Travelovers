@@ -4,9 +4,22 @@ import { useParams } from "next/navigation";
 import { getCountriesByCategory } from "@/lib/data/countries";
 import Link from "next/link";
 import Image from "next/image";
-import { Box, Container, Typography, Grid2, Breadcrumbs } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  Grid2,
+  Breadcrumbs,
+  Card,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import DescriptionIcon from "@mui/icons-material/Description";
+import FlightIcon from "@mui/icons-material/Flight";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import PersonIcon from "@mui/icons-material/Person";
+import SendIcon from "@mui/icons-material/Send";
 import { Accordion } from "@/components/Accordion";
 import { supabase } from "@/lib/supabase/server";
 import Snackbar from "@mui/material/Snackbar";
@@ -23,6 +36,16 @@ interface CountryVisaData {
   unemployed: string;
   additional: string;
   terms: string;
+  key_aspects?: {
+    validity?: string;
+    entry_type?: string;
+    processing_time?: string;
+  };
+  quick_info?: {
+    visa_fee?: string;
+    interview?: string;
+    submission?: string;
+  };
 }
 
 interface CountryStudyData {
@@ -35,6 +58,16 @@ interface CountryStudyData {
   req_visa: string;
   additional: string;
   created_at: string;
+  key_aspects?: {
+    validity?: string;
+    entry_type?: string;
+    processing_time?: string;
+  };
+  quick_info?: {
+    visa_fee?: string;
+    interview?: string;
+    submission?: string;
+  };
 }
 
 export default function CountryDetailPage() {
@@ -283,6 +316,59 @@ export default function CountryDetailPage() {
               {category.replace("-", " ")} {category === "visit" ? "" : "In"}{" "}
               {country.name.replace("-", " ")}
             </Typography>
+
+            {/* Key Aspects Cards - Above Overview */}
+            {!loading && countryData?.key_aspects && (
+              <Box sx={{ mb: 4 }}>
+                <Grid2 container spacing={3}>
+                  {countryData.key_aspects.validity && (
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                      <Card sx={{ p: 3, textAlign: "center", height: "100%" }}>
+                        <AccessTimeIcon
+                          sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                        />
+                        <Typography variant="h6" fontWeight="bold" mb={1}>
+                          Validity
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {countryData.key_aspects.validity}
+                        </Typography>
+                      </Card>
+                    </Grid2>
+                  )}
+                  {countryData.key_aspects.entry_type && (
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                      <Card sx={{ p: 3, textAlign: "center", height: "100%" }}>
+                        <FlightIcon
+                          sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                        />
+                        <Typography variant="h6" fontWeight="bold" mb={1}>
+                          Entry Type
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {countryData.key_aspects.entry_type}
+                        </Typography>
+                      </Card>
+                    </Grid2>
+                  )}
+                  {countryData.key_aspects.processing_time && (
+                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                      <Card sx={{ p: 3, textAlign: "center", height: "100%" }}>
+                        <DescriptionIcon
+                          sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                        />
+                        <Typography variant="h6" fontWeight="bold" mb={1}>
+                          Processing Time
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {countryData.key_aspects.processing_time}
+                        </Typography>
+                      </Card>
+                    </Grid2>
+                  )}
+                </Grid2>
+              </Box>
+            )}
 
             {/* Overview Section */}
             {loading ? (
@@ -639,69 +725,140 @@ export default function CountryDetailPage() {
 
         {/* Right Sidebar */}
         <Grid2 size={{ xs: 12, md: 4 }}>
-          <Box
-            sx={{
-              position: "sticky",
-              top: 20,
-              p: 3,
-              bgcolor: "background.paper",
-              borderRadius: 3,
-              border: "1px solid #e0e0e0",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <Typography variant="h5" fontWeight="bold" color="#B90C1C" mb={3}>
+          <Box sx={{ position: "sticky", top: 20 }}>
+            <Typography variant="h5" fontWeight="bold" mb={3}>
               Quick Information
             </Typography>
 
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight="bold" mb={1}>
-                Category
-              </Typography>
-              <Typography variant="body2" color="text.secondary" mb={2}>
-                {category.replace("-", " ").toUpperCase()}
-              </Typography>
-            </Box>
-
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight="bold" mb={1}>
-                Country
-              </Typography>
-              <Typography variant="body2" color="text.secondary" mb={2}>
-                {country.name.replace("-", " ")}
-              </Typography>
-            </Box>
-
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight="bold" mb={1}>
-                Need Help?
-              </Typography>
-              <Typography variant="body2" color="text.secondary" mb={2}>
-                Contact our expert consultants for personalized assistance with
-                your application.
-              </Typography>
-            </Box>
-
+            {/* Contact Information */}
             <Box
               sx={{
-                p: 2,
-                bgcolor: "rgba(185, 12, 28, 0.05)",
-                borderRadius: 2,
-                border: "1px solid rgba(185, 12, 28, 0.2)",
+                p: 3,
+                bgcolor: "background.paper",
+                borderRadius: 3,
+                border: "1px solid #e0e0e0",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                color="#B90C1C"
-                mb={1}
+              {/* Quick Info - Logo/Label/Value Layout */}
+              {!loading && countryData?.quick_info && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 3,
+                    mb: 3,
+                  }}
+                >
+                  {countryData.quick_info.visa_fee && (
+                    <Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          mb: 0.5,
+                        }}
+                      >
+                        <AccountBalanceWalletIcon
+                          sx={{ fontSize: 24, color: "#B90C1C" }}
+                        />
+                        <Typography variant="body1" fontWeight="medium">
+                          Visa Fee
+                        </Typography>
+                      </Box>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        paddingLeft={1}
+                      >
+                        {countryData.quick_info.visa_fee}
+                      </Typography>
+                    </Box>
+                  )}
+                  {countryData.quick_info.interview && (
+                    <Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          mb: 0.5,
+                        }}
+                      >
+                        <PersonIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
+                        <Typography variant="body1" fontWeight="medium">
+                          Interview
+                        </Typography>
+                      </Box>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        paddingLeft={1}
+                      >
+                        {countryData.quick_info.interview}
+                      </Typography>
+                    </Box>
+                  )}
+                  {countryData.quick_info.submission && (
+                    <Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          mb: 0.5,
+                        }}
+                      >
+                        <SendIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
+                        <Typography variant="body1" fontWeight="medium">
+                          Submission
+                        </Typography>
+                      </Box>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        paddingLeft={1}
+                      >
+                        {countryData.quick_info.submission}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              )}
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" fontWeight="bold" mb={1}>
+                  Need Help?
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mb={2}>
+                  Contact our expert consultants for personalized assistance
+                  with your application.
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  p: 2,
+                  bgcolor: "rgba(185, 12, 28, 0.05)",
+                  borderRadius: 2,
+                  border: "1px solid rgba(185, 12, 28, 0.2)",
+                }}
               >
-                📞 Expert Consultation
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Get professional guidance for your {category.replace("-", " ")}{" "}
-                application to {country.name.replace("-", " ")}.
-              </Typography>
+                <Typography
+                  variant="body2"
+                  fontWeight="bold"
+                  color="#B90C1C"
+                  mb={1}
+                >
+                  📞 Expert Consultation
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Get professional guidance for your{" "}
+                  {category.replace("-", " ")} application to{" "}
+                  {country.name.replace("-", " ")}.
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Grid2>
