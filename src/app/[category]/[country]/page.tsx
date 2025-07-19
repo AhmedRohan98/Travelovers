@@ -59,16 +59,6 @@ interface CountryStudyData {
   req_visa: string;
   additional: string;
   created_at: string;
-  key_aspects?: {
-    validity?: string;
-    entry_type?: string;
-    processing_time?: string;
-  };
-  quick_info?: {
-    visa_fee?: string;
-    interview?: string;
-    submission?: string;
-  };
 }
 
 export default function CountryDetailPage() {
@@ -319,57 +309,65 @@ export default function CountryDetailPage() {
             </Typography>
 
             {/* Key Aspects Cards - Above Overview */}
-            {!loading && countryData?.key_aspects && (
-              <Box sx={{ mb: 4 }}>
-                <Grid2 container spacing={3}>
-                  {countryData.key_aspects.validity && (
-                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
-                      <Card sx={{ p: 3, textAlign: "center", height: "100%" }}>
-                        <AccessTimeIcon
-                          sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
-                        />
-                        <Typography variant="h6" fontWeight="bold" mb={1}>
-                          Validity
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {countryData.key_aspects.validity}
-                        </Typography>
-                      </Card>
-                    </Grid2>
-                  )}
-                  {countryData.key_aspects.entry_type && (
-                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
-                      <Card sx={{ p: 3, textAlign: "center", height: "100%" }}>
-                        <FlightIcon
-                          sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
-                        />
-                        <Typography variant="h6" fontWeight="bold" mb={1}>
-                          Entry Type
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {countryData.key_aspects.entry_type}
-                        </Typography>
-                      </Card>
-                    </Grid2>
-                  )}
-                  {countryData.key_aspects.processing_time && (
-                    <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
-                      <Card sx={{ p: 3, textAlign: "center", height: "100%" }}>
-                        <DescriptionIcon
-                          sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
-                        />
-                        <Typography variant="h6" fontWeight="bold" mb={1}>
-                          Processing Time
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {countryData.key_aspects.processing_time}
-                        </Typography>
-                      </Card>
-                    </Grid2>
-                  )}
-                </Grid2>
-              </Box>
-            )}
+            {!loading &&
+              isVisaData(countryData) &&
+              countryData?.key_aspects && (
+                <Box sx={{ mb: 4 }}>
+                  <Grid2 container spacing={3}>
+                    {countryData.key_aspects.validity && (
+                      <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Card
+                          sx={{ p: 3, textAlign: "center", height: "100%" }}
+                        >
+                          <AccessTimeIcon
+                            sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                          />
+                          <Typography variant="h6" fontWeight="bold" mb={1}>
+                            Validity
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {countryData.key_aspects.validity}
+                          </Typography>
+                        </Card>
+                      </Grid2>
+                    )}
+                    {countryData.key_aspects.entry_type && (
+                      <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Card
+                          sx={{ p: 3, textAlign: "center", height: "100%" }}
+                        >
+                          <FlightIcon
+                            sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                          />
+                          <Typography variant="h6" fontWeight="bold" mb={1}>
+                            Entry Type
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {countryData.key_aspects.entry_type}
+                          </Typography>
+                        </Card>
+                      </Grid2>
+                    )}
+                    {countryData.key_aspects.processing_time && (
+                      <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Card
+                          sx={{ p: 3, textAlign: "center", height: "100%" }}
+                        >
+                          <DescriptionIcon
+                            sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                          />
+                          <Typography variant="h6" fontWeight="bold" mb={1}>
+                            Processing Time
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {countryData.key_aspects.processing_time}
+                          </Typography>
+                        </Card>
+                      </Grid2>
+                    )}
+                  </Grid2>
+                </Box>
+              )}
 
             {/* Overview Section */}
             {loading ? (
@@ -808,91 +806,93 @@ export default function CountryDetailPage() {
               }}
             >
               {/* Quick Info - Logo/Label/Value Layout */}
-              {!loading && countryData?.quick_info && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 3,
-                    mb: 3,
-                  }}
-                >
-                  {countryData.quick_info.visa_fee && (
-                    <Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          mb: 0.5,
-                        }}
-                      >
-                        <AccountBalanceWalletIcon
-                          sx={{ fontSize: 24, color: "#B90C1C" }}
-                        />
-                        <Typography variant="body1" fontWeight="medium">
-                          Visa Fee
+              {!loading &&
+                isVisaData(countryData) &&
+                countryData?.quick_info && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 3,
+                      mb: 3,
+                    }}
+                  >
+                    {countryData.quick_info.visa_fee && (
+                      <Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            mb: 0.5,
+                          }}
+                        >
+                          <AccountBalanceWalletIcon
+                            sx={{ fontSize: 24, color: "#B90C1C" }}
+                          />
+                          <Typography variant="body1" fontWeight="medium">
+                            Visa Fee
+                          </Typography>
+                        </Box>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          paddingLeft={1}
+                        >
+                          {countryData.quick_info.visa_fee}
                         </Typography>
                       </Box>
-                      <Typography
-                        variant="subtitle1"
-                        fontWeight="bold"
-                        paddingLeft={1}
-                      >
-                        {countryData.quick_info.visa_fee}
-                      </Typography>
-                    </Box>
-                  )}
-                  {countryData.quick_info.interview && (
-                    <Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          mb: 0.5,
-                        }}
-                      >
-                        <PersonIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
-                        <Typography variant="body1" fontWeight="medium">
-                          Interview
+                    )}
+                    {countryData.quick_info.interview && (
+                      <Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            mb: 0.5,
+                          }}
+                        >
+                          <PersonIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
+                          <Typography variant="body1" fontWeight="medium">
+                            Interview
+                          </Typography>
+                        </Box>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          paddingLeft={1}
+                        >
+                          {countryData.quick_info.interview}
                         </Typography>
                       </Box>
-                      <Typography
-                        variant="subtitle1"
-                        fontWeight="bold"
-                        paddingLeft={1}
-                      >
-                        {countryData.quick_info.interview}
-                      </Typography>
-                    </Box>
-                  )}
-                  {countryData.quick_info.submission && (
-                    <Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          mb: 0.5,
-                        }}
-                      >
-                        <SendIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
-                        <Typography variant="body1" fontWeight="medium">
-                          Submission
+                    )}
+                    {countryData.quick_info.submission && (
+                      <Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            mb: 0.5,
+                          }}
+                        >
+                          <SendIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
+                          <Typography variant="body1" fontWeight="medium">
+                            Submission
+                          </Typography>
+                        </Box>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          paddingLeft={1}
+                        >
+                          {countryData.quick_info.submission}
                         </Typography>
                       </Box>
-                      <Typography
-                        variant="subtitle1"
-                        fontWeight="bold"
-                        paddingLeft={1}
-                      >
-                        {countryData.quick_info.submission}
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-              )}
+                    )}
+                  </Box>
+                )}
 
               <Box sx={{ mb: 3 }}>
                 <Typography variant="h6" fontWeight="bold" mb={1}>
