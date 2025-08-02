@@ -315,10 +315,10 @@ export default function TripPackagesPage() {
                       <li>
                         ⏱️ Duration:{" "}
                         {pkg.duration ||
-                          `${pkg.days} Days & ${pkg.nights} Nights`}
+                          `${pkg.days} Days ${pkg.nights} Nights`}
                       </li>
-                      <li>🏨 Hotel: {pkg.hotel || "Standard Hotel"}</li>
-                      <li>🌲 Nearby Places: {pkg.nearby}</li>
+                      <li>🏨 Hotel: {pkg.hotel || "Standard"}</li>
+                      <li>🌲 Top Attractions: {pkg.nearby}</li>
                     </Box>
                   </Box>
                   <Button
