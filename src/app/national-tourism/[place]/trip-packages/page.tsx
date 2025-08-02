@@ -293,7 +293,7 @@ export default function TripPackagesPage() {
                 >
                   <Box>
                     <Typography variant="h6" fontWeight="bold" mb={1}>
-                      {pkg.title || `${pkg.days} Days & ${pkg.nights} Nights`}
+                      {pkg.title || `${pkg.days} Days ${pkg.nights} Nights`}
                     </Typography>
                     <Typography
                       align="right"
@@ -315,7 +315,7 @@ export default function TripPackagesPage() {
                       <li>
                         ⏱️ Duration:{" "}
                         {pkg.duration ||
-                          `${pkg.days} Days ${pkg.nights} Nights`}
+                          `${pkg.days} Days`}
                       </li>
                       <li>🏨 Hotel: {pkg.hotel || "Standard"}</li>
                       <li>🌲 Top Attractions: {pkg.nearby}</li>
