@@ -321,7 +321,7 @@ export default function PackageDetailPage() {
             }}
           >
             {packageData.title ||
-              `${packageData.days} Days & ${packageData.nights} Nights`}
+              `${packageData.days} Days ${packageData.nights} Nights`}
           </Typography>
         </Box>
       </Box>
@@ -346,7 +346,7 @@ export default function PackageDetailPage() {
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {packageData.duration ||
-                      `${packageData.days} Days & ${packageData.nights} Nights`}
+                      `${packageData.days} Days ${packageData.nights} Nights`}
                   </Typography>
                 </Card>
               </Grid2>
@@ -357,7 +357,7 @@ export default function PackageDetailPage() {
                     Hotel
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {packageData.hotel || "Standard Hotel"}
+                    {packageData.hotel || "Standard"}
                   </Typography>
                 </Card>
               </Grid2>
@@ -403,7 +403,7 @@ export default function PackageDetailPage() {
             {itinerary.length > 0 && (
               <Box sx={{ mb: 4 }}>
                 {/* Adventure Plan Section */}
-                <Accordion title="Adventure Plan">
+                <Accordion title="Adventure Plan" defaultOpen>
                   <Box
                     sx={{
                       "& h1": {
@@ -435,7 +435,7 @@ export default function PackageDetailPage() {
                 </Accordion>
 
                 {/* Inclusions Section */}
-                <Accordion title="Inclusions">
+                {/* <Accordion title="Inclusions">
                   <Box
                     sx={{
                       "& h1": { display: "none" },
@@ -456,10 +456,10 @@ export default function PackageDetailPage() {
                       />
                     </Box>
                   </Box>
-                </Accordion>
+                </Accordion> */}
 
                 {/* Exclusions Section */}
-                <Accordion title="Exclusions">
+                {/* <Accordion title="Exclusions">
                   <Box
                     sx={{
                       "& h1": { display: "none" },
@@ -480,7 +480,7 @@ export default function PackageDetailPage() {
                       />
                     </Box>
                   </Box>
-                </Accordion>
+                </Accordion> */}
 
                 {/* Terms & Conditions */}
                 <Accordion title="Terms & Conditions">
@@ -533,6 +533,19 @@ export default function PackageDetailPage() {
                 "Meals",
                 "Guide",
                 "Entry Tickets",
+              ].map((item, index) => (
+                <Typography key={index} variant="body2" sx={{ mb: 1 }}>
+                  ✓ {item}
+                </Typography>
+              ))}
+            </Box>
+
+            <Typography variant="h6" fontWeight="bold" mb={2}>
+              What&apos;s Excluded:
+            </Typography>
+            <Box sx={{ mb: 3 }}>
+              {[
+                "Any Services Not Specifically Listed In The \"Inclusions\" Section"
               ].map((item, index) => (
                 <Typography key={index} variant="body2" sx={{ mb: 1 }}>
                   ✓ {item}
