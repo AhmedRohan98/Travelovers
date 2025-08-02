@@ -367,7 +367,7 @@ export default function PackageDetailPage() {
                     sx={{ fontSize: 40, color: "#B90C1C", mb: 1 }}
                   />
                   <Typography variant="h6" fontWeight="bold">
-                    Nearby
+                    Top Attractions
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {packageData.nearby}
