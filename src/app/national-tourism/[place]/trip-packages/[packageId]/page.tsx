@@ -52,6 +52,7 @@ export default function PackageDetailPage() {
   const { place, packageId } = useParams();
   const [packageData, setPackageData] = useState<TripPackage | null>(null);
   const [itinerary, setItinerary] = useState<TripItinerary[]>([]);
+  const [otherPackages, setOtherPackages] = useState<TripPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -125,6 +126,7 @@ export default function PackageDetailPage() {
               trips!inner(destination)
             `
             )
+            .eq("trip_id", parseInt(packageIdStr))
             .eq("trips.destination", placeStr.toLowerCase());
 
           console.log("Itinerary JOIN query result:", {
@@ -138,16 +140,36 @@ export default function PackageDetailPage() {
           } else {
             setItinerary(itineraryData || []);
           }
-        } catch (err) {
-          console.error("Itinerary fetch exception:", err);
+        } catch (itineraryError) {
+          console.error("Unexpected itinerary error:", itineraryError);
           setItinerary([]);
         }
 
-        setError(null);
-      } catch (err) {
+        // Fetch other packages from the same destination (excluding current package)
+        try {
+          const { data: otherPackagesData, error: otherPackagesError } =
+            await supabase
+              .from("trips")
+              .select("*")
+              .eq("destination", placeStr)
+              .neq("trip_id", parseInt(packageIdStr))
+              .order("trip_id", { ascending: true })
+              .limit(6);
+
+          if (otherPackagesError) {
+            console.error("Other packages fetch error:", otherPackagesError);
+            setOtherPackages([]);
+          } else {
+            setOtherPackages(otherPackagesData || []);
+          }
+        } catch (otherPackagesError) {
+          console.error("Unexpected other packages error:", otherPackagesError);
+          setOtherPackages([]);
+        }
+      } catch (error) {
         setError("An unexpected error occurred. Please try again later.");
         setOpenSnackbar(true);
-        console.error("Fetch error:", err);
+        console.error("Fetch error:", error);
       } finally {
         setLoading(false);
       }
@@ -527,17 +549,40 @@ export default function PackageDetailPage() {
               What&apos;s Included:
             </Typography>
             <Box sx={{ mb: 3 }}>
-              {[
-                "Accommodation",
-                "Transportation",
-                "Meals",
-                "Guide",
-                "Entry Tickets",
-              ].map((item, index) => (
-                <Typography key={index} variant="body2" sx={{ mb: 1 }}>
-                  ✓ {item}
-                </Typography>
-              ))}
+              {/* {itinerary?.inclusions.map((item: string, index: number) => ( */}
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      "<ul>" +
+                      itinerary[0].inclusions
+                        .replaceAll("•", "✓")
+                        .replaceAll("<p>", "<li>")
+                        .replaceAll("</p>", "</li>") +
+                      "</ul>",
+                  }}
+                />
+              </Typography>
+              {/* ))} */}
+            </Box>
+
+            <Typography variant="h6" fontWeight="bold" mb={2}>
+              What&apos;s Excluded:
+            </Typography>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      "<ul>" +
+                      itinerary[0].exclusions
+                        .replaceAll("•", "✗")
+                        .replaceAll("<p>", "<li>")
+                        .replaceAll("</p>", "</li>") +
+                      "</ul>",
+                  }}
+                />
+              </Typography>
             </Box>
 
             <Typography variant="h6" fontWeight="bold" mb={2}>
@@ -567,6 +612,130 @@ export default function PackageDetailPage() {
           </Card>
         </Grid2>
       </Grid2>
+
+      {/* Other Packages Section */}
+      {otherPackages.length > 0 && (
+        <Box sx={{ mt: 5 }}>
+          <Grid2 container spacing={3}>
+            {otherPackages.map((pkg) => (
+              <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={pkg.trip_id}>
+                <Card
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    borderRadius: 2,
+                    boxShadow: 2,
+                    transition:
+                      "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: 4,
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{ position: "relative", width: "100%", height: 200 }}
+                  >
+                    <Image
+                      src={pkg.image || `/assets/places/${pkg.destination}.jpg`}
+                      alt={pkg.title || `${pkg.destination} Package`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        borderTopLeftRadius: 8,
+                        borderTopRightRadius: 8,
+                      }}
+                      loading="lazy"
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      p: 2,
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography variant="h6" fontWeight="bold" mb={1}>
+                      {pkg.title || `${pkg.days} Days ${pkg.nights} Nights`}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="#B90C1C"
+                      mb={2}
+                      sx={{ textAlign: "right" }}
+                    >
+                      {pkg.price || "Contact for Price"}
+                    </Typography>
+                    <Box
+                      component="ul"
+                      sx={{
+                        pl: 2,
+                        mb: 2,
+                        color: "text.secondary",
+                        fontSize: "0.9rem",
+                        flex: 1,
+                      }}
+                    >
+                      <li>
+                        <AccessTimeIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />
+                        Duration: {pkg.duration || `${pkg.days} Days`}
+                      </li>
+                      <li>
+                        <HotelIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />
+                        Hotel: {pkg.hotel || "Standard"}
+                      </li>
+                      <li>
+                        <LocationOnIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />
+                        Top Attractions: {pkg.nearby}
+                      </li>
+                    </Box>
+                    <Link
+                      href={`/national-tourism/${place}/trip-packages/${pkg.trip_id}`}
+                    >
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        sx={{
+                          mt: "auto",
+                          bgcolor: "#B90C1C",
+                          color: "white",
+                          borderRadius: 1,
+                          fontWeight: 600,
+                          py: 1.5,
+                          "&:hover": { bgcolor: "#a00a18" },
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </Link>
+                  </Box>
+                </Card>
+              </Grid2>
+            ))}
+          </Grid2>
+        </Box>
+      )}
     </Container>
   );
 }
