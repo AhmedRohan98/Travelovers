@@ -45,15 +45,15 @@ interface TripPackage {
   description?: string;
 }
 
-interface TripItinerary {
-  itinerary_id: number;
-  trip_id: number;
-  overview: string;
-  adventure_plan: string;
-  inclusions: string;
-  exclusions: string;
-  terms: string;
-}
+// interface TripItinerary {
+//   itinerary_id: number;
+//   trip_id: number;
+//   overview: string;
+//   adventure_plan: string;
+//   inclusions: string;
+//   exclusions: string;
+//   terms: string;
+// }
 
 export default function GlobalPackageDetailPage() {
   const { place, packageId } = useParams();
