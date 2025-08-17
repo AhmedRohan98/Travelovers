@@ -335,18 +335,46 @@ export const visitCountries: Country[] = [
 ];
 
 export const globalTourismCountries: Country[] = [
-  // Add global tourism countries here
-  { name: "Bali", flag: "/flags/indonesia.png", continent: "Asia" },
-  { name: "Maldives", flag: "/flags/maldives.png", continent: "Asia" },
-  { name: "Brazil", flag: "/flags/brazil.png", continent: "South America" },
   {
-    name: "South Africa",
-    flag: "/flags/south-africa.png",
+    name: "Dubai",
+    flag: "/assets/global/dubai.jpg",
+    continent: "Asia",
+  },
+  {
+    name: "Thailand",
+    flag: "/assets/global/thailand.jpg",
+    continent: "Asia",
+  },
+  {
+    name: "Baku",
+    flag: "/assets/global/baku.jpg",
+    continent: "Asia",
+  },
+  {
+    name: "Malaysia",
+    flag: "/assets/global/malaysia.jpg",
+    continent: "Asia",
+  },
+  {
+    name: "Singapore",
+    flag: "/assets/global/singapore.jpg",
+    continent: "Asia",
+  },
+  {
+    name: "Turkey",
+    flag: "/assets/global/turkey.jpg",
+    continent: "Asia",
+  },
+  {
+    name: "Egypt",
+    flag: "/assets/global/egypt.jpg",
     continent: "Africa",
   },
-  { name: "Egypt", flag: "/flags/egypt.png", continent: "Africa" },
-  { name: "Mexico", flag: "/flags/mexico.png", continent: "North America" },
-  // Add more global tourism destinations as needed
+  {
+    name: "Maldives",
+    flag: "/assets/global/maldives.jpg",
+    continent: "Asia",
+  },
 ];
 
 export const touristPlaces: TouristPlace[] = [
