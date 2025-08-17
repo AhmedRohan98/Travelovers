@@ -90,6 +90,8 @@ export default function Countries({
           src={
             category === "national-tourism"
               ? "/assets/countries/national_tourism_header.png"
+              : category === "global-tourism"
+              ? "/assets/countries/global_tourism_header.png"
               : "/assets/countries/countries_header.png"
           }
           alt="Banner"
@@ -122,14 +124,22 @@ export default function Countries({
           }}
         >
           <Typography variant="h3" fontWeight="bold">
-            {category === "national-tourism" ? "Tourist Places" : "Countries"}
+            {category === "national-tourism" 
+              ? "Tourist Places" 
+              : category === "global-tourism"
+              ? "Global Tourism"
+              : "Countries"}
           </Typography>
           <Breadcrumbs aria-label="breadcrumb" sx={{ color: "white" }}>
             <Link href="/" passHref>
               Home
             </Link>
             <Typography color="white">
-              {category === "national-tourism" ? "Places" : "Countries"}
+              {category === "national-tourism" 
+                ? "Places" 
+                : category === "global-tourism"
+                ? "Global Tourism"
+                : "Countries"}
             </Typography>
           </Breadcrumbs>
         </Box>
@@ -189,6 +199,8 @@ export default function Countries({
                 ? `/national-tourism/${loc.name
                     .toLowerCase()
                     .replace(/\s+/g, "-")}/trip-packages`
+                : category === "global-tourism"
+                ? `/global-tourism/${loc.name.toLowerCase().replace(/\s+/g, "-")}/trip-packages`
                 : `/${category}/${loc.name.toLowerCase().replace(/\s+/g, "-")}`;
 
             return (
