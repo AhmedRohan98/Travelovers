@@ -58,7 +58,7 @@ interface TripItinerary {
 export default function GlobalPackageDetailPage() {
   const { place, packageId } = useParams();
   const [tripPackage, setTripPackage] = useState<TripPackage | null>(null);
-  const [itinerary, setItinerary] = useState<TripItinerary | null>(null);
+  // const [itinerary, setItinerary] = useState<TripItinerary | null>(null);
   const [otherPackages, setOtherPackages] = useState<TripPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,7 +98,7 @@ export default function GlobalPackageDetailPage() {
 
         setTripPackage(packageData);
         // Since the package data already contains all itinerary info, we don't need a separate fetch
-        setItinerary(packageData);
+        // setItinerary(packageData);
 
         // Fetch other packages from the same destination
         const { data: otherPackagesData, error: otherPackagesError } =
