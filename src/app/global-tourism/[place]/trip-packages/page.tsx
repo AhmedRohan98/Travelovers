@@ -1,0 +1,346 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { useRouter } from "next/navigation";
+import {
+  Box,
+  Container,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  Skeleton,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+import { supabase } from "@/lib/supabase/server";
+
+interface TripPackage {
+  int_tour_id: number;
+  destination: string;
+  days: string;
+  nights: string;
+  nearby: string;
+  created_at: string;
+  // Add other fields that might be in your database
+  title?: string;
+  price?: string;
+  duration?: string;
+  hotel?: string;
+  image?: string;
+  description?: string;
+}
+
+export default function GlobalTripPackagesPage() {
+  const { place } = useParams();
+  const router = useRouter();
+  const [packages, setPackages] = useState<TripPackage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  useEffect(() => {
+    const fetchTripPackages = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("international_tourism")
+          .select("*")
+          .eq("destination", place)
+          .order("int_tour_id", { ascending: true });
+
+        if (error) {
+          setError("Failed to fetch trip packages. Please try again later.");
+          setOpenSnackbar(true);
+          console.error("Supabase error:", error);
+        } else if (!data || data.length === 0) {
+          setError("No trip packages found for this destination.");
+          setOpenSnackbar(true);
+        } else {
+          setPackages(data);
+          setError(null);
+        }
+      } catch (err) {
+        setError("An unexpected error occurred. Please try again later.");
+        setOpenSnackbar(true);
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (place) {
+      fetchTripPackages();
+    }
+  }, [place]);
+
+  const heroImage = packages[0]?.image || `/assets/global/${place}.jpg`;
+
+  if (loading) {
+    return (
+      <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
+        {/* Banner Skeleton */}
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={450}
+          sx={{ mb: 4, borderRadius: "12px" }}
+        />
+
+        {/* Cards Skeleton */}
+        <Grid container spacing={4}>
+          {[1, 2, 3, 4, 5, 6].map((index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card sx={{ height: "100%" }}>
+                <Skeleton variant="rectangular" width="100%" height={180} />
+                <CardContent>
+                  <Skeleton variant="text" width="80%" height={32} />
+                  <Skeleton variant="text" width="60%" height={24} />
+                  <Skeleton variant="text" width="100%" height={20} />
+                  <Skeleton variant="text" width="100%" height={20} />
+                  <Skeleton variant="text" width="100%" height={20} />
+                  <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    height={40}
+                    sx={{ mt: 2 }}
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    );
+  }
+
+  if (!packages || packages.length === 0) {
+    return (
+      <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
+        <Box sx={{ textAlign: "center", py: 8 }}>
+          <Typography variant="h4" color="text.secondary" mb={2}>
+            No trip packages found
+          </Typography>
+          <Typography variant="body1" color="text.secondary" mb={4}>
+            We couldn&apos;t find any trip packages for this destination.
+          </Typography>
+          <Link href="/global-tourism">
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: "#B90C1C",
+                color: "white",
+                "&:hover": { bgcolor: "#a00a18" },
+              }}
+            >
+              Back to Global Tourism
+            </Button>
+          </Link>
+        </Box>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
+
+      {/* Back Button */}
+      <Box sx={{ mb: 3 }}>
+        <Link href="/global-tourism">
+          <Button
+            startIcon={<ArrowBackIosIcon />}
+            sx={{
+              color: "#B90C1C",
+              fontWeight: 600,
+              "&:hover": { bgcolor: "rgba(185, 12, 28, 0.04)" },
+            }}
+          >
+            Back to Global Tourism
+          </Button>
+        </Link>
+      </Box>
+
+      {/* Hero Banner */}
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          height: { xs: 300, md: 450 },
+          mb: 4,
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
+      >
+        <Image
+          src={heroImage}
+          alt={`${place} destination`}
+          fill
+          style={{ objectFit: "cover" }}
+          priority
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background:
+              "linear-gradient(135deg, rgba(185, 12, 28, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: { xs: "2.5rem", md: "4rem" },
+              fontWeight: "bold",
+              textAlign: "center",
+              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+            }}
+          >
+            <span
+              style={{
+                background: "linear-gradient(45deg, white, #B90C17)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                padding: "0 10px",
+              }}
+            >
+              {typeof place === "string" ? place.replace(/-/g, " ") : ""}
+            </span>
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Trip Packages Grid */}
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="h2"
+          sx={{
+            fontSize: { xs: "1.8rem", md: "2.5rem" },
+            fontWeight: "bold",
+            mb: 4,
+            textAlign: "center",
+            color: "#B90C1C",
+          }}
+        >
+          Available Trip Packages
+        </Typography>
+        <Grid container spacing={4}>
+          {packages.map((pkg) => (
+            <Grid item xs={12} sm={6} md={4} key={pkg.int_tour_id}>
+              <Card
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  borderRadius: 2,
+                  boxShadow: 2,
+                  transition: "transform 0.2s ease-in-out",
+                  "&:hover": {
+                    transform: "translateY(-4px)",
+                    boxShadow: 4,
+                  },
+                }}
+              >
+                <Box sx={{ position: "relative", width: "100%", height: 180 }}>
+                  <Image
+                    src={pkg.image || `/assets/global/${pkg.destination}.jpg`}
+                    alt={pkg.title || `${pkg.destination} Package`}
+                    fill
+                    style={{
+                      objectFit: "cover",
+                      borderTopLeftRadius: 8,
+                      borderTopRightRadius: 8,
+                    }}
+                    loading="lazy"
+                  />
+                </Box>
+                <CardContent
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box>
+                    <Typography variant="h6" fontWeight="bold" mb={1}>
+                      {pkg.title || `${pkg.days} Days & ${pkg.nights} Nights`}
+                    </Typography>
+                    <Typography
+                      align="right"
+                      fontWeight="bold"
+                      color="text.secondary"
+                      mb={1}
+                    >
+                      {pkg.price || "Contact for Price"}
+                    </Typography>
+                    <Box
+                      component="ul"
+                      sx={{
+                        pl: 2,
+                        mb: 2,
+                        color: "text.secondary",
+                        fontSize: 15,
+                      }}
+                    >
+                      <li>
+                        ⏱️ Duration:{" "}
+                        {pkg.duration ||
+                          `${pkg.days} Days & ${pkg.nights} Nights`}
+                      </li>
+                      <li>🏨 Hotel: {pkg.hotel || "Standard Hotel"}</li>
+                      <li>🌍 Attractions: {pkg.nearby}</li>
+                    </Box>
+                  </Box>
+                  <Button
+                    variant="contained"
+                    onClick={() =>
+                      router.push(
+                        `/global-tourism/${place}/trip-packages/${pkg.int_tour_id}`
+                      )
+                    }
+                    sx={{
+                      mt: "auto",
+                      width: "100%",
+                      bgcolor: "#B90C1C",
+                      color: "white",
+                      borderRadius: 1,
+                      fontWeight: 600,
+                      py: 1.5,
+                      "&:hover": { bgcolor: "#a00a18" },
+                    }}
+                  >
+                    Check Out
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Container>
+  );
+}

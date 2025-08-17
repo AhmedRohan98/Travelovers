@@ -14,7 +14,7 @@ import Link from "next/link";
 const pages = [
   { name: "VISIT", path: "/visit" },
   { name: "STUDY", path: "/study" },
-  { name: "GLOBAL TOURISM", path: "/tourism" },
+  { name: "GLOBAL TOURISM", path: "/global-tourism" },
   { name: "NATIONAL TOURISM", path: "/national-tourism" },
   { name: "BLOGS", path: "/blogs" },
 ];
