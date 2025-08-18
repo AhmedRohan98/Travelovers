@@ -23,6 +23,32 @@ import { supabase } from "@/lib/supabase/server";
 import { Accordion } from "@/components/Accordion";
 
 interface TripPackage {
+  // From international_tourism table
+  int_tour_id: number;
+  destination: string;
+  title: string;
+  days: number;
+  nights: number;
+  created_at: string;
+  // From int_tour_itinerary table
+  id?: number;
+  overview?: string;
+  adventure_plan?: string;
+  inclusions?: string;
+  exclusions?: string;
+  terms?: string;
+  tagline?: string;
+  top_attractions?: string;
+  // Optional fields
+  nearby?: string;
+  price?: string;
+  duration?: string;
+  hotel?: string;
+  image?: string;
+  description?: string;
+}
+
+interface TripItinerary {
   id: number;
   int_tour_id: number;
   overview: string;
@@ -31,86 +57,112 @@ interface TripPackage {
   exclusions: string;
   terms: string;
   tagline: string;
+  top_attractions: string;
   created_at: string;
-  // Optional fields that might be in your database
-  destination?: string;
-  days?: string;
-  nights?: string;
-  nearby?: string;
-  title?: string;
-  price?: string;
-  duration?: string;
-  hotel?: string;
-  image?: string;
-  description?: string;
 }
-
-// interface TripItinerary {
-//   itinerary_id: number;
-//   trip_id: number;
-//   overview: string;
-//   adventure_plan: string;
-//   inclusions: string;
-//   exclusions: string;
-//   terms: string;
-// }
 
 export default function GlobalPackageDetailPage() {
   const { place, packageId } = useParams();
-  const [tripPackage, setTripPackage] = useState<TripPackage | null>(null);
-  // const [itinerary, setItinerary] = useState<TripItinerary | null>(null);
+  const [packageData, setPackageData] = useState<TripPackage | null>(null);
+  const [itinerary, setItinerary] = useState<TripItinerary | null>(null);
   const [otherPackages, setOtherPackages] = useState<TripPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
-    const fetchPackageDetails = async () => {
+    const fetchPackageData = async () => {
       try {
         setLoading(true);
 
-        // Check if packageId is valid
-        if (!packageId || Array.isArray(packageId)) {
-          setError("Invalid package ID.");
+        // Validate parameters
+        const packageIdStr = Array.isArray(packageId)
+          ? packageId[0]
+          : packageId;
+        const placeStr = Array.isArray(place) ? place[0] : place;
+
+        if (!packageIdStr || !placeStr) {
+          setError("Invalid package ID or destination.");
           setOpenSnackbar(true);
           return;
         }
 
-        const packageIdNumber = parseInt(packageId);
-        if (isNaN(packageIdNumber)) {
-          setError("Invalid package ID format.");
-          setOpenSnackbar(true);
-          return;
-        }
+        console.log("Fetching package for:", { packageIdStr, placeStr });
 
-        // Fetch main package details
+        // Fetch main package details from international_tourism table
         const { data: packageData, error: packageError } = await supabase
-          .from("int_tour_itinerary")
+          .from("international_tourism")
           .select("*")
-          .eq("id", packageIdNumber)
+          .eq("int_tour_id", parseInt(packageIdStr))
+          .eq("destination", placeStr)
           .single();
 
+        console.log("Package query result:", { packageData, packageError });
+
         if (packageError) {
-          setError("Failed to fetch package details.");
+          setError("Failed to fetch package details. Please try again later.");
+          setOpenSnackbar(true);
+          console.error("Package fetch error:", packageError);
+          return;
+        }
+
+        if (!packageData) {
+          setError("Package not found.");
           setOpenSnackbar(true);
           return;
         }
 
-        setTripPackage(packageData);
-        // Since the package data already contains all itinerary info, we don't need a separate fetch
-        // setItinerary(packageData);
+        setPackageData(packageData);
 
-        // Fetch other packages from the same destination
-        const { data: otherPackagesData, error: otherPackagesError } =
-          await supabase
-            .from("international_tourism")
+        // Fetch itinerary data from int_tour_itinerary table
+        console.log(
+          "Attempting to fetch itinerary for packageId:",
+          packageIdStr
+        );
+
+        try {
+          const { data: itineraryData, error: itineraryError } = await supabase
+            .from("int_tour_itinerary")
             .select("*")
-            .eq("destination", place)
-            .neq("int_tour_id", packageIdNumber)
-            .limit(6);
+            .eq("int_tour_id", parseInt(packageIdStr))
+            .single();
 
-        if (!otherPackagesError && otherPackagesData) {
-          setOtherPackages(otherPackagesData);
+          console.log("Itinerary query result:", {
+            itineraryData,
+            itineraryError,
+          });
+
+          if (itineraryError) {
+            console.error("Itinerary fetch error:", itineraryError);
+            setItinerary(null);
+          } else {
+            setItinerary(itineraryData);
+          }
+        } catch (itineraryError) {
+          console.error("Unexpected itinerary error:", itineraryError);
+          setItinerary(null);
+        }
+
+        // Fetch other packages from the same destination (excluding current package)
+        try {
+          const { data: otherPackagesData, error: otherPackagesError } =
+            await supabase
+              .from("international_tourism")
+              .select("*")
+              .eq("destination", placeStr)
+              .neq("int_tour_id", parseInt(packageIdStr))
+              .limit(6);
+
+          console.log("Other packages query result:", {
+            otherPackagesData,
+            otherPackagesError,
+          });
+
+          if (!otherPackagesError && otherPackagesData) {
+            setOtherPackages(otherPackagesData);
+          }
+        } catch (otherPackagesError) {
+          console.error("Other packages fetch error:", otherPackagesError);
         }
       } catch (err) {
         setError("An unexpected error occurred.");
@@ -122,7 +174,7 @@ export default function GlobalPackageDetailPage() {
     };
 
     if (packageId && place) {
-      fetchPackageDetails();
+      fetchPackageData();
     }
   }, [packageId, place]);
 
@@ -149,7 +201,7 @@ export default function GlobalPackageDetailPage() {
     );
   }
 
-  if (!tripPackage) {
+  if (!packageData) {
     return (
       <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
         <Box sx={{ textAlign: "center", py: 8 }}>
@@ -202,7 +254,7 @@ export default function GlobalPackageDetailPage() {
       >
         <Image
           src={`/assets/global/${place}.jpg`}
-          alt={tripPackage.title || `${tripPackage.destination} Package`}
+          alt={packageData?.title || `${packageData?.destination} Package`}
           fill
           style={{ objectFit: "cover", zIndex: 0 }}
           loading="lazy"
@@ -251,7 +303,14 @@ export default function GlobalPackageDetailPage() {
             />
           </Link>
           <Typography variant="h3" fontWeight="bold" mb={1} fontStyle="italic">
-            {tripPackage.tagline || tripPackage.title || "Luxury Tour Package"}
+            {(() => {
+              const placeStr = Array.isArray(place) ? place[0] : place;
+              return placeStr
+                ? placeStr.charAt(0).toUpperCase() + placeStr.slice(1)
+                : "";
+            })()}
+            {" - "}
+            {itinerary?.tagline || packageData?.title || "Luxury Tour Package"}
           </Typography>
         </Box>
       </Box>
@@ -268,9 +327,9 @@ export default function GlobalPackageDetailPage() {
                 <Typography variant="h6" fontWeight="bold">
                   Duration
                 </Typography>
-                <Typography variant="body2" fontWeight="bold">
-                  {tripPackage.duration ||
-                    `${tripPackage.days}D/${tripPackage.nights}N`}
+                <Typography variant="body2" color="text.secondary">
+                  {packageData?.days || "N/A"} Days /{" "}
+                  {packageData?.nights || "N/A"} Nights
                 </Typography>
               </Card>
             </Grid2>
@@ -280,8 +339,8 @@ export default function GlobalPackageDetailPage() {
                 <Typography variant="h6" fontWeight="bold">
                   Accommodation
                 </Typography>
-                <Typography variant="body2" fontWeight="bold">
-                  {tripPackage.hotel || "Standard Hotel"}
+                <Typography variant="body1" color="text.secondary">
+                  {itinerary?.top_attractions || "Standard"}
                 </Typography>
               </Card>
             </Grid2>
@@ -291,8 +350,11 @@ export default function GlobalPackageDetailPage() {
                 <Typography variant="h6" fontWeight="bold">
                   Destination
                 </Typography>
-                <Typography variant="body2" fontWeight="bold">
-                  {typeof place === "string" ? place.replace(/-/g, " ") : ""}
+                <Typography variant="body2" color="text.secondary">
+                  {typeof place === "string"
+                    ? place.replace(/-/g, " ").charAt(0).toUpperCase() +
+                      place.slice(1)
+                    : ""}
                 </Typography>
               </Card>
             </Grid2>
@@ -312,13 +374,13 @@ export default function GlobalPackageDetailPage() {
                 },
               }}
               dangerouslySetInnerHTML={{
-                __html: tripPackage.overview,
+                __html: itinerary?.overview || "No overview available.",
               }}
             />
           </Box>
 
           {/* Itinerary Details */}
-          {tripPackage && (
+          {(packageData || itinerary) && (
             <Box sx={{ mb: 4 }}>
               <Typography variant="h5" fontWeight="bold" mb={3} color="#B90C1C">
                 Trip Details
@@ -353,7 +415,9 @@ export default function GlobalPackageDetailPage() {
                 >
                   <Typography
                     dangerouslySetInnerHTML={{
-                      __html: tripPackage.adventure_plan,
+                      __html:
+                        itinerary?.adventure_plan ||
+                        "No adventure plan available.",
                     }}
                   />
                 </Box>
@@ -379,7 +443,9 @@ export default function GlobalPackageDetailPage() {
                   }}
                 >
                   <Typography
-                    dangerouslySetInnerHTML={{ __html: tripPackage.terms }}
+                    dangerouslySetInnerHTML={{
+                      __html: itinerary?.terms || "No terms available.",
+                    }}
                   />
                 </Box>
               </Accordion>
@@ -391,7 +457,7 @@ export default function GlobalPackageDetailPage() {
         <Grid2 size={{ xs: 12, md: 4 }}>
           <Card sx={{ p: 3, position: "sticky", top: 20 }}>
             <Typography variant="h4" fontWeight="bold" color="#B90C1C" mb={2}>
-              {tripPackage.price || "Contact for Price"}
+              {packageData?.price || "Contact for Price"}
             </Typography>
             <Typography variant="body2" color="text.secondary" mb={3}>
               Per person (inclusive of all taxes)
@@ -408,8 +474,8 @@ export default function GlobalPackageDetailPage() {
                   dangerouslySetInnerHTML={{
                     __html:
                       "<ul style='margin: 0; padding-left: 20px;'>" +
-                      tripPackage.inclusions
-                        .split("\n")
+                      itinerary?.inclusions
+                        ?.split("\n")
                         .filter((item) => item.trim() !== "")
                         .map((item) =>
                           item.replace(/<p>/g, "").replace(/<\/p>/g, "")
@@ -435,8 +501,8 @@ export default function GlobalPackageDetailPage() {
                   dangerouslySetInnerHTML={{
                     __html:
                       "<ul style='margin: 0; padding-left: 20px;'>" +
-                      tripPackage.exclusions
-                        .split("\n")
+                      itinerary?.exclusions
+                        ?.split("\n")
                         .filter((item) => item.trim() !== "")
                         .map((item) =>
                           item.replace(/<p>/g, "").replace(/<\/p>/g, "")
