@@ -61,16 +61,6 @@ interface TripItinerary {
   created_at: string;
 }
 
-// interface TripItinerary {
-//   itinerary_id: number;
-//   trip_id: number;
-//   overview: string;
-//   adventure_plan: string;
-//   inclusions: string;
-//   exclusions: string;
-//   terms: string;
-// }
-
 export default function GlobalPackageDetailPage() {
   const { place, packageId } = useParams();
   const [packageData, setPackageData] = useState<TripPackage | null>(null);
