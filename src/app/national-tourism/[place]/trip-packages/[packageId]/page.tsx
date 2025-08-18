@@ -585,19 +585,6 @@ export default function PackageDetailPage() {
               </Typography>
             </Box>
 
-            <Typography variant="h6" fontWeight="bold" mb={2}>
-              What&apos;s Excluded:
-            </Typography>
-            <Box sx={{ mb: 3 }}>
-              {[
-                "Any Services Not Specifically Listed In The \"Inclusions\" Section"
-              ].map((item, index) => (
-                <Typography key={index} variant="body2" sx={{ mb: 1 }}>
-                  ✓ {item}
-                </Typography>
-              ))}
-            </Box>
-
             <Button
               variant="outlined"
               fullWidth

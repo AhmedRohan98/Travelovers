@@ -161,22 +161,6 @@ export default function GlobalTripPackagesPage() {
         </Alert>
       </Snackbar>
 
-      {/* Back Button */}
-      <Box sx={{ mb: 3 }}>
-        <Link href="/global-tourism">
-          <Button
-            startIcon={<ArrowBackIosIcon />}
-            sx={{
-              color: "#B90C1C",
-              fontWeight: 600,
-              "&:hover": { bgcolor: "rgba(185, 12, 28, 0.04)" },
-            }}
-          >
-            Back to Global Tourism
-          </Button>
-        </Link>
-      </Box>
-
       {/* Hero Banner */}
       <Box
         sx={{
@@ -190,10 +174,11 @@ export default function GlobalTripPackagesPage() {
       >
         <Image
           src={heroImage}
-          alt={`${place} destination`}
+          alt="Banner"
           fill
-          style={{ objectFit: "cover" }}
-          priority
+          style={{ objectFit: "cover", zIndex: 0 }}
+          loading="lazy"
+          priority={false}
         />
         <Box
           sx={{
@@ -202,34 +187,60 @@ export default function GlobalTripPackagesPage() {
             left: 0,
             width: "100%",
             height: "100%",
-            background:
-              "linear-gradient(135deg, rgba(185, 12, 28, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            backgroundColor: "rgba(0,0,0,0.7)",
+            zIndex: 1,
+            borderRadius: "12px",
           }}
         >
-          <Typography
-            variant="h1"
+          <Box
             sx={{
-              fontSize: { xs: "2.5rem", md: "4rem" },
-              fontWeight: "bold",
-              textAlign: "center",
-              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+              position: "absolute",
+              width: { xs: "90%", sm: "70%", md: "50%" },
+              top: "50%",
+              left: { xs: "5%", md: "5%" },
+              transform: "translateY(-50%)",
+              color: "white",
+              zIndex: 2,
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: "center",
+              gap: 2,
+              textAlign: { xs: "center", sm: "left" },
             }}
           >
-            <span
-              style={{
-                background: "linear-gradient(45deg, white, #B90C17)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                padding: "0 10px",
+            <Link href="/global-tourism">
+              <ArrowBackIosIcon
+                sx={{
+                  color: "white",
+                  fontSize: "2rem",
+                  "&:hover": {
+                    color: "#660D17",
+                  },
+                  transition: "color 0.3s",
+                }}
+              />
+            </Link>
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
+                textTransform: "uppercase",
+                fontStyle: "italic",
               }}
             >
-              {typeof place === "string" ? place.replace(/-/g, " ") : ""}
-            </span>
-          </Typography>
+              <span
+                style={{
+                  background: "linear-gradient(45deg, white, #B90C17)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  padding: "0 10px",
+                }}
+              >
+                {typeof place === "string" ? place.replace(/-/g, " ") : ""}
+              </span>
+            </Typography>
+          </Box>
         </Box>
       </Box>
 

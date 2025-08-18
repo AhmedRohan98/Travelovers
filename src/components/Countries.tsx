@@ -91,7 +91,7 @@ export default function Countries({
             category === "national-tourism"
               ? "/assets/countries/national_tourism_header.png"
               : category === "global-tourism"
-              ? "/assets/countries/global_tourism_header.png"
+              ? "/assets/global/global_banner.jpg"
               : "/assets/countries/countries_header.png"
           }
           alt="Banner"
@@ -124,8 +124,8 @@ export default function Countries({
           }}
         >
           <Typography variant="h3" fontWeight="bold">
-            {category === "national-tourism" 
-              ? "Tourist Places" 
+            {category === "national-tourism"
+              ? "Tourist Places"
               : category === "global-tourism"
               ? "Global Tourism"
               : "Countries"}
@@ -135,8 +135,8 @@ export default function Countries({
               Home
             </Link>
             <Typography color="white">
-              {category === "national-tourism" 
-                ? "Places" 
+              {category === "national-tourism"
+                ? "Places"
                 : category === "global-tourism"
                 ? "Global Tourism"
                 : "Countries"}
@@ -147,48 +147,50 @@ export default function Countries({
 
       <Box display="flex" gap={4}>
         {/* Sidebar Filter */}
-        <Box
-          flexShrink={0}
-          width={250}
-          bgcolor="white"
-          borderRadius={2}
-          sx={{
-            height: "fit-content",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-            border: "1px solid #e0e0e0",
-            overflow: "hidden",
-            display: { xs: "none", sm: "block" },
-          }}
-        >
-          <List>
-            {filters.map((filter) => (
-              <ListItemButton
-                key={filter}
-                selected={selectedFilter === filter}
-                onClick={() => setSelectedFilter(filter)}
-                sx={{
-                  borderBottom: "1px solid #e0e0e0",
-                  color: "black",
-                }}
-              >
-                <ListItemText
-                  primary={
-                    <Typography
-                      sx={{
-                        fontWeight:
-                          selectedFilter === filter ? "bold" : "normal",
-                        color: selectedFilter === filter ? "red" : "inherit",
-                      }}
-                    >
-                      {filter}
-                    </Typography>
-                  }
-                />
-                <KeyboardArrowRightIcon />
-              </ListItemButton>
-            ))}
-          </List>
-        </Box>
+        {category !== "national-tourism" && category !== "global-tourism" && (
+          <Box
+            flexShrink={0}
+            width={250}
+            bgcolor="white"
+            borderRadius={2}
+            sx={{
+              height: "fit-content",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              border: "1px solid #e0e0e0",
+              overflow: "hidden",
+              display: { xs: "none", sm: "block" },
+            }}
+          >
+            <List>
+              {filters.map((filter) => (
+                <ListItemButton
+                  key={filter}
+                  selected={selectedFilter === filter}
+                  onClick={() => setSelectedFilter(filter)}
+                  sx={{
+                    borderBottom: "1px solid #e0e0e0",
+                    color: "black",
+                  }}
+                >
+                  <ListItemText
+                    primary={
+                      <Typography
+                        sx={{
+                          fontWeight:
+                            selectedFilter === filter ? "bold" : "normal",
+                          color: selectedFilter === filter ? "red" : "inherit",
+                        }}
+                      >
+                        {filter}
+                      </Typography>
+                    }
+                  />
+                  <KeyboardArrowRightIcon />
+                </ListItemButton>
+              ))}
+            </List>
+          </Box>
+        )}
 
         {/* Cards */}
         <Grid container spacing={2} flex={3}>
@@ -200,7 +202,9 @@ export default function Countries({
                     .toLowerCase()
                     .replace(/\s+/g, "-")}/trip-packages`
                 : category === "global-tourism"
-                ? `/global-tourism/${loc.name.toLowerCase().replace(/\s+/g, "-")}/trip-packages`
+                ? `/global-tourism/${loc.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}/trip-packages`
                 : `/${category}/${loc.name.toLowerCase().replace(/\s+/g, "-")}`;
 
             return (
@@ -210,7 +214,8 @@ export default function Countries({
                   onClick={() => setSelectedLocation(loc.name)}
                   style={{ textDecoration: "none" }}
                 >
-                  {category === "national-tourism" ? (
+                  {category === "national-tourism" ||
+                  category === "global-tourism" ? (
                     <Card
                       sx={{
                         borderRadius: 4,
