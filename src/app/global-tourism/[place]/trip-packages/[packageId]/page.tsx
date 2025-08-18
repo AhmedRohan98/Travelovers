@@ -105,6 +105,7 @@ export default function GlobalPackageDetailPage() {
           await supabase
             .from("international_tourism")
             .select("*")
+            .eq("destination", place)
             .neq("int_tour_id", packageIdNumber)
             .limit(6);
 
@@ -188,22 +189,6 @@ export default function GlobalPackageDetailPage() {
         </Alert>
       </Snackbar>
 
-      {/* Back Button */}
-      <Box sx={{ mb: 3 }}>
-        <Link href={`/global-tourism/${place}/trip-packages`}>
-          <Button
-            startIcon={<ArrowBackIosIcon />}
-            sx={{
-              color: "#B90C1C",
-              fontWeight: 600,
-              "&:hover": { bgcolor: "rgba(185, 12, 28, 0.04)" },
-            }}
-          >
-            Back to Packages
-          </Button>
-        </Link>
-      </Box>
-
       {/* Hero Image */}
       <Box
         sx={{
@@ -219,27 +204,54 @@ export default function GlobalPackageDetailPage() {
           src={`/assets/global/${place}.jpg`}
           alt={tripPackage.title || `${tripPackage.destination} Package`}
           fill
-          style={{ objectFit: "cover" }}
-          priority
+          style={{ objectFit: "cover", zIndex: 0 }}
+          loading="lazy"
+          priority={false}
         />
+        {/* Overlay for darkening */}
         <Box
           sx={{
             position: "absolute",
-            bottom: 0,
+            top: 0,
             left: 0,
-            right: 0,
-            background: "linear-gradient(transparent, rgba(0,0,0,0.7))",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.6)",
+            zIndex: 1,
+            borderRadius: "12px",
+          }}
+        />
+        {/* Overlay Content */}
+        <Box
+          sx={{
+            position: "absolute",
+            width: { xs: "100%" },
+            top: "50%",
+            left: { xs: "5%", md: "5%" },
+            transform: "translateY(-50%)",
             color: "white",
-            p: 3,
+            zIndex: 2,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 2,
+            textAlign: { xs: "center", sm: "left" },
           }}
         >
-          <Typography variant="h3" fontWeight="bold" mb={1}>
+          <Link href={`/global-tourism/${place}/trip-packages`}>
+            <ArrowBackIosIcon
+              sx={{
+                color: "white",
+                fontSize: "2rem",
+                "&:hover": {
+                  color: "#660D17",
+                },
+                transition: "color 0.3s",
+              }}
+            />
+          </Link>
+          <Typography variant="h3" fontWeight="bold" mb={1} fontStyle="italic">
             {tripPackage.tagline || tripPackage.title || "Luxury Tour Package"}
-          </Typography>
-          <Typography variant="h5" sx={{ opacity: 0.9 }}>
-            {typeof place === "string"
-              ? place.replace(/-/g, " ").toUpperCase()
-              : ""}
           </Typography>
         </Box>
       </Box>
@@ -253,10 +265,10 @@ export default function GlobalPackageDetailPage() {
             <Grid2 size={{ xs: 12, sm: 4 }}>
               <Card sx={{ p: 2, textAlign: "center", bgcolor: "#f8f9fa" }}>
                 <AccessTimeIcon sx={{ color: "#B90C1C", mb: 1 }} />
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h6" fontWeight="bold">
                   Duration
                 </Typography>
-                <Typography variant="h6" fontWeight="bold">
+                <Typography variant="body2" fontWeight="bold">
                   {tripPackage.duration ||
                     `${tripPackage.days}D/${tripPackage.nights}N`}
                 </Typography>
@@ -265,10 +277,10 @@ export default function GlobalPackageDetailPage() {
             <Grid2 size={{ xs: 12, sm: 4 }}>
               <Card sx={{ p: 2, textAlign: "center", bgcolor: "#f8f9fa" }}>
                 <HotelIcon sx={{ color: "#B90C1C", mb: 1 }} />
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h6" fontWeight="bold">
                   Accommodation
                 </Typography>
-                <Typography variant="h6" fontWeight="bold">
+                <Typography variant="body2" fontWeight="bold">
                   {tripPackage.hotel || "Standard Hotel"}
                 </Typography>
               </Card>
@@ -276,39 +288,34 @@ export default function GlobalPackageDetailPage() {
             <Grid2 size={{ xs: 12, sm: 4 }}>
               <Card sx={{ p: 2, textAlign: "center", bgcolor: "#f8f9fa" }}>
                 <LocationOnIcon sx={{ color: "#B90C1C", mb: 1 }} />
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h6" fontWeight="bold">
                   Destination
                 </Typography>
-                <Typography variant="h6" fontWeight="bold">
+                <Typography variant="body2" fontWeight="bold">
                   {typeof place === "string" ? place.replace(/-/g, " ") : ""}
                 </Typography>
               </Card>
             </Grid2>
           </Grid2>
 
-          {/* Overview */}
-          <Card sx={{ p: 3, mb: 4 }}>
-            <Typography variant="h5" fontWeight="bold" mb={2}>
-              Overview
-            </Typography>
+          <Typography variant="h5" fontWeight="bold" mb={2}>
+            Overview
+          </Typography>
+          <Box sx={{ mb: 4 }}>
             <Typography
-              variant="h5"
+              variant="body1"
               sx={{
                 lineHeight: 1.8,
-                color: "#000",
                 fontSize: "1.1rem",
                 "& p": {
                   mb: 2,
-                  color: "#000 !important",
-                },
-                "& *": {
-                  color: "#000 !important",
                 },
               }}
-            >
-              {tripPackage.overview}
-            </Typography>
-          </Card>
+              dangerouslySetInnerHTML={{
+                __html: tripPackage.overview,
+              }}
+            />
+          </Box>
 
           {/* Itinerary Details */}
           {tripPackage && (
@@ -352,81 +359,107 @@ export default function GlobalPackageDetailPage() {
                 </Box>
               </Accordion>
 
-              <Accordion title="Inclusions">
-                <div
-                  dangerouslySetInnerHTML={{ __html: tripPackage.inclusions }}
-                />
-              </Accordion>
-
-              <Accordion title="Exclusions">
-                <div
-                  dangerouslySetInnerHTML={{ __html: tripPackage.exclusions }}
-                />
-              </Accordion>
-
+              {/* Terms & Conditions */}
               <Accordion title="Terms & Conditions">
-                <div dangerouslySetInnerHTML={{ __html: tripPackage.terms }} />
+                <Box
+                  sx={{
+                    "& h1": { display: "none" },
+                    "& p": {
+                      mb: 1.5,
+                      lineHeight: 1.7,
+                      fontSize: "0.95rem",
+                      pl: 2,
+                      borderLeft: "2px solid #E0E0E0",
+                      "&:hover": {
+                        borderLeft: "2px solid #B90C1C",
+                        bgcolor: "rgba(185, 12, 28, 0.02)",
+                      },
+                      transition: "all 0.3s ease",
+                    },
+                  }}
+                >
+                  <Typography
+                    dangerouslySetInnerHTML={{ __html: tripPackage.terms }}
+                  />
+                </Box>
               </Accordion>
             </Box>
           )}
         </Grid2>
 
-        {/* Right Column - Booking */}
+        {/* Right Column - Booking Card */}
         <Grid2 size={{ xs: 12, md: 4 }}>
           <Card sx={{ p: 3, position: "sticky", top: 20 }}>
+            <Typography variant="h4" fontWeight="bold" color="#B90C1C" mb={2}>
+              {tripPackage.price || "Contact for Price"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={3}>
+              Per person (inclusive of all taxes)
+            </Typography>
+
+            <Divider sx={{ mb: 3 }} />
+
+            <Typography variant="h6" fontWeight="bold" mb={2}>
+              What&apos;s Included:
+            </Typography>
             <Box sx={{ mb: 3 }}>
-              <Typography variant="h4" fontWeight="bold" color="#B90C1C">
-                {tripPackage.price || "Contact for Price"}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Per person
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      "<ul style='margin: 0; padding-left: 20px;'>" +
+                      tripPackage.inclusions
+                        .split("\n")
+                        .filter((item) => item.trim() !== "")
+                        .map((item) =>
+                          item.replace(/<p>/g, "").replace(/<\/p>/g, "")
+                        )
+                        .filter((item) => item.trim() !== "")
+                        .map(
+                          (item) =>
+                            `<li style='margin-bottom: 8px; color: #333;'>✓ ${item.trim()}</li>`
+                        )
+                        .join("") +
+                      "</ul>",
+                  }}
+                />
               </Typography>
             </Box>
 
-            <Divider sx={{ my: 2 }} />
-
+            <Typography variant="h6" fontWeight="bold" mb={2}>
+              What&apos;s Excluded:
+            </Typography>
             <Box sx={{ mb: 3 }}>
-              <Typography variant="body2" color="text.secondary" mb={1}>
-                Package Includes:
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      "<ul style='margin: 0; padding-left: 20px;'>" +
+                      tripPackage.exclusions
+                        .split("\n")
+                        .filter((item) => item.trim() !== "")
+                        .map((item) =>
+                          item.replace(/<p>/g, "").replace(/<\/p>/g, "")
+                        )
+                        .filter((item) => item.trim() !== "")
+                        .map(
+                          (item) =>
+                            `<li style='margin-bottom: 8px; color: #333;'>✗ ${item.trim()}</li>`
+                        )
+                        .join("") +
+                      "</ul>",
+                  }}
+                />
               </Typography>
-              <Typography variant="body2">
-                •{" "}
-                {tripPackage.duration ||
-                  `${tripPackage.days} Days & ${tripPackage.nights} Nights`}
-              </Typography>
-              <Typography variant="body2">
-                • {tripPackage.hotel || "Standard Hotel"} Accommodation
-              </Typography>
-              <Typography variant="body2">• Key Attractions Visit</Typography>
             </Box>
-
-            <Button
-              variant="contained"
-              fullWidth
-              size="large"
-              sx={{
-                bgcolor: "#B90C1C",
-                color: "white",
-                py: 1.5,
-                fontWeight: 600,
-                "&:hover": { bgcolor: "#a00a18" },
-              }}
-            >
-              Book Now
-            </Button>
 
             <Button
               variant="outlined"
               fullWidth
-              size="large"
               sx={{
-                mt: 2,
                 borderColor: "#B90C1C",
                 color: "#B90C1C",
-                "&:hover": {
-                  borderColor: "#a00a18",
-                  bgcolor: "rgba(185, 12, 28, 0.04)",
-                },
+                "&:hover": { borderColor: "#a00a18", color: "#a00a18" },
               }}
             >
               Contact Us
@@ -443,9 +476,9 @@ export default function GlobalPackageDetailPage() {
           </Typography>
           <Grid2 container spacing={3}>
             {otherPackages.map((pkg) => (
-              <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={pkg.id}>
+              <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={pkg.int_tour_id}>
                 <Link
-                  href={`/global-tourism/${place}/trip-packages/${pkg.id}`}
+                  href={`/global-tourism/${place}/trip-packages/${pkg.int_tour_id}`}
                   style={{ textDecoration: "none" }}
                 >
                   <Card
@@ -462,11 +495,8 @@ export default function GlobalPackageDetailPage() {
                       sx={{ position: "relative", width: "100%", height: 180 }}
                     >
                       <Image
-                        src={
-                          pkg.image ||
-                          `/assets/global-places/${pkg.destination}.jpg`
-                        }
-                        alt={pkg.title || `${pkg.destination} Package`}
+                        src={`/assets/global/${place}.jpg`}
+                        alt={pkg.tagline || `${place} Package`}
                         fill
                         style={{
                           objectFit: "cover",
@@ -478,26 +508,25 @@ export default function GlobalPackageDetailPage() {
                     </Box>
                     <Box sx={{ p: 2 }}>
                       <Typography variant="h6" fontWeight="bold" mb={1}>
-                        {pkg.title ||
-                          `${pkg.days}D/${pkg.nights}N ${pkg.destination}`}
+                        {pkg.tagline || `${place} Tour Package`}
                       </Typography>
                       <Typography variant="body2" color="text.secondary" mb={1}>
-                        Duration:{" "}
-                        {pkg.duration ||
-                          `${pkg.days} Days & ${pkg.nights} Nights`}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" mb={1}>
-                        Hotel: {pkg.hotel || "Standard Hotel"}
+                        Destination:{" "}
+                        {typeof place === "string"
+                          ? place.replace(/-/g, " ")
+                          : ""}
                       </Typography>
                       <Typography variant="body2" color="text.secondary" mb={2}>
-                        Attractions: {pkg.nearby}
+                        {pkg.overview
+                          ? pkg.overview.substring(0, 100) + "..."
+                          : "Luxury travel experience"}
                       </Typography>
                       <Typography
                         variant="h6"
                         fontWeight="bold"
                         color="#B90C1C"
                       >
-                        {pkg.price || "Contact for Price"}
+                        Contact for Price
                       </Typography>
                     </Box>
                   </Card>
