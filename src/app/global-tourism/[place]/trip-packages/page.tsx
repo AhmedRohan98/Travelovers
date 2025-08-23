@@ -4,6 +4,9 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import HotelIcon from "@mui/icons-material/Hotel";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useRouter } from "next/navigation";
 import {
   Box,
@@ -33,6 +36,7 @@ interface TripPackage {
   hotel?: string;
   image?: string;
   description?: string;
+  top_attractions: string;
 }
 
 export default function GlobalTripPackagesPage() {
@@ -318,12 +322,38 @@ export default function GlobalTripPackagesPage() {
                       }}
                     >
                       <li>
-                        ⏱️ Duration:{" "}
+                        <AccessTimeIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />{" "}
+                        Duration:{" "}
                         {pkg.duration ||
                           `${pkg.days} Days & ${pkg.nights} Nights`}
                       </li>
-                      <li>🏨 Hotel: {pkg.hotel || "Standard Hotel"}</li>
-                      <li>🌍 Attractions: {pkg.nearby}</li>
+                      <li>
+                        {" "}
+                        <HotelIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />{" "}
+                        Hotel: {pkg.hotel || "5 Star"}
+                      </li>
+                      <li>
+                        <LocationOnIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />{" "}
+                        Attractions: {pkg.top_attractions}
+                      </li>
                     </Box>
                   </Box>
                   <Button
