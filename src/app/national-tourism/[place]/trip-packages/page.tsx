@@ -4,6 +4,9 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import HotelIcon from "@mui/icons-material/Hotel";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useRouter } from "next/navigation";
 import {
   Box,
@@ -313,12 +316,36 @@ export default function TripPackagesPage() {
                       }}
                     >
                       <li>
-                        ⏱️ Duration:{" "}
-                        {pkg.duration ||
-                          `${pkg.days} Days`}
+                        <AccessTimeIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />{" "}
+                        Duration: {pkg.duration || `${pkg.days} Days`}
                       </li>
-                      <li>🏨 Hotel: {pkg.hotel || "Standard"}</li>
-                      <li>🌲 Top Attractions: {pkg.nearby}</li>
+                      <li>
+                        {" "}
+                        <HotelIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />{" "}
+                        Hotel: {pkg.hotel || "Standard"}
+                      </li>
+                      <li>
+                        <LocationOnIcon
+                          sx={{
+                            fontSize: 16,
+                            mr: 0.5,
+                            verticalAlign: "middle",
+                          }}
+                        />{" "}
+                        Top Attractions: {pkg.nearby}
+                      </li>
                     </Box>
                   </Box>
                   <Button
@@ -339,7 +366,7 @@ export default function TripPackagesPage() {
                       "&:hover": { bgcolor: "#a00a18" },
                     }}
                   >
-                    Check Out
+                    View Details
                   </Button>
                 </CardContent>
               </Card>

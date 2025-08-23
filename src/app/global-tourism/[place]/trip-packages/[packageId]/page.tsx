@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -15,6 +15,7 @@ import {
   Skeleton,
   Snackbar,
   Alert,
+  CardContent,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import HotelIcon from "@mui/icons-material/Hotel";
@@ -63,6 +64,7 @@ interface TripItinerary {
 
 export default function GlobalPackageDetailPage() {
   const { place, packageId } = useParams();
+  const router = useRouter();
   const [packageData, setPackageData] = useState<TripPackage | null>(null);
   const [itinerary, setItinerary] = useState<TripItinerary | null>(null);
   const [otherPackages, setOtherPackages] = useState<TripPackage[]>([]);
@@ -149,7 +151,7 @@ export default function GlobalPackageDetailPage() {
             await supabase
               .from("international_tourism")
               .select("*")
-              .eq("destination", placeStr)
+              .eq("days", packageData?.days)
               .neq("int_tour_id", parseInt(packageIdStr))
               .limit(6);
 
@@ -320,9 +322,16 @@ export default function GlobalPackageDetailPage() {
         {/* Left Column - Details */}
         <Grid2 size={{ xs: 12, md: 8 }}>
           {/* Quick Info Cards */}
-          <Grid2 container spacing={2} sx={{ mb: 4 }}>
+          <Grid2 container spacing={2} sx={{ mb: 4 }} alignItems="stretch">
             <Grid2 size={{ xs: 12, sm: 4 }}>
-              <Card sx={{ p: 2, textAlign: "center", bgcolor: "#f8f9fa" }}>
+              <Card
+                sx={{
+                  p: 2,
+                  textAlign: "center",
+                  bgcolor: "#f8f9fa",
+                  height: "100%",
+                }}
+              >
                 <AccessTimeIcon sx={{ color: "#B90C1C", mb: 1 }} />
                 <Typography variant="h6" fontWeight="bold">
                   Duration
@@ -334,27 +343,38 @@ export default function GlobalPackageDetailPage() {
               </Card>
             </Grid2>
             <Grid2 size={{ xs: 12, sm: 4 }}>
-              <Card sx={{ p: 2, textAlign: "center", bgcolor: "#f8f9fa" }}>
+              <Card
+                sx={{
+                  p: 2,
+                  textAlign: "center",
+                  bgcolor: "#f8f9fa",
+                  height: "100%",
+                }}
+              >
                 <HotelIcon sx={{ color: "#B90C1C", mb: 1 }} />
                 <Typography variant="h6" fontWeight="bold">
                   Accommodation
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  {itinerary?.top_attractions || "Standard"}
+                  {"5 Star"}
                 </Typography>
               </Card>
             </Grid2>
             <Grid2 size={{ xs: 12, sm: 4 }}>
-              <Card sx={{ p: 2, textAlign: "center", bgcolor: "#f8f9fa" }}>
+              <Card
+                sx={{
+                  p: 2,
+                  textAlign: "center",
+                  bgcolor: "#f8f9fa",
+                  height: "100%",
+                }}
+              >
                 <LocationOnIcon sx={{ color: "#B90C1C", mb: 1 }} />
                 <Typography variant="h6" fontWeight="bold">
-                  Destination
+                  Top Attractions
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {typeof place === "string"
-                    ? place.replace(/-/g, " ").charAt(0).toUpperCase() +
-                      place.slice(1)
-                    : ""}
+                <Typography variant="body1" color="text.secondary">
+                  {packageData?.top_attractions || "Standard"}
                 </Typography>
               </Card>
             </Grid2>
@@ -427,18 +447,27 @@ export default function GlobalPackageDetailPage() {
               <Accordion title="Terms & Conditions">
                 <Box
                   sx={{
-                    "& h1": { display: "none" },
+                    "& h1": {
+                      display: "none", // Hide the h1 since we have our own header
+                    },
+                    "& h2": {
+                      fontSize: "1.3rem",
+                      fontWeight: "bold",
+                      color: "#B90C1C !important",
+                      mb: 2,
+                      mt: 3,
+                      "&:first-of-type": { mt: 0 },
+                      borderLeft: "4px solid #B90C1C",
+                      pl: 2,
+                    },
                     "& p": {
                       mb: 1.5,
                       lineHeight: 1.7,
-                      fontSize: "0.95rem",
-                      pl: 2,
-                      borderLeft: "2px solid #E0E0E0",
-                      "&:hover": {
-                        borderLeft: "2px solid #B90C1C",
-                        bgcolor: "rgba(185, 12, 28, 0.02)",
-                      },
-                      transition: "all 0.3s ease",
+                      fontSize: "1rem",
+                      color: "#000 !important",
+                    },
+                    "& *": {
+                      color: "#000 !important",
                     },
                   }}
                 >
@@ -549,52 +578,98 @@ export default function GlobalPackageDetailPage() {
                 >
                   <Card
                     sx={{
+                      display: "flex",
+                      flexDirection: "column",
                       height: "100%",
-                      transition: "transform 0.2s ease-in-out",
-                      "&:hover": {
-                        transform: "translateY(-4px)",
-                        boxShadow: 4,
-                      },
+                      borderRadius: 2,
+                      boxShadow: 2,
                     }}
                   >
-                    <Box
-                      sx={{ position: "relative", width: "100%", height: 180 }}
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                      }}
                     >
-                      <Image
-                        src={`/assets/global/${place}.jpg`}
-                        alt={pkg.tagline || `${place} Package`}
-                        fill
-                        style={{
-                          objectFit: "cover",
-                          borderTopLeftRadius: 8,
-                          borderTopRightRadius: 8,
+                      <Box>
+                        <Typography variant="h6" fontWeight="bold" mb={1}>
+                          {pkg.destination.charAt(0).toUpperCase() +
+                            pkg.destination.slice(1)}
+                        </Typography>
+                        <Typography
+                          align="right"
+                          fontWeight="bold"
+                          color="text.secondary"
+                          mb={1}
+                        >
+                          {pkg.price || "Contact for Price"}
+                        </Typography>
+                        <Box
+                          component="ul"
+                          sx={{
+                            pl: 2,
+                            mb: 2,
+                            color: "text.secondary",
+                            fontSize: 15,
+                          }}
+                        >
+                          <li>
+                            <AccessTimeIcon
+                              sx={{
+                                fontSize: 16,
+                                mr: 0.5,
+                                verticalAlign: "middle",
+                              }}
+                            />{" "}
+                            Duration: {pkg.duration || `${pkg.days} Days`}
+                          </li>
+                          <li>
+                            {" "}
+                            <HotelIcon
+                              sx={{
+                                fontSize: 16,
+                                mr: 0.5,
+                                verticalAlign: "middle",
+                              }}
+                            />{" "}
+                            Hotel: {pkg.hotel || "Standard"}
+                          </li>
+                          <li>
+                            <LocationOnIcon
+                              sx={{
+                                fontSize: 16,
+                                mr: 0.5,
+                                verticalAlign: "middle",
+                              }}
+                            />{" "}
+                            Top Attractions: {pkg.top_attractions}
+                          </li>
+                        </Box>
+                      </Box>
+                      <Button
+                        variant="contained"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          router.push(
+                            `/global-tourism/${pkg.destination}/trip-packages/${pkg.int_tour_id}`
+                          );
                         }}
-                        loading="lazy"
-                      />
-                    </Box>
-                    <Box sx={{ p: 2 }}>
-                      <Typography variant="h6" fontWeight="bold" mb={1}>
-                        {pkg.tagline || `${place} Tour Package`}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" mb={1}>
-                        Destination:{" "}
-                        {typeof place === "string"
-                          ? place.replace(/-/g, " ")
-                          : ""}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" mb={2}>
-                        {pkg.overview
-                          ? pkg.overview.substring(0, 100) + "..."
-                          : "Luxury travel experience"}
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        fontWeight="bold"
-                        color="#B90C1C"
+                        sx={{
+                          mt: "auto",
+                          width: "100%",
+                          bgcolor: "#B90C1C",
+                          color: "white",
+                          borderRadius: 1,
+                          fontWeight: 600,
+                          py: 1.5,
+                          "&:hover": { bgcolor: "#a00a18" },
+                        }}
                       >
-                        Contact for Price
-                      </Typography>
-                    </Box>
+                        View Details
+                      </Button>
+                    </CardContent>
                   </Card>
                 </Link>
               </Grid2>

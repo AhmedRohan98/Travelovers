@@ -151,7 +151,7 @@ export default function PackageDetailPage() {
             await supabase
               .from("trips")
               .select("*")
-              .eq("destination", placeStr)
+              .eq("days", packageData.days)
               .neq("trip_id", parseInt(packageIdStr))
               .order("trip_id", { ascending: true })
               .limit(6);
@@ -357,9 +357,17 @@ export default function PackageDetailPage() {
             </Typography>
 
             {/* Quick Info Cards */}
-            <Grid2 container spacing={2} sx={{ mb: 4 }}>
+            <Grid2 container spacing={2} sx={{ mb: 4 }} alignItems="stretch">
               <Grid2 size={{ xs: 12, sm: 4 }}>
-                <Card sx={{ p: 2, textAlign: "center" }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: "center",
+                    bgcolor: "#f8f9fa",
+                    height: "100%",
+                  }}
+                >
+                  {" "}
                   <AccessTimeIcon
                     sx={{ fontSize: 40, color: "#B90C1C", mb: 1 }}
                   />
@@ -373,7 +381,15 @@ export default function PackageDetailPage() {
                 </Card>
               </Grid2>
               <Grid2 size={{ xs: 12, sm: 4 }}>
-                <Card sx={{ p: 2, textAlign: "center" }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: "center",
+                    bgcolor: "#f8f9fa",
+                    height: "100%",
+                  }}
+                >
+                  {" "}
                   <HotelIcon sx={{ fontSize: 40, color: "#B90C1C", mb: 1 }} />
                   <Typography variant="h6" fontWeight="bold">
                     Hotel
@@ -384,7 +400,14 @@ export default function PackageDetailPage() {
                 </Card>
               </Grid2>
               <Grid2 size={{ xs: 12, sm: 4 }}>
-                <Card sx={{ p: 2, textAlign: "center" }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: "center",
+                    bgcolor: "#f8f9fa",
+                    height: "100%",
+                  }}
+                >
                   <LocationOnIcon
                     sx={{ fontSize: 40, color: "#B90C1C", mb: 1 }}
                   />
@@ -400,7 +423,17 @@ export default function PackageDetailPage() {
 
             {/* Package Description */}
             <Typography variant="h5" fontWeight="bold" mb={2}>
-              About This Package
+              About{" "}
+              {typeof place === "string"
+                ? place
+                    .split("-")
+                    .map(
+                      (word) =>
+                        word.charAt(0).toUpperCase() +
+                        word.slice(1).toLowerCase()
+                    )
+                    .join(" ")
+                : `${packageData.days} Days ${packageData.nights} Nights`}
             </Typography>
             {/* Trip Overview content directly under About This Package */}
             {itinerary.length > 0 && (
@@ -621,7 +654,7 @@ export default function PackageDetailPage() {
                     },
                   }}
                 >
-                  <Box
+                  {/* <Box
                     sx={{ position: "relative", width: "100%", height: 200 }}
                   >
                     <Image
@@ -635,7 +668,7 @@ export default function PackageDetailPage() {
                       }}
                       loading="lazy"
                     />
-                  </Box>
+                  </Box> */}
                   <Box
                     sx={{
                       p: 2,
@@ -645,7 +678,13 @@ export default function PackageDetailPage() {
                     }}
                   >
                     <Typography variant="h6" fontWeight="bold" mb={1}>
-                      {pkg.title || `${pkg.days} Days ${pkg.nights} Nights`}
+                      {pkg.destination
+                        ? pkg.destination
+                            .replace(/-/g, " ")
+                            .charAt(0)
+                            .toUpperCase() +
+                          pkg.destination.replace(/-/g, " ").slice(1)
+                        : `${pkg.days} Days ${pkg.nights} Nights`}
                     </Typography>
                     <Typography
                       variant="h6"
