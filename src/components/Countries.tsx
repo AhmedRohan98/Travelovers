@@ -147,50 +147,48 @@ export default function Countries({
 
       <Box display="flex" gap={4}>
         {/* Sidebar Filter */}
-        {category !== "national-tourism" && category !== "global-tourism" && (
-          <Box
-            flexShrink={0}
-            width={250}
-            bgcolor="white"
-            borderRadius={2}
-            sx={{
-              height: "fit-content",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              border: "1px solid #e0e0e0",
-              overflow: "hidden",
-              display: { xs: "none", sm: "block" },
-            }}
-          >
-            <List>
-              {filters.map((filter) => (
-                <ListItemButton
-                  key={filter}
-                  selected={selectedFilter === filter}
-                  onClick={() => setSelectedFilter(filter)}
-                  sx={{
-                    borderBottom: "1px solid #e0e0e0",
-                    color: "black",
-                  }}
-                >
-                  <ListItemText
-                    primary={
-                      <Typography
-                        sx={{
-                          fontWeight:
-                            selectedFilter === filter ? "bold" : "normal",
-                          color: selectedFilter === filter ? "red" : "inherit",
-                        }}
-                      >
-                        {filter}
-                      </Typography>
-                    }
-                  />
-                  <KeyboardArrowRightIcon />
-                </ListItemButton>
-              ))}
-            </List>
-          </Box>
-        )}
+        <Box
+          flexShrink={0}
+          width={250}
+          bgcolor="white"
+          borderRadius={2}
+          sx={{
+            height: "fit-content",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            border: "1px solid #e0e0e0",
+            overflow: "hidden",
+            display: { xs: "none", sm: "block" },
+          }}
+        >
+          <List>
+            {filters.map((filter) => (
+              <ListItemButton
+                key={filter}
+                selected={selectedFilter === filter}
+                onClick={() => setSelectedFilter(filter)}
+                sx={{
+                  borderBottom: "1px solid #e0e0e0",
+                  color: "black",
+                }}
+              >
+                <ListItemText
+                  primary={
+                    <Typography
+                      sx={{
+                        fontWeight:
+                          selectedFilter === filter ? "bold" : "normal",
+                        color: selectedFilter === filter ? "red" : "inherit",
+                      }}
+                    >
+                      {filter}
+                    </Typography>
+                  }
+                />
+                <KeyboardArrowRightIcon />
+              </ListItemButton>
+            ))}
+          </List>
+        </Box>
 
         {/* Cards */}
         <Grid container spacing={2} flex={3}>
