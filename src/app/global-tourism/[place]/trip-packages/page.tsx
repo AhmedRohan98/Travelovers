@@ -301,17 +301,26 @@ export default function GlobalTripPackagesPage() {
                   }}
                 >
                   <Box>
-                    <Typography variant="h6" fontWeight="bold" mb={1}>
-                      {pkg.title || `${pkg.days} Days & ${pkg.nights} Nights`}
-                    </Typography>
-                    <Typography
-                      align="right"
-                      fontWeight="bold"
-                      color="text.secondary"
-                      mb={1}
+                    <Typography variant="h5" fontWeight="700" mb={1}
+                      sx={{
+                        color: "#1E293B",
+                        textAlign: "center",
+                        borderBottom: "3px solid #B90C1C",
+                        display: "inline-block",
+                        paddingBottom: "2px",
+                      }}
                     >
-                      {pkg.price || "Contact for Price"}
+                      {`${pkg.days} Days ${pkg.nights} Nights`}
                     </Typography>
+                         <Typography
+                           variant="h6"
+                           fontWeight="bold"
+                           color="#B90C1C"
+                           mb={2}
+                           sx={{ textAlign: "right" }}
+                         >
+                           {pkg.price || "Contact for Price"}
+                         </Typography>
                     <Box
                       component="ul"
                       sx={{
@@ -331,7 +340,7 @@ export default function GlobalTripPackagesPage() {
                         />{" "}
                         Duration:{" "}
                         {pkg.duration ||
-                          `${pkg.days} Days & ${pkg.nights} Nights`}
+                          `${pkg.days} Days`}
                       </li>
                       <li>
                         {" "}
@@ -374,7 +383,7 @@ export default function GlobalTripPackagesPage() {
                       "&:hover": { bgcolor: "#a00a18" },
                     }}
                   >
-                    Check Out
+                    View Details
                   </Button>
                 </CardContent>
               </Card>

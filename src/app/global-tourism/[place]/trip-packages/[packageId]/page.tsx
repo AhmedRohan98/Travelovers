@@ -318,8 +318,10 @@ export default function GlobalPackageDetailPage() {
       </Box>
 
       {/* Package Details */}
+        <Typography variant="h3" fontWeight="bold" mb={2}>
+          Package Details
+        </Typography>
       <Grid2 container spacing={4}>
-        {/* Left Column - Details */}
         <Grid2 size={{ xs: 12, md: 8 }}>
           {/* Quick Info Cards */}
           <Grid2 container spacing={2} sx={{ mb: 4 }} alignItems="stretch">
@@ -332,12 +334,12 @@ export default function GlobalPackageDetailPage() {
                   height: "100%",
                 }}
               >
-                <AccessTimeIcon sx={{ color: "#B90C1C", mb: 1 }} />
+                <AccessTimeIcon sx={{ fontSize: 40, color: "#B90C1C", mb: 1 }} />
                 <Typography variant="h6" fontWeight="bold">
                   Duration
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {packageData?.days || "N/A"} Days /{" "}
+                  {packageData?.days || "N/A"} Days{" "}
                   {packageData?.nights || "N/A"} Nights
                 </Typography>
               </Card>
@@ -351,7 +353,7 @@ export default function GlobalPackageDetailPage() {
                   height: "100%",
                 }}
               >
-                <HotelIcon sx={{ color: "#B90C1C", mb: 1 }} />
+                <HotelIcon sx={{ fontSize: 40, color: "#B90C1C", mb: 1 }} />
                 <Typography variant="h6" fontWeight="bold">
                   Accommodation
                 </Typography>
@@ -369,7 +371,7 @@ export default function GlobalPackageDetailPage() {
                   height: "100%",
                 }}
               >
-                <LocationOnIcon sx={{ color: "#B90C1C", mb: 1 }} />
+                <LocationOnIcon sx={{fontSize: 40, color: "#B90C1C", mb: 1 }} />
                 <Typography variant="h6" fontWeight="bold">
                   Top Attractions
                 </Typography>
@@ -381,7 +383,17 @@ export default function GlobalPackageDetailPage() {
           </Grid2>
 
           <Typography variant="h5" fontWeight="bold" mb={2}>
-            Overview
+            About{" "}
+            {typeof place === "string"
+              ? place
+                  .split("-")
+                  .map(
+                    (word) =>
+                      word.charAt(0).toUpperCase() +
+                      word.slice(1).toLowerCase()
+                  )
+                  .join(" ")
+              : `${packageData.days} Days ${packageData.nights} Nights`}
           </Typography>
           <Box sx={{ mb: 4 }}>
             <Typography
@@ -594,15 +606,23 @@ export default function GlobalPackageDetailPage() {
                       }}
                     >
                       <Box>
-                        <Typography variant="h6" fontWeight="bold" mb={1}>
+                        <Typography variant="h5" fontWeight="700" mb={1}
+                          sx={{
+                            color: "#1E293B",
+                            borderBottom: "3px solid #B90C1C",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                          }}
+                        >
                           {pkg.destination.charAt(0).toUpperCase() +
                             pkg.destination.slice(1)}
                         </Typography>
                         <Typography
-                          align="right"
+                          variant="h6"
                           fontWeight="bold"
-                          color="text.secondary"
-                          mb={1}
+                          color="#B90C1C"
+                          mb={2}
+                          sx={{ textAlign: "right" }}
                         >
                           {pkg.price || "Contact for Price"}
                         </Typography>

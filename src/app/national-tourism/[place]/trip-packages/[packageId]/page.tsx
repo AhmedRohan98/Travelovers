@@ -343,7 +343,7 @@ export default function PackageDetailPage() {
             }}
           >
             {packageData.title ||
-              `${packageData.days} Days ${packageData.nights} Nights`}
+              `${packageData.destination}`}
           </Typography>
         </Box>
       </Box>
@@ -457,7 +457,9 @@ export default function PackageDetailPage() {
             {/* Trip Details */}
             {itinerary.length > 0 && (
               <Box sx={{ mb: 4 }}>
-                {/* Adventure Plan Section */}
+                <Typography variant="h5" fontWeight="bold" mb={3} color="#B90C1C">
+                  Trip Details
+                </Typography>
                 <Accordion title="Adventure Plan" defaultOpen>
                   <Box
                     sx={{
@@ -636,6 +638,9 @@ export default function PackageDetailPage() {
       {/* Other Packages Section */}
       {otherPackages.length > 0 && (
         <Box sx={{ mt: 5 }}>
+          <Typography variant="h4" fontWeight="bold" mb={4} color="#B90C1C">
+            Other Packages
+          </Typography>
           <Grid2 container spacing={3}>
             {otherPackages.map((pkg) => (
               <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={pkg.trip_id}>
@@ -654,21 +659,6 @@ export default function PackageDetailPage() {
                     },
                   }}
                 >
-                  {/* <Box
-                    sx={{ position: "relative", width: "100%", height: 200 }}
-                  >
-                    <Image
-                      src={pkg.image || `/assets/places/${pkg.destination}.jpg`}
-                      alt={pkg.title || `${pkg.destination} Package`}
-                      fill
-                      style={{
-                        objectFit: "cover",
-                        borderTopLeftRadius: 8,
-                        borderTopRightRadius: 8,
-                      }}
-                      loading="lazy"
-                    />
-                  </Box> */}
                   <Box
                     sx={{
                       p: 2,
@@ -677,15 +667,25 @@ export default function PackageDetailPage() {
                       flexDirection: "column",
                     }}
                   >
-                    <Typography variant="h6" fontWeight="bold" mb={1}>
-                      {pkg.destination
-                        ? pkg.destination
-                            .replace(/-/g, " ")
-                            .charAt(0)
-                            .toUpperCase() +
-                          pkg.destination.replace(/-/g, " ").slice(1)
-                        : `${pkg.days} Days ${pkg.nights} Nights`}
-                    </Typography>
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                    mb={1}
+                    sx={{
+                      color: "#1E293B",
+                      borderBottom: "3px solid #B90C1C",
+                      width: "fit-content",
+                      paddingBottom: "2px",
+                    }}
+                  >
+                    {pkg.destination
+                      ? pkg.destination
+                          .replace(/-/g, " ")
+                          .replace(/\b\w/g, (char) => char.toUpperCase()) // capitalize every word
+                      : `${pkg.days} Days ${pkg.nights} Nights`}
+                  </Typography>
+
+
                     <Typography
                       variant="h6"
                       fontWeight="bold"
