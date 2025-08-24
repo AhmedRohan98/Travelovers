@@ -125,7 +125,7 @@ export default function Countries({
         >
           <Typography variant="h3" fontWeight="bold">
             {category === "national-tourism"
-              ? "Tourist Places"
+              ? "National Tourism"
               : category === "global-tourism"
               ? "Global Tourism"
               : "Countries"}
@@ -136,7 +136,7 @@ export default function Countries({
             </Link>
             <Typography color="white">
               {category === "national-tourism"
-                ? "Places"
+                ? "National Tourism"
                 : category === "global-tourism"
                 ? "Global Tourism"
                 : "Countries"}
