@@ -491,54 +491,6 @@ export default function PackageDetailPage() {
                   </Box>
                 </Accordion>
 
-                {/* Inclusions Section */}
-                {/* <Accordion title="Inclusions">
-                  <Box
-                    sx={{
-                      "& h1": { display: "none" },
-                      "& p": {
-                        mb: 1,
-                        lineHeight: 1.6,
-                        fontSize: "0.95rem",
-                        listStyleType: "disc",
-                        ml: 2,
-                      },
-                    }}
-                  >
-                    <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                      <Typography
-                        dangerouslySetInnerHTML={{
-                          __html: itinerary[0].inclusions,
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                </Accordion> */}
-
-                {/* Exclusions Section */}
-                {/* <Accordion title="Exclusions">
-                  <Box
-                    sx={{
-                      "& h1": { display: "none" },
-                      "& p": {
-                        mb: 1,
-                        lineHeight: 1.6,
-                        fontSize: "0.95rem",
-                        listStyleType: "disc",
-                        ml: 2,
-                      },
-                    }}
-                  >
-                    <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                      <Typography
-                        dangerouslySetInnerHTML={{
-                          __html: itinerary[0].exclusions,
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                </Accordion> */}
-
                 {/* Terms & Conditions */}
                 <Accordion title="Terms & Conditions">
                   <Box
@@ -737,7 +689,7 @@ export default function PackageDetailPage() {
                       </li>
                     </Box>
                     <Link
-                      href={`/national-tourism/${place}/trip-packages/${pkg.trip_id}`}
+                      href={`/national-tourism/${pkg.destination}/trip-packages/${pkg.trip_id}`}
                     >
                       <Button
                         variant="contained"
