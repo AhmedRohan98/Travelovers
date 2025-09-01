@@ -1,4 +1,5 @@
 import { Country, TouristPlace } from "@/components/Countries";
+import { supabase } from "@/lib/supabase/server";
 
 export const studyCountries: Country[] = [
   {
@@ -58,324 +59,81 @@ export const studyCountries: Country[] = [
   },
 ];
 
-// You can also have separate arrays for other categories
-export const visitCountries: Country[] = [
-  {
-    name: "United-Kingdom",
-    flag: "/assets/countries/visit/flags/united_kingdom.png",
-    continent: "Europe",
-  },
-  {
-    name: "USA",
-    flag: "/assets/countries/visit/flags/usa.png",
-    continent: "North America",
-  },
-  {
-    name: "Australia",
-    flag: "/assets/countries/visit/flags/australia.png",
-    continent: "Oceania",
-  },
-  {
-    name: "Canada",
-    flag: "/assets/countries/visit/flags/canada.png",
-    continent: "North America",
-  },
-  {
-    name: "New-Zealand",
-    flag: "/assets/countries/visit/flags/new_zealand.png",
-    continent: "Oceania",
-  },
-  {
-    name: "Ireland",
-    flag: "/assets/countries/visit/flags/ireland.png",
-    continent: "Europe",
-  },
-  {
-    name: "Germany",
-    flag: "/assets/countries/visit/flags/germany.png",
-    continent: "Europe",
-  },
-  {
-    name: "Italy",
-    flag: "/assets/countries/visit/flags/italy.png",
-    continent: "Europe",
-  },
-  {
-    name: "France",
-    flag: "/assets/countries/visit/flags/france.png",
-    continent: "Europe",
-  },
-  {
-    name: "Spain",
-    flag: "/assets/countries/visit/flags/spain.png",
-    continent: "Europe",
-  },
-  {
-    name: "Austria",
-    flag: "/assets/countries/visit/flags/austria.png",
-    continent: "Europe",
-  },
-  {
-    name: "Belgium",
-    flag: "/assets/countries/visit/flags/belgium.png",
-    continent: "Europe",
-  },
-  {
-    name: "Netherland",
-    flag: "/assets/countries/visit/flags/netherlands.png",
-    continent: "Europe",
-  },
-  {
-    name: "Norway",
-    flag: "/assets/countries/visit/flags/norway.png",
-    continent: "Europe",
-  },
-  {
-    name: "Denmark",
-    flag: "/assets/countries/visit/flags/denmark.png",
-    continent: "Europe",
-  },
-  {
-    name: "Sweden",
-    flag: "/assets/countries/visit/flags/sweden.png",
-    continent: "Europe",
-  },
-  {
-    name: "Switzerland",
-    flag: "/assets/countries/visit/flags/switzerland.png",
-    continent: "Europe",
-  },
-  {
-    name: "Portugal",
-    flag: "/assets/countries/visit/flags/portugal.png",
-    continent: "Europe",
-  },
-  {
-    name: "Greece",
-    flag: "/assets/countries/visit/flags/greece.png",
-    continent: "Europe",
-  },
-  {
-    name: "Czech-Republic",
-    flag: "/assets/countries/visit/flags/czech_republic.png",
-    continent: "Europe",
-  },
-  {
-    name: "Poland",
-    flag: "/assets/countries/visit/flags/poland.png",
-    continent: "Europe",
-  },
-  {
-    name: "Hungary",
-    flag: "/assets/countries/visit/flags/hungary.png",
-    continent: "Europe",
-  },
-  {
-    name: "Lithuania",
-    flag: "/assets/countries/visit/flags/lithuania.png",
-    continent: "Europe",
-  },
-  {
-    name: "Latvia",
-    flag: "/assets/countries/visit/flags/latvia.png",
-    continent: "Europe",
-  },
-  {
-    name: "Luxembourg",
-    flag: "/assets/countries/visit/flags/luxembourg.png",
-    continent: "Europe",
-  },
-  {
-    name: "Malta",
-    flag: "/assets/countries/visit/flags/malta.png",
-    continent: "Europe",
-  },
-  {
-    name: "Iceland",
-    flag: "/assets/countries/visit/flags/iceland.png",
-    continent: "Europe",
-  },
-  {
-    name: "Estonia",
-    flag: "/assets/countries/visit/flags/estonia.png",
-    continent: "Europe",
-  },
-  {
-    name: "Finland",
-    flag: "/assets/countries/visit/flags/finland.png",
-    continent: "Europe",
-  },
-  {
-    name: "Slovakia",
-    flag: "/assets/countries/visit/flags/slovakia.png",
-    continent: "Europe",
-  },
-  {
-    name: "Romania",
-    flag: "/assets/countries/visit/flags/romania.png",
-    continent: "Europe",
-  },
-  {
-    name: "Bulgaria",
-    flag: "/assets/countries/visit/flags/bulgaria.png",
-    continent: "Europe",
-  },
-  {
-    name: "Cyprus",
-    flag: "/assets/countries/visit/flags/cyprus.png",
-    continent: "Asia",
-  },
-  {
-    name: "North-Cyprus",
-    flag: "/assets/countries/visit/flags/north_cyprus.png",
-    continent: "Asia",
-  },
-  {
-    name: "Croatia",
-    flag: "/assets/countries/visit/flags/croatia.png",
-    continent: "Europe",
-  },
-  {
-    name: "Georgia",
-    flag: "/assets/countries/visit/flags/georgia.png",
-    continent: "Asia",
-  },
-  {
-    name: "Albania",
-    flag: "/assets/countries/visit/flags/albania.png",
-    continent: "Europe",
-  },
-  {
-    name: "Morocco",
-    flag: "/assets/countries/visit/flags/morocco.png",
-    continent: "Africa",
-  },
-  {
-    name: "Russia",
-    flag: "/assets/countries/visit/flags/russia.png",
-    continent: "Europe",
-  },
-  {
-    name: "South Korea",
-    flag: "/assets/countries/visit/flags/south_korea.png",
-    continent: "Asia",
-  },
-  {
-    name: "UAE",
-    flag: "/assets/countries/visit/flags/uae.png",
-    continent: "Asia",
-  },
-  {
-    name: "Turkey",
-    flag: "/assets/countries/visit/flags/turkey.png",
-    continent: "Asia",
-  },
-  {
-    name: "China",
-    flag: "/assets/countries/visit/flags/china.png",
-    continent: "Asia",
-  },
-  {
-    name: "Hong-Kong",
-    flag: "/assets/countries/visit/flags/hong_kong.png",
-    continent: "Asia",
-  },
-  {
-    name: "Japan",
-    flag: "/assets/countries/visit/flags/japan.png",
-    continent: "Asia",
-  },
-  {
-    name: "Thailand",
-    flag: "/assets/countries/visit/flags/thailand.png",
-    continent: "Asia",
-  },
-  {
-    name: "Malaysia",
-    flag: "/assets/countries/visit/flags/malaysia.png",
-    continent: "Asia",
-  },
-  {
-    name: "Azerbaijan",
-    flag: "/assets/countries/visit/flags/azerbaijan.png",
-    continent: "Asia",
-  },
-  {
-    name: "Singapore",
-    flag: "/assets/countries/visit/flags/singapore.png",
-    continent: "Asia",
-  },
-  {
-    name: "Indonesia",
-    flag: "/assets/countries/visit/flags/indonesia.png",
-    continent: "Asia",
-  },
-  {
-    name: "Cambodia",
-    flag: "/assets/countries/visit/flags/cambodia.png",
-    continent: "Asia",
-  },
-  {
-    name: "Sri-lanka",
-    flag: "/assets/countries/visit/flags/sri_lanka.png",
-    continent: "Asia",
-  },
-  {
-    name: "South-Africa",
-    flag: "/assets/countries/visit/flags/south_africa.png",
-    continent: "Africa",
-  },
-  {
-    name: "Egypt",
-    flag: "/assets/countries/visit/flags/egypt.png",
-    continent: "Africa",
-  },
+// Static visitCountries array removed - now using dynamic data from visit_country table
 
-  // Add more tourism countries as needed
-];
+// Async function to fetch visit countries from Supabase
+export async function getVisitCountries(): Promise<Country[]> {
+  try {
+    const { data, error } = await supabase
+      .from('visa_country')
+      .select('name, flags, continent, disclaimer');
 
-export const globalTourismCountries: Country[] = [
-  {
-    name: "Dubai",
-    flag: "/assets/global/dubai.jpg",
-    continent: "Asia",
-  },
-  {
-    name: "Thailand",
-    flag: "/assets/global/thailand.jpg",
-    continent: "Asia",
-  },
-  {
-    name: "Baku",
-    flag: "/assets/global/baku.jpg",
-    continent: "Asia",
-  },
-  {
-    name: "Malaysia",
-    flag: "/assets/global/malaysia.jpg",
-    continent: "Asia",
-  },
-  {
-    name: "Singapore",
-    flag: "/assets/global/singapore.jpg",
-    continent: "Asia",
-  },
-  {
-    name: "Turkey",
-    flag: "/assets/global/turkey.jpg",
-    continent: "Asia",
-  },
-  {
-    name: "Egypt",
-    flag: "/assets/global/egypt.jpg",
-    continent: "Africa",
-  },
-  {
-    name: "Maldives",
-    flag: "/assets/global/maldives.jpg",
-    continent: "Asia",
-  },
-];
+    if (error) {
+      console.error('Error fetching visit countries data:', error);
+      return [];
+    }
+
+    // Transform the data to match the Country interface
+    return data.map((item: any) => ({
+      name: item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase(),
+      flag: item.flags,
+      continent: item.continent,
+      disclaimer: item.disclaimer,
+    }));
+  } catch (error) {
+    console.error('Error in getVisitCountries:', error);
+    return [];
+  }
+}
+
+// Function to get related countries by continent (excluding current country)
+export async function getRelatedVisitCountries(currentCountryName: string, continent: string, limit: number = 5): Promise<Country[]> {
+  try {
+    const { data, error } = await supabase
+      .from('visa_country')
+      .select('name, flags, continent')
+      .eq('continent', continent)
+      .neq('name', currentCountryName.toLowerCase())
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching related visit countries:', error);
+      return [];
+    }
+
+    return data.map((item: any) => ({
+      name: item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase(),
+      flag: item.flags,
+      continent: item.continent,
+    }));
+  } catch (error) {
+    console.error('Error in getRelatedVisitCountries:', error);
+    return [];
+  }
+}
+
+export async function getGlobalTourismCountries(): Promise<Country[]> {
+  try {
+    const { data, error } = await supabase
+      .from('international_tourism')
+      .select('destination, flag, continent');
+
+    if (error) {
+      console.error('Error fetching global tourism data:', error);
+      return [];
+    }
+
+    // Transform the data to match the Country interface
+    return data.map((item: any) => ({
+      name: item.destination.charAt(0).toUpperCase() + item.destination.slice(1).toLowerCase(),
+      flag: item.flag,
+      continent: item.continent,
+    }));
+  } catch (error) {
+    console.error('Error in getGlobalTourismCountries:', error);
+    return [];
+  }
+}
 
 export const touristPlaces: TouristPlace[] = [
   {
@@ -425,7 +183,7 @@ export const touristPlaces: TouristPlace[] = [
   },
 ];
 
-// Function to get countries based on category
+// Function to get countries based on category (sync for static data)
 export function getCountriesByCategory(
   category: string
 ): Country[] | TouristPlace[] {
@@ -433,11 +191,31 @@ export function getCountriesByCategory(
     case "study":
       return studyCountries;
     case "visit":
-      return visitCountries;
-    case "global-tourism":
-      return globalTourismCountries;
+      // For visit, use the async function getVisitCountries()
+      throw new Error("Use getVisitCountries() for visit category");
     case "national-tourism":
       return touristPlaces;
+    case "global-tourism":
+      // For global-tourism, use the async function getGlobalTourismCountries()
+      throw new Error("Use getGlobalTourismCountries() for global-tourism category");
+    default:
+      return studyCountries;
+  }
+}
+
+// Async function to get countries based on category (for visit and global-tourism)
+export async function getCountriesByCategoryAsync(
+  category: string
+): Promise<Country[] | TouristPlace[]> {
+  switch (category) {
+    case "study":
+      return studyCountries;
+    case "visit":
+      return await getVisitCountries();
+    case "national-tourism":
+      return touristPlaces;
+    case "global-tourism":
+      return await getGlobalTourismCountries();
     default:
       return studyCountries;
   }
