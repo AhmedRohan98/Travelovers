@@ -3,11 +3,11 @@
 import { useParams } from "next/navigation";
 import {
   getCountriesByCategory,
-  getCountriesByCategoryAsync,
   getRelatedVisitCountries,
   getVisitCountries,
   getGlobalTourismCountries,
 } from "@/lib/data/countries";
+import { Country } from "@/components/Countries";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -73,37 +73,34 @@ export default function CountryDetailPage() {
   const category = params.category as string;
   const countryName = params.country as string;
 
-  const [countries, setCountries] = useState<any[]>([]);
-  const [country, setCountry] = useState<any>(null);
+  const [country, setCountry] = useState<Country | null>(null);
   const [countryData, setCountryData] = useState<
     CountryVisaData | CountryStudyData | null
   >(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [relatedCountries, setRelatedCountries] = useState<any[]>([]);
+  const [relatedCountries, setRelatedCountries] = useState<Country[]>([]);
 
   // Fetch countries based on category
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        let countriesData;
+        let countriesData: Country[];
         if (category === "global-tourism") {
           countriesData = await getGlobalTourismCountries();
         } else if (category === "visit") {
           countriesData = await getVisitCountries();
         } else {
-          countriesData = getCountriesByCategory(category);
+          countriesData = getCountriesByCategory(category) as Country[];
         }
-        setCountries(countriesData);
         
         const foundCountry = countriesData.find(
-          (c: any) => c.name.toLowerCase() === countryName.toLowerCase()
+          (c) => c.name.toLowerCase() === countryName.toLowerCase()
         );
-        setCountry(foundCountry);
+        setCountry(foundCountry || null);
       } catch (error) {
         console.error("Error fetching countries:", error);
-        setCountries([]);
         setCountry(null);
       }
     };

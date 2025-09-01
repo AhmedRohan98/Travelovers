@@ -74,7 +74,7 @@ export async function getVisitCountries(): Promise<Country[]> {
     }
 
     // Transform the data to match the Country interface
-    return data.map((item: any) => ({
+    return data.map((item: { name: string; flags: string; continent: string; disclaimer?: string }) => ({
       name: item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase(),
       flag: item.flags,
       continent: item.continent,
@@ -101,7 +101,7 @@ export async function getRelatedVisitCountries(currentCountryName: string, conti
       return [];
     }
 
-    return data.map((item: any) => ({
+    return data.map((item: { name: string; flags: string; continent: string }) => ({
       name: item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase(),
       flag: item.flags,
       continent: item.continent,
@@ -124,7 +124,7 @@ export async function getGlobalTourismCountries(): Promise<Country[]> {
     }
 
     // Transform the data to match the Country interface
-    return data.map((item: any) => ({
+    return data.map((item: { destination: string; flag: string; continent: string }) => ({
       name: item.destination.charAt(0).toUpperCase() + item.destination.slice(1).toLowerCase(),
       flag: item.flag,
       continent: item.continent,
