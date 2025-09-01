@@ -382,19 +382,22 @@ export default function GlobalPackageDetailPage() {
             </Grid2>
           </Grid2>
 
-          <Typography variant="h5" fontWeight="bold" mb={2}>
-            About{" "}
-            {typeof place === "string"
-              ? place
-                  .split("-")
-                  .map(
-                    (word) =>
-                      word.charAt(0).toUpperCase() +
-                      word.slice(1).toLowerCase()
-                  )
-                  .join(" ")
-              : `${packageData.days} Days ${packageData.nights} Nights`}
-          </Typography>
+          <Card sx={{ p: 2, mb: 3, boxShadow: 2, borderRadius: 8 }}>
+            <CardContent>
+              <Typography variant="h5" fontWeight="bold">
+                About{" "}
+                {typeof place === "string"
+                  ? place
+                      .split("-")
+                      .map(
+                        (word) =>
+                          word.charAt(0).toUpperCase() +
+                          word.slice(1).toLowerCase()
+                      )
+                      .join(" ")
+                  : `${packageData.days} Days ${packageData.nights} Nights`}
+              </Typography>
+
           <Box sx={{ mb: 4 }}>
             <Typography
               variant="body1"
@@ -410,7 +413,8 @@ export default function GlobalPackageDetailPage() {
               }}
             />
           </Box>
-
+          </CardContent>
+          </Card>
           {/* Itinerary Details */}
           {(packageData || itinerary) && (
             <Box sx={{ mb: 4 }}>
