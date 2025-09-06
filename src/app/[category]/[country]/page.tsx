@@ -56,7 +56,7 @@ interface CountryVisaData {
   quick_info?: {
     visa_fee?: string;
     interview?: string;
-    submission?: string;
+    application_submission?: string;
   };
   considerations: string;
 }
@@ -67,15 +67,16 @@ interface CountryStudyData {
   overview: string;
   eligibility_crit: string;
   finances: string;
+  terms: string;
   req_adm: string;
   req_visa: string;
   additional: string;
   created_at: string;
   disclaimer?: string;
   key_aspects?: {
-    tuition_fees?: string;
-    living_costs?: string;
-    scholarships?: string;
+    intake?: string;
+    language_proficiency?: string;
+    post_study_work?: string;
   };
 }
 
@@ -413,7 +414,7 @@ export default function CountryDetailPage() {
               countryData?.key_aspects && (
                 <Box sx={{ mb: 4 }}>
                   <Grid2 container spacing={3}>
-                    {countryData.key_aspects.tuition_fees && (
+                    {countryData.key_aspects.intake && (
                       <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <Card
                           sx={{
@@ -427,15 +428,15 @@ export default function CountryDetailPage() {
                             sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
                           />
                           <Typography variant="h6" fontWeight="bold" mb={1}>
-                            Tuition Fees
+                            Intakes
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
-                            {countryData.key_aspects.tuition_fees}
+                            {countryData.key_aspects.intake}
                           </Typography>
                         </Card>
                       </Grid2>
                     )}
-                    {countryData.key_aspects.living_costs && (
+                    {countryData.key_aspects.language_proficiency && (
                       <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <Card
                           sx={{
@@ -449,15 +450,15 @@ export default function CountryDetailPage() {
                             sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
                           />
                           <Typography variant="h6" fontWeight="bold" mb={1}>
-                            Living Costs
+                            Language Proficiency
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
-                            {countryData.key_aspects.living_costs}
+                            {countryData.key_aspects.language_proficiency}
                           </Typography>
                         </Card>
                       </Grid2>
                     )}
-                    {countryData.key_aspects.scholarships && (
+                    {countryData.key_aspects.post_study_work && (
                       <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                         <Card
                           sx={{
@@ -471,10 +472,10 @@ export default function CountryDetailPage() {
                             sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
                           />
                           <Typography variant="h6" fontWeight="bold" mb={1}>
-                            Scholarships
+                            Post Study Work
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
-                            {countryData.key_aspects.scholarships}
+                            {countryData.key_aspects.post_study_work}
                           </Typography>
                         </Card>
                       </Grid2>
@@ -503,7 +504,7 @@ export default function CountryDetailPage() {
                             sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
                           />
                           <Typography variant="h6" fontWeight="bold" mb={1}>
-                            Validity
+                            Visa Validity
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
                             {countryData.key_aspects.validity}
@@ -548,7 +549,7 @@ export default function CountryDetailPage() {
                             sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
                           />
                           <Typography variant="h6" fontWeight="bold" mb={1}>
-                            Processing Time
+                            Visa Processing Time
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
                             {countryData.key_aspects.processing_time}
@@ -632,6 +633,38 @@ export default function CountryDetailPage() {
                     />
                   </Accordion> */}
 
+<Accordion title="Admission Requirements" defaultOpen>
+                    <Box
+                      sx={{
+                        "& ul": {
+                          listStyleType: "disc",
+                          paddingLeft: "1.5rem",
+                          mb: 2,
+                        },
+                        "& li": {
+                          marginBottom: "0.5rem",
+                          lineHeight: 1.6,
+                        },
+                        "& p": {
+                          marginBottom: "1rem",
+                          lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
+                        },
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html: countryData?.req_adm
+                          ? formatTextWithBold(countryData.req_adm)
+                          : "<p><strong style='color: #B90C1C; font-weight: bold;'>Academic transcripts:</strong> Official academic records</p><p><strong style='color: #B90C1C; font-weight: bold;'>Language proficiency certificates:</strong> IELTS/TOEFL scores</p><p><strong style='color: #B90C1C; font-weight: bold;'>Personal statement:</strong> Statement of purpose</p><p><strong style='color: #B90C1C; font-weight: bold;'>Reference letters:</strong> Academic references</p>",
+                      }}
+                    />
+                  </Accordion>
+
                   <Accordion title="Finances">
                     <Box
                       sx={{
@@ -648,37 +681,19 @@ export default function CountryDetailPage() {
                         "& p": {
                           marginBottom: "1rem",
                           lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
                         },
                       }}
                       dangerouslySetInnerHTML={{
                         __html: countryData?.finances
                           ? formatTextWithBold(countryData.finances)
                           : "<p><strong style='color: #B90C1C; font-weight: bold;'>Research and choose your institution:</strong> Select your preferred university</p><p><strong style='color: #B90C1C; font-weight: bold;'>Submit application with required documents:</strong> Complete application process</p><p><strong style='color: #B90C1C; font-weight: bold;'>Receive offer letter:</strong> Get acceptance from university</p><p><strong style='color: #B90C1C; font-weight: bold;'>Apply for student visa:</strong> Submit visa application</p><p><strong style='color: #B90C1C; font-weight: bold;'>Prepare for departure:</strong> Final preparations for travel</p>",
-                      }}
-                    />
-                  </Accordion>
-
-                  <Accordion title="Admission Requirements">
-                    <Box
-                      sx={{
-                        "& ul": {
-                          listStyleType: "disc",
-                          paddingLeft: "1.5rem",
-                          mb: 2,
-                        },
-                        "& li": {
-                          marginBottom: "0.5rem",
-                          lineHeight: 1.6,
-                        },
-                        "& p": {
-                          marginBottom: "1rem",
-                          lineHeight: 1.7,
-                        },
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html: countryData?.req_adm
-                          ? formatTextWithBold(countryData.req_adm)
-                          : "<p><strong style='color: #B90C1C; font-weight: bold;'>Academic transcripts:</strong> Official academic records</p><p><strong style='color: #B90C1C; font-weight: bold;'>Language proficiency certificates:</strong> IELTS/TOEFL scores</p><p><strong style='color: #B90C1C; font-weight: bold;'>Personal statement:</strong> Statement of purpose</p><p><strong style='color: #B90C1C; font-weight: bold;'>Reference letters:</strong> Academic references</p>",
                       }}
                     />
                   </Accordion>
@@ -698,6 +713,13 @@ export default function CountryDetailPage() {
                         "& p": {
                           marginBottom: "1rem",
                           lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
                         },
                       }}
                       dangerouslySetInnerHTML={{
@@ -723,11 +745,50 @@ export default function CountryDetailPage() {
                         "& p": {
                           marginBottom: "1rem",
                           lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
                         },
                       }}
                       dangerouslySetInnerHTML={{
                         __html: countryData?.additional
                           ? formatTextWithBold(countryData.additional)
+                          : "<p>Additional helpful information for study applications:</p><p><strong style='color: #B90C1C; font-weight: bold;'>Processing times and fees:</strong> Current processing information</p><p><strong style='color: #B90C1C; font-weight: bold;'>Embassy contact details:</strong> Embassy contact information</p><p><strong style='color: #B90C1C; font-weight: bold;'>Important deadlines:</strong> Key application deadlines</p><p><strong style='color: #B90C1C; font-weight: bold;'>Support resources:</strong> Helpful resources and support</p>",
+                      }}
+                    />
+                  </Accordion>
+
+                  <Accordion title="Terms & Conditions">
+                    <Box
+                      sx={{
+                        "& ul": {
+                          listStyleType: "disc",
+                          paddingLeft: "1.5rem",
+                          mb: 2,
+                        },
+                        "& li": {
+                          marginBottom: "0.5rem",
+                          lineHeight: 1.6,
+                        },
+                        "& p": {
+                          marginBottom: "1rem",
+                          lineHeight: 1.7,
+                          pl: 2,
+                          borderLeft: "2px solid #E0E0E0",
+                          "&:hover": {
+                            borderLeft: "2px solid #B90C1C",
+                            bgcolor: "rgba(185, 12, 28, 0.02)",
+                          },
+                          transition: "all 0.3s ease",
+                        },
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html: countryData?.terms
+                          ? formatTextWithBold(countryData.terms)
                           : "<p>Additional helpful information for study applications:</p><p><strong style='color: #B90C1C; font-weight: bold;'>Processing times and fees:</strong> Current processing information</p><p><strong style='color: #B90C1C; font-weight: bold;'>Embassy contact details:</strong> Embassy contact information</p><p><strong style='color: #B90C1C; font-weight: bold;'>Important deadlines:</strong> Key application deadlines</p><p><strong style='color: #B90C1C; font-weight: bold;'>Support resources:</strong> Helpful resources and support</p>",
                       }}
                     />
@@ -800,7 +861,7 @@ export default function CountryDetailPage() {
                     />
                   </Accordion>
 
-                  <Accordion title="Self-Employed Applicants (Business Owners)">
+                  <Accordion title={<>Self-Employed Applicants{" "}<span style={{ fontSize: "0.85rem", fontWeight: "normal" }}>(Business Owners)</span></>}>
                     <Box
                       sx={{
                         "& ul": {
@@ -1254,7 +1315,7 @@ export default function CountryDetailPage() {
                         </Typography>
                       </Box>
                     )}
-                    {countryData.quick_info.submission && (
+                    {countryData.quick_info.application_submission && (
                       <Box>
                         <Box
                           sx={{
@@ -1266,7 +1327,7 @@ export default function CountryDetailPage() {
                         >
                           <SendIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
                           <Typography variant="body1" fontWeight="medium">
-                            Submission
+                            Application Submission
                           </Typography>
                         </Box>
                         <Typography
@@ -1274,7 +1335,7 @@ export default function CountryDetailPage() {
                           fontWeight="bold"
                           paddingLeft={1}
                         >
-                          {countryData.quick_info.submission}
+                          {countryData.quick_info.application_submission}
                         </Typography>
                       </Box>
                     )}
