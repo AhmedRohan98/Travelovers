@@ -69,9 +69,7 @@ const Faqs = () => {
     >
       {/* Left Section */}
       <Box sx={{ flex: 1, textAlign: "left", maxWidth: 350 }}>
-        <Typography variant="h5" fontWeight={700} color="secondary.main">
-          Frequently Ask Question
-        </Typography>
+
         <Typography variant="body1" color="textSecondary" mt={2}>
           Got questions? We&apos;ve got answers! Find everything you need to
           know about our services, bookings, policies, and more.

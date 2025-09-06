@@ -58,12 +58,16 @@ export function Navbar() {
               <Typography variant="body2" sx={{ color: "black" }}>
                 Need help?
               </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "#8B0000", fontWeight: "bold" }}
-              >
-                (307) 555-0133
-              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                  <a
+                    href="https://wa.me/92325123444"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "#25D366", textDecoration: "none", fontWeight: 500 }}
+                  >
+                    0325 5123 444
+                  </a>
+                </Typography>
             </Box>
           </Box>
         </Toolbar>

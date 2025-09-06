@@ -4,8 +4,11 @@ import { useParams } from "next/navigation";
 import {
   getCountriesByCategory,
   getRelatedVisitCountries,
+  getRelatedStudyCountries,
+  getRelatedGlobalTourismCountries,
   getVisitCountries,
   getGlobalTourismCountries,
+  getStudyCountries,
 } from "@/lib/data/countries";
 import { Country } from "@/components/Countries";
 import Link from "next/link";
@@ -21,6 +24,7 @@ import {
 import React, { useEffect, useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import HandshakeIcon from "@mui/icons-material/Handshake";
 import DescriptionIcon from "@mui/icons-material/Description";
 import FlightIcon from "@mui/icons-material/Flight";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
@@ -36,6 +40,7 @@ interface CountryVisaData {
   id: number;
   name: string;
   overview: string;
+  consultancy_charges: string;
   req_docs: string;
   employed: string;
   self_employed: string;
@@ -61,11 +66,17 @@ interface CountryStudyData {
   name: string;
   overview: string;
   eligibility_crit: string;
-  guide: string;
+  finances: string;
   req_adm: string;
   req_visa: string;
   additional: string;
   created_at: string;
+  disclaimer?: string;
+  key_aspects?: {
+    tuition_fees?: string;
+    living_costs?: string;
+    scholarships?: string;
+  };
 }
 
 export default function CountryDetailPage() {
@@ -91,6 +102,8 @@ export default function CountryDetailPage() {
           countriesData = await getGlobalTourismCountries();
         } else if (category === "visit") {
           countriesData = await getVisitCountries();
+        } else if (category === "study") {
+          countriesData = await getStudyCountries();
         } else {
           countriesData = getCountriesByCategory(category) as Country[];
         }
@@ -114,11 +127,12 @@ export default function CountryDetailPage() {
         setLoading(true);
         const tableName =
           category === "study" ? "study_country" : "visa_country";
+        const dbName = countryName.toLowerCase();
         const { data, error } = await supabase
           .from(tableName)
           .select("*")
-          .eq("name", countryName)
-          .single();
+          .eq("name", dbName)
+          .maybeSingle();
 
         if (error && Object.keys(error).length > 0) {
           setFetchError(
@@ -138,16 +152,24 @@ export default function CountryDetailPage() {
               : data.key_aspects,
             quick_info: typeof data.quick_info === 'string' 
               ? JSON.parse(data.quick_info) 
-              : data.quick_info
+              : data.quick_info,
           };
           console.log('Processed country data:', processedData);
           setCountryData(processedData);
           setFetchError(null);
           
-          // Fetch related countries for visit category
-          if (category === "visit" && data.continent) {
-            const related = await getRelatedVisitCountries(countryName, data.continent, 5);
-            setRelatedCountries(related);
+          // Fetch related countries for visit, study, and global-tourism categories
+          if ((category === "visit" || category === "study" || category === "global-tourism") && data.continent) {
+            if (category === "visit") {
+              const related = await getRelatedVisitCountries(dbName, data.continent, 5);
+              setRelatedCountries(related);
+            } else if (category === "study") {
+              const related = await getRelatedStudyCountries(dbName, data.continent, 5);
+              setRelatedCountries(related);
+            } else if (category === "global-tourism") {
+              const related = await getRelatedGlobalTourismCountries(dbName, data.continent, 5);
+              setRelatedCountries(related);
+            }
           }
         }
         setLoading(false);
@@ -171,6 +193,36 @@ export default function CountryDetailPage() {
     data: CountryVisaData | CountryStudyData | null
   ): data is CountryVisaData => {
     return category === "visit" && data !== null && "req_docs" in data;
+  };
+
+  // Helper function to format text with bold key phrases
+  const formatTextWithBold = (text: string): string => {
+    if (!text) return '';
+    
+    // Split by lines and process each line
+    return text.split('\n').map(line => {
+      // Skip empty lines
+      if (!line.trim()) return line;
+      
+      // Pattern to match key phrases followed by colon or dash
+      const patterns = [
+        // For visit category patterns
+        /^([^:–]+[:\–])\s*(.*)$/,
+        // For study category patterns like "Average Annual Fee in Cyprus:"
+        /^([^:]+:)\s*(.*)$/,
+      ];
+      
+      for (const pattern of patterns) {
+        const match = line.match(pattern);
+        if (match) {
+          const [, keyPhrase, description] = match;
+          return `<strong style="color: #B90C1C; font-weight: bold;">${keyPhrase.trim()}</strong> ${description.trim()}`;
+        }
+      }
+      
+      // If no pattern matches, return the line as is
+      return line;
+    }).join('<br/>');
   };
 
   if (!country) {
@@ -355,6 +407,82 @@ export default function CountryDetailPage() {
               {country.name.replace("-", " ")}
             </Typography>
 
+            {/* Key Aspects Cards for Study Category */}
+            {!loading &&
+              isStudyData(countryData) &&
+              countryData?.key_aspects && (
+                <Box sx={{ mb: 4 }}>
+                  <Grid2 container spacing={3}>
+                    {countryData.key_aspects.tuition_fees && (
+                      <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Card
+                          sx={{
+                            p: 3,
+                            textAlign: "center",
+                            height: "100%",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <AccountBalanceWalletIcon
+                            sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                          />
+                          <Typography variant="h6" fontWeight="bold" mb={1}>
+                            Tuition Fees
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {countryData.key_aspects.tuition_fees}
+                          </Typography>
+                        </Card>
+                      </Grid2>
+                    )}
+                    {countryData.key_aspects.living_costs && (
+                      <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Card
+                          sx={{
+                            p: 3,
+                            textAlign: "center",
+                            height: "100%",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <PersonIcon
+                            sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                          />
+                          <Typography variant="h6" fontWeight="bold" mb={1}>
+                            Living Costs
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {countryData.key_aspects.living_costs}
+                          </Typography>
+                        </Card>
+                      </Grid2>
+                    )}
+                    {countryData.key_aspects.scholarships && (
+                      <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Card
+                          sx={{
+                            p: 3,
+                            textAlign: "center",
+                            height: "100%",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <SendIcon
+                            sx={{ fontSize: 40, color: "#B90C1C", mb: 2 }}
+                          />
+                          <Typography variant="h6" fontWeight="bold" mb={1}>
+                            Scholarships
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {countryData.key_aspects.scholarships}
+                          </Typography>
+                        </Card>
+                      </Grid2>
+                    )}
+                  </Grid2>
+                </Box>
+              )}
+
             {/* Key Aspects Cards - Above Overview */}
             {!loading &&
               isVisaData(countryData) &&
@@ -476,7 +604,7 @@ export default function CountryDetailPage() {
             <Box sx={{ "& > *": { mb: 2 } }}>
               {category === "study" && isStudyData(countryData) ? (
                 <>
-                  <Accordion title="Eligibility Criteria">
+                  {/* <Accordion title="Eligibility Criteria">
                     <Box
                       sx={{
                         "& ul": {
@@ -502,9 +630,9 @@ export default function CountryDetailPage() {
                           "<p>Minimum eligibility criteria for study applications:</p><ul><li>Completed secondary education</li><li>English language proficiency</li><li>Financial support proof</li><li>Academic transcripts</li></ul>",
                       }}
                     />
-                  </Accordion>
+                  </Accordion> */}
 
-                  <Accordion title="Step-by-Step Application Guide">
+                  <Accordion title="Finances">
                     <Box
                       sx={{
                         "& ul": {
@@ -523,12 +651,9 @@ export default function CountryDetailPage() {
                         },
                       }}
                       dangerouslySetInnerHTML={{
-                        __html:
-                          countryData?.guide
-                            ?.replace(/\n/g, "</li><li>")
-                            .replace(/^/, "<li>")
-                            .replace(/$/, "</li>") ??
-                          "<ol><li>Research and choose your institution</li><li>Submit application with required documents</li><li>Receive offer letter</li><li>Apply for student visa</li><li>Prepare for departure</li></ol>",
+                        __html: countryData?.finances
+                          ? formatTextWithBold(countryData.finances)
+                          : "<p><strong style='color: #B90C1C; font-weight: bold;'>Research and choose your institution:</strong> Select your preferred university</p><p><strong style='color: #B90C1C; font-weight: bold;'>Submit application with required documents:</strong> Complete application process</p><p><strong style='color: #B90C1C; font-weight: bold;'>Receive offer letter:</strong> Get acceptance from university</p><p><strong style='color: #B90C1C; font-weight: bold;'>Apply for student visa:</strong> Submit visa application</p><p><strong style='color: #B90C1C; font-weight: bold;'>Prepare for departure:</strong> Final preparations for travel</p>",
                       }}
                     />
                   </Accordion>
@@ -551,12 +676,9 @@ export default function CountryDetailPage() {
                         },
                       }}
                       dangerouslySetInnerHTML={{
-                        __html:
-                          countryData?.req_adm
-                            ?.replace(/\n/g, "</li><li>")
-                            .replace(/^/, "<ul><li>")
-                            .replace(/$/, "</li></ul>") ??
-                          "<ul><li>Academic transcripts</li><li>Language proficiency certificates</li><li>Personal statement</li><li>Reference letters</li></ul>",
+                        __html: countryData?.req_adm
+                          ? formatTextWithBold(countryData.req_adm)
+                          : "<p><strong style='color: #B90C1C; font-weight: bold;'>Academic transcripts:</strong> Official academic records</p><p><strong style='color: #B90C1C; font-weight: bold;'>Language proficiency certificates:</strong> IELTS/TOEFL scores</p><p><strong style='color: #B90C1C; font-weight: bold;'>Personal statement:</strong> Statement of purpose</p><p><strong style='color: #B90C1C; font-weight: bold;'>Reference letters:</strong> Academic references</p>",
                       }}
                     />
                   </Accordion>
@@ -579,12 +701,9 @@ export default function CountryDetailPage() {
                         },
                       }}
                       dangerouslySetInnerHTML={{
-                        __html:
-                          countryData?.req_visa
-                            ?.replace(/\n/g, "</li><li>")
-                            .replace(/^/, "<ul><li>")
-                            .replace(/$/, "</li></ul>") ??
-                          "<ul><li>Visa application fee</li><li>Confirmation of acceptance</li><li>Financial documents</li><li>Biometric data</li></ul>",
+                        __html: countryData?.req_visa
+                          ? formatTextWithBold(countryData.req_visa)
+                          : "<p><strong style='color: #B90C1C; font-weight: bold;'>Visa application fee:</strong> Required visa processing fee</p><p><strong style='color: #B90C1C; font-weight: bold;'>Confirmation of acceptance:</strong> University acceptance letter</p><p><strong style='color: #B90C1C; font-weight: bold;'>Financial documents:</strong> Bank statements and financial proof</p><p><strong style='color: #B90C1C; font-weight: bold;'>Biometric data:</strong> Fingerprints and photo</p>",
                       }}
                     />
                   </Accordion>
@@ -607,9 +726,9 @@ export default function CountryDetailPage() {
                         },
                       }}
                       dangerouslySetInnerHTML={{
-                        __html:
-                          countryData?.additional ??
-                          "<p>Additional helpful information for study applications:</p><ul><li>Processing times and fees</li><li>Embassy contact details</li><li>Important deadlines</li><li>Support resources</li></ul>",
+                        __html: countryData?.additional
+                          ? formatTextWithBold(countryData.additional)
+                          : "<p>Additional helpful information for study applications:</p><p><strong style='color: #B90C1C; font-weight: bold;'>Processing times and fees:</strong> Current processing information</p><p><strong style='color: #B90C1C; font-weight: bold;'>Embassy contact details:</strong> Embassy contact information</p><p><strong style='color: #B90C1C; font-weight: bold;'>Important deadlines:</strong> Key application deadlines</p><p><strong style='color: #B90C1C; font-weight: bold;'>Support resources:</strong> Helpful resources and support</p>",
                       }}
                     />
                   </Accordion>
@@ -617,7 +736,7 @@ export default function CountryDetailPage() {
               ) : (
                 /* Visit category accordions */
                 <>
-                  <Accordion title="General Checklist (All Applicants)" defaultOpen>
+                  <Accordion title={<>General Checklist{" "}<span style={{ fontSize: "0.85rem", fontWeight: "normal" }}>(All Applicants)</span></>}defaultOpen>
                     <Box
                       sx={{
                         "& ul": {
@@ -643,13 +762,13 @@ export default function CountryDetailPage() {
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
-                          ? countryData.req_docs
-                          : "<p>Required documents for your application:</p><ul><li>Valid Passport</li><li>National Identity Card (CNIC)</li><li>Recent photographs</li><li>Application form</li></ul>",
+                          ? formatTextWithBold(countryData.req_docs)
+                          : "<p>Required documents for your application:</p><ul><li><strong style='color: #B90C1C; font-weight: bold;'>Valid Passport:</strong> Current and valid passport</li><li><strong style='color: #B90C1C; font-weight: bold;'>National Identity Card (CNIC):</strong> Valid CNIC</li><li><strong style='color: #B90C1C; font-weight: bold;'>Recent photographs:</strong> Passport size photos</li><li><strong style='color: #B90C1C; font-weight: bold;'>Application form:</strong> Completed application form</li></ul>",
                       }}
                     />
                   </Accordion>
 
-                  <Accordion title="Employed Applicants (Job Holders)">
+                  <Accordion title={<>Employed Applicants{" "}<span style={{ fontSize: "0.85rem", fontWeight: "normal" }}>(Job Holders)</span></>}>
                     <Box
                       sx={{
                         "& ul": {
@@ -675,8 +794,8 @@ export default function CountryDetailPage() {
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
-                          ? countryData.employed
-                          : "<p>Additional requirements for employed applicants:</p><ul><li>Employment certificate</li><li>Salary certificate</li><li>Bank statements</li><li>Leave approval letter</li></ul>",
+                          ? formatTextWithBold(countryData.employed)
+                          : "<p>Additional requirements for employed applicants:</p><ul><li><strong style='color: #B90C1C; font-weight: bold;'>Employment certificate:</strong> From current employer</li><li><strong style='color: #B90C1C; font-weight: bold;'>Salary certificate:</strong> Recent salary proof</li><li><strong style='color: #B90C1C; font-weight: bold;'>Bank statements:</strong> Last 3 months</li><li><strong style='color: #B90C1C; font-weight: bold;'>Leave approval letter:</strong> Approved leave letter</li></ul>",
                       }}
                     />
                   </Accordion>
@@ -707,8 +826,8 @@ export default function CountryDetailPage() {
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
-                          ? countryData.self_employed
-                          : "<p>Requirements for self-employed applicants:</p><ul><li>Business registration documents</li><li>Tax returns</li><li>Business bank statements</li><li>Income proof</li></ul>",
+                          ? formatTextWithBold(countryData.self_employed)
+                          : "<p>Requirements for self-employed applicants:</p><ul><li><strong style='color: #B90C1C; font-weight: bold;'>Business registration documents:</strong> Valid business registration</li><li><strong style='color: #B90C1C; font-weight: bold;'>Tax returns:</strong> Recent tax returns</li><li><strong style='color: #B90C1C; font-weight: bold;'>Business bank statements:</strong> Last 6 months</li><li><strong style='color: #B90C1C; font-weight: bold;'>Income proof:</strong> Business income documentation</li></ul>",
                       }}
                     />
                   </Accordion>
@@ -739,8 +858,8 @@ export default function CountryDetailPage() {
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
-                          ? countryData.unemployed
-                          : "<p>Requirements for unemployed applicants:</p><ul><li>Sponsor documents</li><li>Financial support proof</li><li>Relationship certificates</li><li>Sponsor&apos;s income proof</li></ul>",
+                          ? formatTextWithBold(countryData.unemployed)
+                          : "<p>Requirements for unemployed applicants:</p><ul><li><strong style='color: #B90C1C; font-weight: bold;'>Sponsor documents:</strong> Valid sponsor documentation</li><li><strong style='color: #B90C1C; font-weight: bold;'>Financial support proof:</strong> Bank statements and income proof</li><li><strong style='color: #B90C1C; font-weight: bold;'>Relationship certificates:</strong> Proof of relationship with sponsor</li><li><strong style='color: #B90C1C; font-weight: bold;'>Sponsor's income proof:</strong> Sponsor's financial documentation</li></ul>",
                       }}
                     />
                   </Accordion>
@@ -770,8 +889,8 @@ export default function CountryDetailPage() {
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
-                          ? countryData.additional
-                          : "<p>Additional helpful information:</p><ul><li>Processing times and fees</li><li>Embassy contact details</li><li>Important deadlines and schedules</li><li>FAQ and support resources</li></ul>",
+                          ? formatTextWithBold(countryData.additional)
+                          : "<p>Additional helpful information:</p><ul><li><strong style='color: #B90C1C; font-weight: bold;'>Processing times and fees:</strong> Current processing information</li><li><strong style='color: #B90C1C; font-weight: bold;'>Embassy contact details:</strong> Embassy contact information</li><li><strong style='color: #B90C1C; font-weight: bold;'>Important deadlines and schedules:</strong> Key dates and timelines</li><li><strong style='color: #B90C1C; font-weight: bold;'>FAQ and support resources:</strong> Frequently asked questions</li></ul>",
                       }}
                     />
                   </Accordion>
@@ -802,8 +921,8 @@ export default function CountryDetailPage() {
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
-                          ? countryData.considerations
-                          : "<p>Please read the following Key Considerations:</p><ul><li>All documents must be original or properly attested</li><li>Application processing time may vary</li><li>Fees are non-refundable</li><li>Additional documents may be requested</li></ul>",
+                          ? formatTextWithBold(countryData.considerations)
+                          : "<p>Please read the following Key Considerations:</p><ul><li><strong style='color: #B90C1C; font-weight: bold;'>All documents must be original or properly attested:</strong> No photocopies accepted</li><li><strong style='color: #B90C1C; font-weight: bold;'>Application processing time may vary:</strong> Processing times are estimates</li><li><strong style='color: #B90C1C; font-weight: bold;'>Fees are non-refundable:</strong> Application fees cannot be refunded</li><li><strong style='color: #B90C1C; font-weight: bold;'>Additional documents may be requested:</strong> Embassy may request more documents</li></ul>",
                       }}
                     />
                   </Accordion>
@@ -834,8 +953,8 @@ export default function CountryDetailPage() {
                       }}
                       dangerouslySetInnerHTML={{
                         __html: isVisaData(countryData)
-                          ? countryData.terms
-                          : "<p>Please read the following terms and conditions carefully:</p><ul><li>All documents must be original or properly attested</li><li>Application processing time may vary</li><li>Fees are non-refundable</li><li>Additional documents may be requested</li></ul>",
+                          ? formatTextWithBold(countryData.terms)
+                          : "<p>Please read the following terms and conditions carefully:</p><ul><li><strong style='color: #B90C1C; font-weight: bold;'>All documents must be original or properly attested:</strong> No photocopies accepted</li><li><strong style='color: #B90C1C; font-weight: bold;'>Application processing time may vary:</strong> Processing times are estimates</li><li><strong style='color: #B90C1C; font-weight: bold;'>Fees are non-refundable:</strong> Application fees cannot be refunded</li><li><strong style='color: #B90C1C; font-weight: bold;'>Additional documents may be requested:</strong> Embassy may request more documents</li></ul>",
                       }}
                     />
                   </Accordion>
@@ -843,8 +962,10 @@ export default function CountryDetailPage() {
               )}
             </Box>
 
-            {/* Disclaimer Section - Only for visit category */}
-            {category === "visit" && !loading && isVisaData(countryData) && countryData?.disclaimer && (
+            {/* Disclaimer Section - For both visit and study categories */}
+            {!loading && 
+              ((category === "visit" && isVisaData(countryData) && countryData?.disclaimer) ||
+               (category === "study" && isStudyData(countryData) && countryData?.disclaimer)) && (
               <Box
                 sx={{
                   mt: 4,
@@ -887,8 +1008,8 @@ export default function CountryDetailPage() {
               </Box>
             )}
 
-            {/* Recommendations Section - Within main content for visit category */}
-            {category === "visit" && !loading && relatedCountries.length > 0 && (
+            {/* Recommendations Section - Within main content for visit, study, and global-tourism categories */}
+            {!loading && relatedCountries.length > 0 && (category === "visit" || category === "study" || category === "global-tourism") && (
               <Box sx={{ mt: 6 }}>
                 <Box>
               <Box sx={{ textAlign: "center", mb: 4 }}>
@@ -901,7 +1022,7 @@ export default function CountryDetailPage() {
                     fontSize: { xs: "1.5rem", md: "2rem" }
                   }}
                 >
-                  ✈️ Explore More {country?.continent} Destinations
+                  {category === "study" ? "🎓" : category === "global-tourism" ? "🌍" : "✈️"} Explore More {country?.continent} {category === "study" ? "Study" : category === "global-tourism" ? "Destinations" : "Destinations"}
                 </Typography>
                 <Typography
                   variant="body1"
@@ -912,14 +1033,14 @@ export default function CountryDetailPage() {
                     lineHeight: 1.6
                   }}
                 >
-                  Discover other amazing countries in {country?.continent} that might interest you
+                  Discover other amazing countries in {country?.continent} for {category === "study" ? "study opportunities" : category === "global-tourism" ? "tourism" : "travel"}
                 </Typography>
               </Box>
               
               <Grid2 container spacing={3}>
                 {relatedCountries.map((relatedCountry, index) => (
                   <Grid2 size={{ xs: 6, sm: 4, md: 3, lg: 2.4 }} key={index}>
-                    <Link href={`/visit/${relatedCountry.name.toLowerCase()}`}>
+                    <Link href={`/${category}/${relatedCountry.name.toLowerCase()}`}>
                       <Card
                         sx={{
                           p: 3,
@@ -1000,7 +1121,7 @@ export default function CountryDetailPage() {
                               fontSize: "0.75rem"
                             }}
                           >
-                            Visa Information
+                            {category === "study" ? "Study Information" : category === "global-tourism" ? "Tourism Information" : "Visa Information"}
                           </Typography>
                         </Box>
                       </Card>
@@ -1017,7 +1138,7 @@ export default function CountryDetailPage() {
                     fontStyle: "italic"
                   }}
                 >
-                  Click on any country to explore visa requirements and travel information
+                  Click on any country to explore {category === "study" ? "study requirements and opportunities" : category === "global-tourism" ? "tourism packages and travel information" : "visa requirements and travel information"}
                 </Typography>
               </Box>
                 </Box>
@@ -1082,6 +1203,33 @@ export default function CountryDetailPage() {
                         </Typography>
                       </Box>
                     )}
+                    {countryData.consultancy_charges && (
+                      <Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            mb: 0.5,
+                          }}
+                        >
+                          <HandshakeIcon
+                            sx={{ fontSize: 24, color: "#B90C1C" }}
+                          />
+                          <Typography variant="body1" fontWeight="medium">
+                            Consultancy Charges
+                          </Typography>
+                        </Box>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          paddingLeft={1}
+                        >
+                          {countryData.consultancy_charges}
+                        </Typography>
+                      </Box>
+                    )}
+
                     {countryData.quick_info.interview && (
                       <Box>
                         <Box
@@ -1133,9 +1281,95 @@ export default function CountryDetailPage() {
                   </Box>
                 )}
 
+              {/* Eligibility Criteria for Study Category */}
+              {!loading &&
+                isStudyData(countryData) &&
+                countryData?.eligibility_crit && (
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" fontWeight="bold" mb={2}>
+                      Eligibility Criteria
+                    </Typography>
+                    <Box
+                      sx={{
+                        p: 2,
+                        bgcolor: "rgba(185, 12, 28, 0.05)",
+                        borderRadius: 2,
+                        border: "1px solid rgba(185, 12, 28, 0.2)",
+                        maxHeight: 300,
+                        overflowY: "auto",
+                        "& ul": {
+                          listStyleType: "disc",
+                          paddingLeft: "1.5rem",
+                          mb: 2,
+                        },
+                        "& li": {
+                          marginBottom: "0.5rem",
+                          lineHeight: 1.6,
+                          fontSize: "0.9rem",
+                        },
+                        "& p": {
+                          marginBottom: "1rem",
+                          lineHeight: 1.7,
+                          fontSize: "0.9rem",
+                        },
+                      }}
+                    >
+                      {(() => {
+                        try {
+                          // Try to parse as JSON first
+                          const eligibilityData = JSON.parse(countryData.eligibility_crit);
+                          return (
+                            <Box>
+                              {eligibilityData.minimum_education && (
+                                <Box sx={{ mb: 2 }}>
+                                  <Typography variant="subtitle2" fontWeight="bold" color="#B90C1C" mb={0.5}>
+                                    Minimum Education:
+                                  </Typography>
+                                  <Typography variant="body2">
+                                    {eligibilityData.minimum_education}
+                                  </Typography>
+                                </Box>
+                              )}
+                              {eligibilityData.minimum_marks && (
+                                <Box sx={{ mb: 2 }}>
+                                  <Typography variant="subtitle2" fontWeight="bold" color="#B90C1C" mb={0.5}>
+                                    Minimum Marks:
+                                  </Typography>
+                                  <Typography variant="body2">
+                                    {eligibilityData.minimum_marks}
+                                  </Typography>
+                                </Box>
+                              )}
+                              {eligibilityData.educational_gap && (
+                                <Box sx={{ mb: 2 }}>
+                                  <Typography variant="subtitle2" fontWeight="bold" color="#B90C1C" mb={0.5}>
+                                    Educational Gap:
+                                  </Typography>
+                                  <Typography variant="body2">
+                                    {eligibilityData.educational_gap}
+                                  </Typography>
+                                </Box>
+                              )}
+                            </Box>
+                          );
+                        } catch (error) {
+                          // Fallback to HTML rendering if not valid JSON
+                          return (
+                            <Box
+                              dangerouslySetInnerHTML={{
+                                __html: countryData.eligibility_crit.replace(/\n/g, "<br/>"),
+                              }}
+                            />
+                          );
+                        }
+                      })()}
+                    </Box>
+                  </Box>
+                )}
+
               <Box sx={{ mb: 3 }}>
                 <Typography variant="h6" fontWeight="bold" mb={1}>
-                  Need Help?
+                  Apply Now
                 </Typography>
                 <Typography variant="body2" color="text.secondary" mb={2}>
                   Contact our expert consultants for personalized assistance
@@ -1160,8 +1394,16 @@ export default function CountryDetailPage() {
                   📞 Expert Consultation
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Get professional guidance for your{" "}
-                  {category.replace("-", " ")} application to{" "}
+                  Contact{" "}
+                  <a
+                    href="https://wa.me/923259555999"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "#25D366", textDecoration: "none", fontWeight: 500 }}
+                  >
+                    0325 9555 999
+                  </a>{" "}
+                  for expert guidance on your {category.replace("-", " ")} application to{" "}
                   {country.name.replace("-", " ")}.
                 </Typography>
               </Box>
