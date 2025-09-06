@@ -5,8 +5,6 @@ import {
   Container,
   Typography,
   Card,
-  CardMedia,
-  CardContent,
   Breadcrumbs,
   Skeleton,
   Alert,

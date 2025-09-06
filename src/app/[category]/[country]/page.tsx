@@ -1352,7 +1352,7 @@ export default function CountryDetailPage() {
                               )}
                             </Box>
                           );
-                        } catch (error) {
+                        } catch {
                           // Fallback to HTML rendering if not valid JSON
                           return (
                             <Box
