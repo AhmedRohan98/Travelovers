@@ -1,63 +1,31 @@
 import { Country, TouristPlace } from "@/components/Countries";
 import { supabase } from "@/lib/supabase/server";
 
-export const studyCountries: Country[] = [
-  {
-    name: "United-Kingdom",
-    flag: "/assets/countries/study/flags/united_kingdom.png",
-    continent: "Europe",
-  },
-  {
-    name: "USA",
-    flag: "/assets/countries/study/flags/usa.png",
-    continent: "North America",
-  },
-  {
-    name: "Canada",
-    flag: "/assets/countries/study/flags/canada.png",
-    continent: "North America",
-  },
-  {
-    name: "Australia",
-    flag: "/assets/countries/study/flags/australia.png",
-    continent: "Australia",
-  },
-  {
-    name: "Cyprus",
-    flag: "/assets/countries/study/flags/cyprus.png",
-    continent: "Europe",
-  },
-  {
-    name: "Germany",
-    flag: "/assets/countries/study/flags/germany.png",
-    continent: "Europe",
-  },
-  {
-    name: "Italy",
-    flag: "/assets/countries/study/flags/italy.png",
-    continent: "Europe",
-  },
-  {
-    name: "Belgium",
-    flag: "/assets/countries/study/flags/belgium.png",
-    continent: "Europe",
-  },
-  {
-    name: "France",
-    flag: "/assets/countries/study/flags/france.png",
-    continent: "Europe",
-  },
-  {
-    name: "Hungary",
-    flag: "/assets/countries/study/flags/hungary.png",
-    continent: "Europe",
-  },
-  {
-    name: "Austria",
-    flag: "/assets/countries/study/flags/austria.png",
-    continent: "Europe",
-  },
-];
+// Static studyCountries array removed - now using dynamic data from study_country table
+
+// Async function to fetch study countries from Supabase
+export async function getStudyCountries(): Promise<Country[]> {
+  try {
+    const { data, error } = await supabase
+      .from('study_country')
+      .select('name, flag, continent');
+
+    if (error) {
+      console.error('Error fetching study countries data:', error);
+      return [];
+    }
+
+    // Transform the data to match the Country interface
+    return data.map((item: { name: string; flag: string; continent: string }) => ({
+      name: item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase(),
+      flag: item.flag,
+      continent: item.continent,
+    }));
+  } catch (error) {
+    console.error('Error in getStudyCountries:', error);
+    return [];
+  }
+}
 
 // Static visitCountries array removed - now using dynamic data from visit_country table
 
@@ -86,28 +54,60 @@ export async function getVisitCountries(): Promise<Country[]> {
   }
 }
 
-// Function to get related countries by continent (excluding current country)
+// Function to get related countries by continent (excluding current country) with randomization
 export async function getRelatedVisitCountries(currentCountryName: string, continent: string, limit: number = 5): Promise<Country[]> {
   try {
     const { data, error } = await supabase
       .from('visa_country')
       .select('name, flags, continent')
       .eq('continent', continent)
-      .neq('name', currentCountryName.toLowerCase())
-      .limit(limit);
+      .neq('name', currentCountryName.toLowerCase());
 
     if (error) {
       console.error('Error fetching related visit countries:', error);
       return [];
     }
 
-    return data.map((item: { name: string; flags: string; continent: string }) => ({
+    // Shuffle the array to get random results
+    const shuffled = data.sort(() => 0.5 - Math.random());
+    const limited = shuffled.slice(0, limit);
+
+    return limited.map((item: { name: string; flags: string; continent: string }) => ({
       name: item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase(),
       flag: item.flags,
       continent: item.continent,
     }));
   } catch (error) {
     console.error('Error in getRelatedVisitCountries:', error);
+    return [];
+  }
+}
+
+// Function to get related study countries by continent (excluding current country) with randomization
+export async function getRelatedStudyCountries(currentCountryName: string, continent: string, limit: number = 5): Promise<Country[]> {
+  try {
+    const { data, error } = await supabase
+      .from('study_country')
+      .select('name, flag, continent')
+      .eq('continent', continent)
+      .neq('name', currentCountryName.toLowerCase());
+
+    if (error) {
+      console.error('Error fetching related study countries:', error);
+      return [];
+    }
+
+    // Shuffle the array to get random results
+    const shuffled = data.sort(() => 0.5 - Math.random());
+    const limited = shuffled.slice(0, limit);
+
+    return limited.map((item: { name: string; flag: string; continent: string }) => ({
+      name: item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase(),
+      flag: item.flag,
+      continent: item.continent,
+    }));
+  } catch (error) {
+    console.error('Error in getRelatedStudyCountries:', error);
     return [];
   }
 }
@@ -131,6 +131,35 @@ export async function getGlobalTourismCountries(): Promise<Country[]> {
     }));
   } catch (error) {
     console.error('Error in getGlobalTourismCountries:', error);
+    return [];
+  }
+}
+
+// Function to get related global tourism countries by continent (excluding current country) with randomization
+export async function getRelatedGlobalTourismCountries(currentCountryName: string, continent: string, limit: number = 5): Promise<Country[]> {
+  try {
+    const { data, error } = await supabase
+      .from('international_tourism')
+      .select('destination, flag, continent')
+      .eq('continent', continent)
+      .neq('destination', currentCountryName.toLowerCase());
+
+    if (error) {
+      console.error('Error fetching related global tourism countries:', error);
+      return [];
+    }
+
+    // Shuffle the array to get random results
+    const shuffled = data.sort(() => 0.5 - Math.random());
+    const limited = shuffled.slice(0, limit);
+
+    return limited.map((item: { destination: string; flag: string; continent: string }) => ({
+      name: item.destination.charAt(0).toUpperCase() + item.destination.slice(1).toLowerCase(),
+      flag: item.flag,
+      continent: item.continent,
+    }));
+  } catch (error) {
+    console.error('Error in getRelatedGlobalTourismCountries:', error);
     return [];
   }
 }
@@ -189,7 +218,8 @@ export function getCountriesByCategory(
 ): Country[] | TouristPlace[] {
   switch (category) {
     case "study":
-      return studyCountries;
+      // For study, use the async function getStudyCountries()
+      throw new Error("Use getStudyCountries() for study category");
     case "visit":
       // For visit, use the async function getVisitCountries()
       throw new Error("Use getVisitCountries() for visit category");
@@ -199,7 +229,7 @@ export function getCountriesByCategory(
       // For global-tourism, use the async function getGlobalTourismCountries()
       throw new Error("Use getGlobalTourismCountries() for global-tourism category");
     default:
-      return studyCountries;
+      throw new Error("Use getStudyCountries() for study category");
   }
 }
 
@@ -209,7 +239,7 @@ export async function getCountriesByCategoryAsync(
 ): Promise<Country[] | TouristPlace[]> {
   switch (category) {
     case "study":
-      return studyCountries;
+      return await getStudyCountries();
     case "visit":
       return await getVisitCountries();
     case "national-tourism":
@@ -217,6 +247,6 @@ export async function getCountriesByCategoryAsync(
     case "global-tourism":
       return await getGlobalTourismCountries();
     default:
-      return studyCountries;
+      return await getStudyCountries();
   }
 }

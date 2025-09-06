@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Container,
@@ -12,41 +14,67 @@ import {
   ListItem,
   ListItemText,
   Breadcrumbs,
+  Skeleton,
+  Alert,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/server";
 
-const blogs = [
-  {
-    id: 1,
-    title: "Wonders of Ancient Civilizations A Journey Through Egypt",
-    description:
-      "Discover the timeless wonders of Egypt in a journey through ancient civilizations and majestic landscapes.",
-    image: "/egypt.jpg",
-    date: "March 25, 2025",
-    category: "Travel",
-  },
-  {
-    id: 2,
-    title: "The Road to Adventure Embarking on New Horizons",
-    description:
-      "Explore new destinations, embrace the thrill of the road, and find beauty in the journey.",
-    image: "/road.jpg",
-    date: "March 24, 2025",
-    category: "Adventure",
-  },
-  {
-    id: 3,
-    title: "Journeys of Discovery Uncovering Hidden Treasures",
-    description:
-      "Join us as we uncover hidden gems and tales of mystery from around the globe.",
-    image: "/treasure.jpg",
-    date: "March 23, 2025",
-    category: "Discovery",
-  },
-];
+interface Blog {
+  id: number;
+  title: string;
+  introduction: string;
+  content: string;
+  image1: string | null;
+  image2: string | null;
+  image3: string | null;
+  created_at: string;
+}
 
 export default function BlogPage() {
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('id, title, introduction, content, image1, image2, image3, created_at')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching blogs:', error);
+          setError('Failed to load blogs');
+        } else {
+          setBlogs(data || []);
+        }
+      } catch (err) {
+        console.error('Error in fetchBlogs:', err);
+        setError('Failed to load blogs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const getBlogImage = (blog: Blog) => {
+    return blog.image1 || blog.image2 || blog.image3 || '/assets/hero1.jpg';
+  };
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
       <Box
@@ -102,28 +130,56 @@ export default function BlogPage() {
       <Grid container spacing={4}>
         {/* Blog Posts */}
         <Grid size={{ xs: 12, md: 8 }}>
-          {blogs.map((blog) => (
-            <Card key={blog.id} sx={{ display: "flex", mb: 4 }}>
-              <CardMedia
-                component="img"
-                sx={{ width: 200 }}
-                image={blog.image}
-                alt={blog.title}
-              />
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <CardContent>
-                  <Typography variant="caption" color="textSecondary">
-                    {blog.date} • {blog.category}
-                  </Typography>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    {blog.title}
-                  </Typography>
-                  <Typography variant="body2">{blog.description}</Typography>
-                </CardContent>
-              </Box>
-            </Card>
-          ))}
-          <Pagination count={3} shape="rounded" />
+          {loading ? (
+            // Loading skeletons
+            Array.from({ length: 3 }).map((_, index) => (
+              <Card key={index} sx={{ display: "flex", mb: 4 }}>
+                <Skeleton variant="rectangular" width={200} height={150} />
+                <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                  <CardContent>
+                    <Skeleton variant="text" width="60%" height={20} />
+                    <Skeleton variant="text" width="80%" height={30} />
+                    <Skeleton variant="text" width="100%" height={60} />
+                  </CardContent>
+                </Box>
+              </Card>
+            ))
+          ) : error ? (
+            <Alert severity="error" sx={{ mb: 4 }}>
+              {error}
+            </Alert>
+          ) : blogs.length === 0 ? (
+            <Alert severity="info" sx={{ mb: 4 }}>
+              No blogs found.
+            </Alert>
+          ) : (
+            blogs.map((blog) => (
+              <Link key={blog.id} href={`/blogs/${blog.id}`} style={{ textDecoration: 'none' }}>
+                <Card sx={{ display: "flex", mb: 4, cursor: 'pointer', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                  <CardMedia
+                    component="img"
+                    sx={{ width: 200, height: 150, objectFit: 'cover' }}
+                    image={getBlogImage(blog)}
+                    alt={blog.title}
+                  />
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                    <CardContent>
+                      <Typography variant="caption" color="textSecondary">
+                        {formatDate(blog.created_at)}
+                      </Typography>
+                      <Typography variant="h6" fontWeight="bold" gutterBottom>
+                        {blog.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {blog.introduction}
+                      </Typography>
+                    </CardContent>
+                  </Box>
+                </Card>
+              </Link>
+            ))
+          )}
+          {blogs.length > 0 && <Pagination count={Math.ceil(blogs.length / 6)} shape="rounded" />}
         </Grid>
 
         {/* Sidebar */}
@@ -137,28 +193,28 @@ export default function BlogPage() {
 
           <Box mb={4}>
             <Typography variant="h6" fontWeight="bold" mb={1}>
-              Popular Post
+              Recent Posts
             </Typography>
             <List>
-              {blogs.map((blog) => (
-                <ListItem key={blog.id} disablePadding>
-                  <ListItemText primary={blog.title} secondary={blog.date} />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-
-          <Box mb={4}>
-            <Typography variant="h6" fontWeight="bold" mb={1}>
-              Category
-            </Typography>
-            <List>
-              {[...new Set(blogs.map((blog) => blog.category))].map(
-                (cat, i) => (
-                  <ListItem key={i} disablePadding>
-                    <ListItemText primary={cat} />
+              {loading ? (
+                Array.from({ length: 3 }).map((_, index) => (
+                  <ListItem key={index} disablePadding>
+                    <Skeleton variant="text" width="100%" height={40} />
                   </ListItem>
-                )
+                ))
+              ) : (
+                blogs.slice(0, 5).map((blog) => (
+                  <Link key={blog.id} href={`/blogs/${blog.id}`} style={{ textDecoration: 'none' }}>
+                    <ListItem disablePadding sx={{ cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' } }}>
+                      <ListItemText 
+                        primary={blog.title} 
+                        secondary={formatDate(blog.created_at)}
+                        primaryTypographyProps={{ fontSize: '0.9rem' }}
+                        secondaryTypographyProps={{ fontSize: '0.8rem' }}
+                      />
+                    </ListItem>
+                  </Link>
+                ))
               )}
             </List>
           </Box>
