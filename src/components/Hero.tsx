@@ -1,10 +1,29 @@
 "use client";
 
-import { Box, Button, Paper, Typography, Divider } from "@mui/material";
+import { 
+  Box, 
+  Button, 
+  Paper, 
+  Typography, 
+  Modal, 
+  Card, 
+  CardContent, 
+  Grid,
+  Avatar,
+  Chip,
+  CircularProgress,
+  Backdrop
+} from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getCountriesByCategoryAsync } from "@/lib/data/countries";
+import { Country, TouristPlace } from "@/components/Countries";
+import Image from "next/image";
 
 const carouselImages = [
   "/assets/hero1.jpg",
@@ -50,37 +69,236 @@ const Hero = () => {
 
 /** Quick Bar Component */
 const HeroQuickBar = () => {
+  const [travelTypeModalOpen, setTravelTypeModalOpen] = useState(false);
+  const [destinationModalOpen, setDestinationModalOpen] = useState(false);
+  const [selectedTravelType, setSelectedTravelType] = useState<string>("");
+  const [destinations, setDestinations] = useState<(Country | TouristPlace)[]>([]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const travelTypes = [
+    { 
+      value: "visit", 
+      label: "Visit/Visa", 
+      icon: "🌍", 
+      description: "Explore visa requirements and travel information" 
+    },
+    { 
+      value: "study", 
+      label: "Study", 
+      icon: "🎓", 
+      description: "Find study opportunities abroad" 
+    },
+    { 
+      value: "national-tourism", 
+      label: "National Tourism", 
+      icon: "🏔️", 
+      description: "Discover beautiful places in Pakistan" 
+    },
+    { 
+      value: "global-tourism", 
+      label: "Global Tourism", 
+      icon: "✈️", 
+      description: "Explore international destinations" 
+    }
+  ];
+
+  // Helper function to generate route based on category and destination name
+  const generateRoute = (category: string, destinationName: string): string => {
+    const slug = destinationName.toLowerCase().replace(/\s+/g, '-');
+    
+    if (category === "national-tourism" || category === "global-tourism") {
+      return `/${category}/${slug}/trip-packages`;
+    } else {
+      return `/${category}/${slug}`;
+    }
+  };
+
+  // Load destinations when travel type is selected
+  useEffect(() => {
+    if (selectedTravelType) {
+      setLoading(true);
+      
+      // Fetch all destinations from database for any category
+      getCountriesByCategoryAsync(selectedTravelType)
+        .then((data) => {
+          setDestinations(data);
+        })
+        .catch((error) => {
+          console.error("Error loading destinations:", error);
+          setDestinations([]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [selectedTravelType]);
+
+  const handleTravelTypeSelect = (travelType: string) => {
+    setSelectedTravelType(travelType);
+    setTravelTypeModalOpen(false);
+    setDestinationModalOpen(true);
+  };
+
+  const handleDestinationSelect = (destination: string) => {
+    // Generate route based on category and destination name
+    const route = generateRoute(selectedTravelType, destination);
+    router.push(route);
+    setDestinationModalOpen(false);
+    // Reset state
+    setSelectedTravelType("");
+    setDestinations([]);
+  };
+
+  const handleTravelTypeModalOpen = () => {
+    setTravelTypeModalOpen(true);
+    setSelectedTravelType("");
+    setDestinations([]);
+  };
+
+  const handleTravelTypeModalClose = () => {
+    setTravelTypeModalOpen(false);
+    setSelectedTravelType("");
+    setDestinations([]);
+  };
+
+  const handleDestinationModalClose = () => {
+    setDestinationModalOpen(false);
+    setSelectedTravelType("");
+    setDestinations([]);
+  };
+
   return (
-    <Box sx={styles.quickBar}>
-      <Box sx={styles.quickBarContent}>
-        <HeroQuickBarItem icon={<LocationOnIcon />} label="WHERE TO?" />
-        <Divider orientation="vertical" flexItem sx={styles.divider} />
-        <HeroQuickBarItem icon={<TravelExploreIcon />} label="TRAVEL TYPE" />
-        <Divider orientation="vertical" flexItem sx={styles.divider} />
-        <HeroQuickBarItem icon={<CalendarMonthIcon />} label="MONTH" />
+    <>
+      <Box sx={styles.quickBar}>
+        <Button 
+          variant="contained" 
+          color="secondary" 
+          sx={styles.searchButton}
+          onClick={handleTravelTypeModalOpen}
+          startIcon={<SearchIcon />}
+        >
+          Plan Your Journey
+        </Button>
       </Box>
 
-      {/* FIND NOW Button */}
-      <Button variant="contained" color="secondary" sx={styles.findNowButton}>
-        FIND NOW
-      </Button>
-    </Box>
+      {/* Travel Type Selection Modal */}
+      <Modal
+        open={travelTypeModalOpen}
+        onClose={handleTravelTypeModalClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Box sx={styles.modalContainer}>
+          <Card sx={styles.modalCard}>
+            <Box sx={styles.modalHeader}>
+              <Typography variant="h4" sx={styles.modalTitle}>
+                Choose Travel Type
+              </Typography>
+              <Button onClick={handleTravelTypeModalClose} sx={styles.closeButton}>
+                <CloseIcon />
+              </Button>
+            </Box>
+
+            <CardContent sx={styles.modalContent}>
+              <Grid container spacing={3}>
+                {travelTypes.map((type) => (
+                  <Grid item xs={12} sm={6} key={type.value}>
+                    <Card
+                      sx={styles.typeCard}
+                      onClick={() => handleTravelTypeSelect(type.value)}
+                    >
+                      <CardContent sx={styles.typeCardContent}>
+                        <Typography variant="h3" sx={styles.typeIcon}>
+                          {type.icon}
+                        </Typography>
+                        <Typography variant="h6" sx={styles.typeLabel}>
+                          {type.label}
+                        </Typography>
+                        <Typography variant="body2" sx={styles.typeDescription}>
+                          {type.description}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          </Card>
+        </Box>
+      </Modal>
+
+      {/* Destination Selection Modal */}
+      <Modal
+        open={destinationModalOpen}
+        onClose={handleDestinationModalClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Box sx={styles.modalContainer}>
+          <Card sx={styles.modalCard}>
+            <Box sx={styles.modalHeader}>
+              <Typography variant="h4" sx={styles.modalTitle}>
+                Choose Destination
+              </Typography>
+              <Button onClick={handleDestinationModalClose} sx={styles.closeButton}>
+                <CloseIcon />
+              </Button>
+            </Box>
+
+            <CardContent sx={styles.modalContent}>
+              {loading ? (
+                <Box sx={styles.loadingContainer}>
+                  <CircularProgress />
+                  <Typography variant="body2" sx={{ mt: 2 }}>
+                    Loading destinations...
+                  </Typography>
+                </Box>
+              ) : (
+                <Grid container spacing={2}>
+                  {destinations.map((item, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                      <Card
+                        sx={styles.destinationCard}
+                        onClick={() => handleDestinationSelect(item.name)}
+                      >
+                        <CardContent sx={styles.destinationCardContent}>
+                          <Avatar
+                            sx={styles.destinationAvatar}
+                            src={item.flag || item.imageUrl}
+                          >
+                            {item.name.charAt(0)}
+                          </Avatar>
+                          <Typography variant="subtitle1" sx={styles.destinationName}>
+                            {item.name.replace("-", " ")}
+                          </Typography>
+                          {item.continent && (
+                            <Chip 
+                              label={item.continent} 
+                              size="small" 
+                              sx={styles.continentChip}
+                            />
+                          )}
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+      </Modal>
+    </>
   );
 };
 
-/** Quick Bar Item */
-const HeroQuickBarItem = ({
-  icon,
-  label,
-}: {
-  icon: React.ReactNode;
-  label: string;
-}) => (
-  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-    {icon}
-    <Typography sx={{ color: "white" }}>{label}</Typography>
-  </Box>
-);
 
 /** Styles */
 const styles = {
@@ -112,42 +330,165 @@ const styles = {
     color: "white",
     zIndex: 2,
   },
+  
   quickBar: {
     position: "absolute",
     bottom: "25px",
     left: "50%",
     transform: "translateX(-50%)",
-    width: "60%",
-    height: "100px",
-    background: "#6D8821",
-    borderRadius: "50px",
-    padding: "15px 20px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
     zIndex: 10,
-    border: "4px solid #EDEDED",
+    animation: "jump 3s infinite",
+    "@keyframes jump": {
+      "0%, 100%": {
+        transform: "translateX(-50%) translateY(0)", // start + end at ground
+      },
+      "5%": {
+        transform: "translateX(-50%) translateY(-8px)", // hop up
+      },
+      "10%": {
+        transform: "translateX(-50%) translateY(0)", // land
+      },
+      "15%": {
+        transform: "translateX(-50%) translateY(-8px)", // hop up again
+      },
+      "20%": {
+        transform: "translateX(-50%) translateY(0)", // land again
+      },
+    },
   },
-  quickBarContent: {
-    display: "flex",
-    gap: "60px",
-    marginLeft: "20px",
-    flex: 1,
-    height: "100%",
-  },
-  divider: {
-    borderColor: "white",
-  },
-  findNowButton: {
-    borderRadius: "0px 50px 50px 0px",
+  
+  searchButton: {
+    borderRadius: "50px",
     padding: "15px 40px",
     fontWeight: "bold",
-    fontSize: "16px",
-    minHeight: "92px",
+    fontSize: "18px",
+    minHeight: "60px",
+    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+    background: "linear-gradient(135deg, #B90C1C 0%, #dc2626 100%)",
+    border: "3px solid #fff",
+    "&:hover": {
+      background: "linear-gradient(135deg, #a00a18 0%, #b91c1c 100%)",
+      transform: "translateY(-2px)",
+      boxShadow: "0 12px 40px rgba(0, 0, 0, 0.4)",
+    },
+    transition: "all 0.3s ease",
+  },
+  // Modal Styles
+  modalContainer: {
     position: "absolute",
-    right: 0,
-    top: 0,
-    boxShadow: "none",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: { xs: "95%", sm: "90%", md: "80%", lg: "70%" },
+    maxWidth: "1000px",
+    maxHeight: "90vh",
+    outline: "none",
+  },
+  modalCard: {
+    borderRadius: 3,
+    boxShadow: "0 24px 48px rgba(0, 0, 0, 0.3)",
+    overflow: "hidden",
+  },
+  modalHeader: {
+    background: "linear-gradient(135deg, #B90C1C 0%, #dc2626 100%)",
+    color: "white",
+    p: 3,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontWeight: "bold",
+    fontSize: { xs: "1.5rem", sm: "2rem" },
+  },
+  closeButton: {
+    color: "white",
+    minWidth: "auto",
+    p: 1,
+    "&:hover": {
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+    },
+  },
+  modalContent: {
+    p: 4,
+    maxHeight: "70vh",
+    overflowY: "auto",
+  },
+  sectionContainer: {
+    mb: 4,
+  },
+  sectionTitle: {
+    fontWeight: "bold",
+    color: "#B90C1C",
+    mb: 3,
+    fontSize: "1.25rem",
+  },
+  // Travel Type Card Styles
+  typeCard: {
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    border: "2px solid #e0e0e0",
+    "&:hover": {
+      transform: "translateY(-4px)",
+      boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+      borderColor: "#B90C1C",
+    },
+  },
+  typeCardContent: {
+    textAlign: "center",
+    p: 3,
+  },
+  typeIcon: {
+    mb: 2,
+    fontSize: "3rem",
+  },
+  typeLabel: {
+    fontWeight: "bold",
+    color: "#B90C1C",
+    mb: 1,
+  },
+  typeDescription: {
+    color: "#666",
+    fontSize: "0.9rem",
+  },
+  // Destination Card Styles
+  destinationCard: {
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    border: "2px solid #e0e0e0",
+    "&:hover": {
+      transform: "translateY(-2px)",
+      boxShadow: "0 6px 20px rgba(0, 0, 0, 0.1)",
+      borderColor: "#B90C1C",
+    },
+  },
+  destinationCardContent: {
+    textAlign: "center",
+    p: 2,
+  },
+  destinationAvatar: {
+    width: 60,
+    height: 60,
+    mx: "auto",
+    mb: 2,
+    border: "3px solid #e0e0e0",
+  },
+  destinationName: {
+    fontWeight: "bold",
+    color: "#333",
+    mb: 1,
+  },
+  continentChip: {
+    backgroundColor: "#f0f0f0",
+    color: "#666",
+    fontSize: "0.75rem",
+  },
+  // Loading Styles
+  loadingContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    py: 4,
   },
 };
 

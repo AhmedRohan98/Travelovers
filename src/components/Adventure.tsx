@@ -3,62 +3,105 @@ import React, { useState } from "react";
 import { Box, Paper } from "@mui/material";
 import { GenericTabs } from "./Tabs";
 import Grid from "@mui/material/Grid2";
+import { useRouter } from "next/navigation";
 
 export type TabKey = "Road_to_Adventure" | "Study_Abroad" | "Travel_With_Us";
 
 const tabSections = {
   Road_to_Adventure: [
     {
-      src: "https://images.unsplash.com/photo-1464817739973-0128fe77aaa1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Asia",
+      src: "/assets/places/neelum-valley.jpg",
+      title: "Neelum Valley",
+      route: "/national-tourism/neelum-valley/trip-packages",
     },
     {
-      src: "https://images.unsplash.com/photo-1580619305218-8423a7ef79b4?q=80&w=2074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "South America",
+      src: "/assets/places/swat-valley.jpg",
+      title: "Swat Valley",
+      route: "/national-tourism/swat-valley/trip-packages",
     },
     {
-      src: "https://images.unsplash.com/photo-1515451061725-639f7e2893a6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "North America",
+      src: "/assets/places/kumrat.jpg",
+      title: "Kumrat",
+      route: "/national-tourism/kumrat/trip-packages",
     },
     {
-      src: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=2130&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Australia",
+      src: "/assets/places/naran.jpg",
+      title: "Naran",
+      route: "/national-tourism/naran/trip-packages",
     },
     {
-      src: "https://images.unsplash.com/photo-1608817576203-3c27ed168bd2?q=80&w=1984&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Europe",
+      src: "/assets/places/gilgit.jpg",
+      title: "Gilgit",
+      route: "/national-tourism/gilgit/trip-packages",
     },
     {
-      src: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Africa",
+      src: "/assets/places/fairy-meadow.jpg",
+      title: "Fairy Meadows",
+      route: "/national-tourism/fairy-meadows/trip-packages",
     },
   ],
   Study_Abroad: [
     {
-      src: "https://images.unsplash.com/photo-1622397333309-3056849bc70b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Harvard",
+      src: "/assets/countries/visit/place/united-kingdom.jpg",
+      title: "United Kingdom",
+      route: "/study/united-kingdom",
     },
     {
-      src: "https://images.unsplash.com/photo-1579628151787-e17a97e79feb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Oxford",
+      src: "/assets/countries/visit/place/cyprus.jpg",
+      title: "Cyprus",
+      route: "/study/cyprus",
     },
     {
-      src: "https://images.unsplash.com/photo-1619139079319-ba9ff149a8c2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Stanford",
+      src: "/assets/countries/visit/place/australia.jpg",
+      title: "Australia",
+      route: "/study/australia",
+    },
+    {
+      src: "/assets/countries/visit/place/italy.jpg",
+      title: "Italy",
+      route: "/study/italy",
+    },
+    {
+      src: "/assets/countries/visit/place/france.jpg",
+      title: "France",
+      route: "/study/france",
+    },
+    {
+      src: "/assets/countries/visit/place/usa.jpg",
+      title: "USA",
+      route: "/study/usa",
     },
   ],
   Travel_With_Us: [
     {
-      src: "https://images.unsplash.com/photo-1431274172761-fca41d930114?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Paris",
+      src: "/assets/global/baku.jpg",
+      title: "Baku",
+      route: "/global-tourism/baku/trip-packages",
     },
     {
-      src: "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "London",
+      src: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Turkey",
+      route: "/global-tourism/turkey/trip-packages",
     },
     {
-      src: "https://plus.unsplash.com/premium_photo-1661914240950-b0124f20a5c1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Tokyo",
+      src: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Singapore",
+      route: "/global-tourism/singapore/trip-packages",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Dubai",
+      route: "/global-tourism/dubai/trip-packages",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Thailand",
+      route: "/global-tourism/thailand/trip-packages",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1534329539061-64caeb388c42?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Malaysia",
+      route: "/global-tourism/malaysia/trip-packages",
     },
   ],
 };
@@ -66,7 +109,12 @@ const tabSections = {
 const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const router = useRouter();
   const images = tabSections[activeTab];
+
+  const handleDestinationClick = (route: string) => {
+    router.push(route);
+  };
 
   // Determine the number of columns based on screen size
   const getColumnCount = () => {
@@ -121,6 +169,7 @@ const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
                       setHoveredIndex(null);
                       setHoveredRow(null);
                     }}
+                    onClick={() => handleDestinationClick(image.route)}
                     sx={{
                       position: "relative",
                       width: "100%",

@@ -155,7 +155,7 @@ export default function BlogPage() {
           ) : (
             blogs.map((blog) => (
               <Link key={blog.id} href={`/blogs/${blog.id}`} style={{ textDecoration: 'none' }}>
-                <Card sx={{ display: "flex", mb: 4, cursor: 'pointer', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                <Card sx={{ display: "flex", mb: 4, cursor: "pointer", boxShadow: "0px 2px 6px rgba(0,0,0,0.08)", transition: "all 0.3s ease", "&:hover": { transform: "translateY(-3px)", boxShadow: "0px 8px 20px rgba(0,0,0,0.25)" } }}>
                   <CardMedia
                     component="img"
                     sx={{ width: 200, height: 150, objectFit: 'cover' }}
@@ -167,12 +167,48 @@ export default function BlogPage() {
                       <Typography variant="caption" color="textSecondary">
                         {formatDate(blog.created_at)}
                       </Typography>
-                      <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      <Typography
+                        variant="h5"
+                        component="h2"
+                        fontWeight="bold"
+                        gutterBottom
+                        sx={{
+                          fontSize: { xs: "1.0rem", md: "1.25rem" }, // smaller and scalable
+                          lineHeight: 1.2,
+                          letterSpacing: "0.3px",
+                          color: "#222",
+                          position: "relative",
+                          display: "inline-block",
+                          pb: 0.8, // space for underline
+                          "&::after": {
+                            content: '""',
+                            position: "absolute",
+                            left: 0,
+                            bottom: 0,
+                            width: "50%", // short decorative underline
+                            height: "3px",
+                            borderRadius: "2px",
+                            background: "linear-gradient(90deg,rgb(255, 47, 0), #FF4500)", // softer orange-red gradient
+                          },
+                        }}
+                      >
                         {blog.title}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2, // show max 3 lines
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
                         {blog.introduction}
                       </Typography>
+
                     </CardContent>
                   </Box>
                 </Card>
@@ -224,7 +260,7 @@ export default function BlogPage() {
               Popular Tags
             </Typography>
             <Box display="flex" flexWrap="wrap" gap={1}>
-              {["Travel", "Adventure", "Culture", "Nature"].map((tag, i) => (
+              {["Hunza", "Annual Leaves", "North", "Nature"].map((tag, i) => (
                 <Button key={i} variant="outlined" size="small">
                   {tag}
                 </Button>

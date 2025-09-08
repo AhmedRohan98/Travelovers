@@ -26,6 +26,7 @@ interface Blog {
   image2: string | null;
   image3: string | null;
   created_at: string;
+  seo_keywords: string;
 }
 
 export default function BlogDetailPage() {
@@ -41,7 +42,7 @@ export default function BlogDetailPage() {
         setLoading(true);
         const { data, error } = await supabase
           .from('blogs')
-          .select('id, title, introduction, content, image1, image2, image3, created_at')
+          .select('id, title, introduction, content, image1, image2, image3, seo_keywords, created_at')
           .eq('id', blogId)
           .single();
 
@@ -132,62 +133,156 @@ export default function BlogDetailPage() {
       </Box>
 
       {/* Introduction */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h6" sx={{ mb: 2, lineHeight: 1.7, fontSize: '1.1rem' }}>
+      <Box sx={{ 
+        mb: 6,
+        p: 4,
+        borderRadius: 2,
+        bgcolor: '#f8f9fa',
+        border: '1px solid #e9ecef',
+        borderLeft: '4px solid #B90C1C'
+      }}>
+        <Typography variant="h6" sx={{ 
+          mb: 0, 
+          lineHeight: 1.7, 
+          fontSize: '1.1rem',
+          color: '#495057',
+          fontStyle: 'italic'
+        }}>
           {blog.introduction}
         </Typography>
       </Box>
 
-      {/* Images */}
-      {images.length > 0 && (
-        <Box sx={{ mb: 4 }}>
-          <Grid container spacing={2}>
-            {images.map((image, index) => (
-              <Grid key={index} size={{ xs: 12, md: images.length === 1 ? 12 : 6 }}>
-                <Card sx={{ overflow: 'hidden' }}>
+      {/* Main Content Layout */}
+      <Grid container spacing={4}>
+        {/* Left Column - Content */}
+        <Grid size={{ xs: 12, lg: 8 }}>
+          {/* Content */}
+          <Box sx={{ mb: 4 }}>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                lineHeight: 1.8, 
+                fontSize: '1.1rem',
+                '& p': { mb: 2 },
+                '& h1, & h2, & h3, & h4, & h5, & h6': { 
+                  mt: 3, 
+                  mb: 2, 
+                  color: '#B90C1C',
+                  fontWeight: 'bold'
+                },
+                '& ul, & ol': { 
+                  pl: 3, 
+                  mb: 2 
+                },
+                '& li': { 
+                  mb: 1 
+                }
+              }}
+              dangerouslySetInnerHTML={{ __html: blog.content }}
+            />
+          </Box>
+
+          {/* Popular Tags */}
+          {blog.seo_keywords && (
+            <Box
+              sx={{
+                mb: 4,
+                p: 2,
+                borderRadius: 1,
+                bgcolor: "#fafafa",
+                border: "1px solid #f0f0f0",
+                opacity: 0.8
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{ mb: 1.5, fontSize: "0.75rem", color: "#999", fontWeight: 400 }}
+              >
+                Tags
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {blog.seo_keywords.split(",").map((tag, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      px: 1.5,
+                      py: 0.3,
+                      borderRadius: "12px",
+                      fontSize: "0.7rem",
+                      color: "#666",
+                      bgcolor: "#f5f5f5",
+                      border: "1px solid #e0e0e0",
+                      fontWeight: 400,
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        bgcolor: '#e0e0e0',
+                        color: '#333'
+                      }
+                    }}
+                  >
+                    {tag.trim()}
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
+        </Grid>
+
+        {/* Right Column - Images Sidebar */}
+        {images.length > 0 && (
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <Box sx={{ 
+              position: { lg: 'sticky' },
+              top: 20,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 26
+            }}>
+              {images.map((image, index) => (
+                <Card 
+                  key={index} 
+                  sx={{ 
+                    overflow: 'hidden',
+                    borderRadius: 2,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    transition: 'transform 0.2s ease-in-out',
+                    border: '1px solid #e9ecef',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.15)'
+                    }
+                  }}
+                >
                   <Image
                     src={image}
-                    alt={`${blog.title} - Image ${index + 1}`}
-                    width={600}
-                    height={400}
+                    alt={`${blog.title}`}
+                    width={280}
+                    height={200}
                     style={{
                       width: '100%',
-                      height: 'auto',
+                      height: '200px',
                       objectFit: 'cover',
                     }}
                   />
+                  <Box sx={{ p: 2, bgcolor: '#fafafa' }}>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: '#495057',
+                        fontSize: '0.875rem',
+                        lineHeight: 1.4,
+                        fontStyle: 'italic'
+                      }}
+                    >
+                      {blog.title} - Image {index + 1}
+                    </Typography>
+                  </Box>
                 </Card>
-              </Grid>
-            ))}
+              ))}
+            </Box>
           </Grid>
-        </Box>
-      )}
-
-      {/* Content */}
-      <Box sx={{ mb: 4 }}>
-        <Typography 
-          variant="body1" 
-          sx={{ 
-            lineHeight: 1.8, 
-            fontSize: '1.1rem',
-            '& p': { mb: 2 },
-            '& h1, & h2, & h3, & h4, & h5, & h6': { 
-              mt: 3, 
-              mb: 2, 
-              color: '#B90C1C',
-              fontWeight: 'bold'
-            },
-            '& ul, & ol': { 
-              pl: 3, 
-              mb: 2 
-            },
-            '& li': { 
-              mb: 1 
-            }
-          }}
-          dangerouslySetInnerHTML={{ __html: blog.content }}
-        />
-      </Box>
+        )}
+      </Grid>
 
       {/* Back to Blogs */}
       <Box sx={{ mt: 6, pt: 4, borderTop: '1px solid #e0e0e0' }}>
