@@ -15,15 +15,12 @@ import {
   Backdrop
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCountriesByCategoryAsync } from "@/lib/data/countries";
 import { Country, TouristPlace } from "@/components/Countries";
-import Image from "next/image";
 
 const carouselImages = [
   "/assets/hero1.jpg",
@@ -271,16 +268,16 @@ const HeroQuickBar = () => {
                         <CardContent sx={styles.destinationCardContent}>
                           <Avatar
                             sx={styles.destinationAvatar}
-                            src={item.flag || item.imageUrl}
+                            src={'flag' in item ? item.flag : item.imageUrl}
                           >
                             {item.name.charAt(0)}
                           </Avatar>
                           <Typography variant="subtitle1" sx={styles.destinationName}>
                             {item.name.replace("-", " ")}
                           </Typography>
-                          {item.continent && (
+                          {('continent' in item ? item.continent : item.region) && (
                             <Chip 
-                              label={item.continent} 
+                              label={'continent' in item ? item.continent : item.region} 
                               size="small" 
                               sx={styles.continentChip}
                             />
@@ -330,7 +327,7 @@ const styles = {
     color: "white",
     zIndex: 2,
   },
-  
+
   quickBar: {
     position: "absolute",
     bottom: "25px",
