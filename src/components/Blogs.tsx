@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -7,45 +9,36 @@ import {
   CardContent,
   CardMedia,
   Typography,
+  Skeleton,
+  Alert,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-
-const blogs = [
-  {
-    id: 1,
-    title: "Cultural Encounters and Connections Cruise Booking and Packages",
-    date: "October 19, 2022",
-    author: "admin",
-    image:
-      "https://images.unsplash.com/photo-1510132310763-2df322eed83f?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    description:
-      "Lorem Ipsum is simply dummy text the printing and typesetting industry...",
-  },
-  {
-    id: 2,
-    title: "Remote Destinations and Hideaways",
-    date: "October 19, 2022",
-    author: "admin",
-    image:
-      "https://images.unsplash.com/photo-1681566800657-f931a87b0caa?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    description:
-      "Lorem Ipsum is simply dummy text the printing and typesetting industry...",
-  },
-  {
-    id: 3,
-    title: "Hiking Through Nature's Beauty",
-    date: "October 19, 2022",
-    author: "admin",
-    image:
-      "https://images.unsplash.com/photo-1472396961693-142e6e269027?q=80&w=2152&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    description:
-      "Lorem Ipsum is simply dummy text the printing and typesetting industry...",
-  },
-];
+import Link from "next/link";
+import { getHomepageBlogs, getBlogImage, formatBlogDate, type Blog } from "@/lib/data/blogs";
 
 const BlogSection = () => {
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setLoading(true);
+        const data = await getHomepageBlogs();
+        setBlogs(data);
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+        setError('Failed to load blogs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
   return (
     <Box sx={{ 
       width: { xs: "95%", sm: "90%", md: "80%" }, 
@@ -74,132 +67,110 @@ const BlogSection = () => {
             Adventure Thrills and Excitement Await
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          sx={{
-            height: "100%",
-            backgroundColor: "secondary.main",
-            borderRadius: "20px",
-            "&:hover": { backgroundColor: "darkred" },
-            alignSelf: { xs: "center", sm: "flex-start" }
-          }}
-        >
-          All Blogs
-        </Button>
+        <Link href="/blogs" style={{ textDecoration: 'none' }}>
+          <Button
+            variant="contained"
+            sx={{
+              height: "100%",
+              backgroundColor: "secondary.main",
+              borderRadius: "20px",
+              "&:hover": { backgroundColor: "darkred" },
+              alignSelf: { xs: "center", sm: "flex-start" }
+            }}
+          >
+            All Blogs
+          </Button>
+        </Link>
       </Box>
 
       {/* Blog Grid */}
-      <Grid 
-        container 
-        spacing={{ xs: 2, md: 3 }}
-        sx={{ 
-          flexDirection: { xs: "column", md: "row" },
-          display: "flex",
-          flexWrap: "wrap"
-        }}
-      >
-        {/* Main Blog - Left Side on Large Screens, Full Width on Mobile */}
-        <Grid 
-        size={{xs: 12, md: 8}}
-          sx={{ 
-            order: { xs: 2, md: 1 },
-            pr: { md: 2 }
-          }}
-        >
-          <Card sx={{ 
-            borderRadius: "12px", 
-            overflow: "hidden",
-          }}>
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                image={blogs[0].image}
-                alt={blogs[0].title}
-                loading="lazy"
-                sx={{
-                  height: { xs: "200px", sm: "260px", md: "400px" },
-                  objectFit: "cover",
-                  "&:hover": { opacity: 0.9 },
-                }}
-              />
-              <CardContent>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                >
-                  <CalendarMonthIcon fontSize="inherit" />
-                  {blogs[0].date}
-                  <PersonOutlineOutlinedIcon fontSize="inherit" />
-                  {blogs[0].author}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  color="secondary"
-                  fontWeight="bold"
-                  sx={{
-                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
-                    wordBreak: "break-word",
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {blogs[0].title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {blogs[0].description}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-
-        {/* Smaller Blog Cards - Right Side on Large Screens, Stacked on Mobile */}
+      {loading ? (
+        // Loading skeletons
         <Grid 
           container 
-          size={{xs: 12, md: 4}}
-          spacing={2}
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
-          order={{xs: 2, md: 2}}
+          spacing={{ xs: 2, md: 3 }}
+          sx={{ 
+            flexDirection: { xs: "column", md: "row" },
+            display: "flex",
+            flexWrap: "wrap"
+          }}
         >
-          {blogs.slice(1).map((blog) => (
-            <Grid 
-              key={blog.id} 
-              size={{xs: 12}}
-            >
-              <Card
-                sx={{
-                  borderRadius: "12px",
-                  height: "100%",
-                  overflow: "hidden",
-                  display: "flex",
-                  flexDirection: { xs: "column", md: "row" },
-                }}
-              >
-                <CardActionArea
-                  sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", md: "row" },
-                    height: "100%",
-                  }}
-                >
+          <Grid size={{xs: 12, md: 8}} sx={{ order: { xs: 2, md: 1 }, pr: { md: 2 } }}>
+            <Card sx={{ borderRadius: "12px", overflow: "hidden" }}>
+            <Skeleton variant="rectangular" sx={{ height: { xs: 200, sm: 260, md: 400 } }}/>
+
+              <CardContent>
+                <Skeleton variant="text" width="60%" height={20} />
+                <Skeleton variant="text" width="80%" height={30} />
+                <Skeleton variant="text" width="100%" height={60} />
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid container size={{xs: 12, md: 4}} spacing={2} display="flex" flexDirection="column" order={{xs: 2, md: 2}}>
+            {[1, 2].map((index) => (
+              <Grid key={index} size={{xs: 12}}>
+                <Card sx={{ borderRadius: "12px", height: "100%", overflow: "hidden", display: "flex", flexDirection: { xs: "column", md: "row" } }}>
+                <Skeleton variant="rectangular" sx={{ width: { xs: "100%", md: 140 }, height: { xs: 200, md: "100%" }  }}/>
+                  <CardContent sx={{ flex: 1 }}>
+                    <Skeleton variant="text" width="50%" height={20} />
+                    <Skeleton variant="text" width="90%" height={25} />
+                    <Skeleton variant="text" width="100%" height={40} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      ) : error ? (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {error}
+        </Alert>
+      ) : blogs.length === 0 ? (
+        <Alert severity="info" sx={{ mb: 4 }}>
+          No blogs found.
+        </Alert>
+      ) : (
+        <Grid 
+          container 
+          spacing={{ xs: 2, md: 3 }}
+          sx={{ 
+            flexDirection: { xs: "column", md: "row" },
+            display: "flex",
+            flexWrap: "wrap"
+          }}
+        >
+          {/* Main Blog - Left Side on Large Screens, Full Width on Mobile */}
+          <Grid 
+            size={{xs: 12, md: 8}}
+            sx={{ 
+              order: { xs: 2, md: 1 },
+              pr: { md: 2 }
+            }}
+          >
+            <Link href={`/blogs/${blogs[0].id}`} style={{ textDecoration: 'none' }}>
+              <Card sx={{ 
+                borderRadius: "12px", 
+                overflow: "hidden",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                "&:hover": { 
+                  transform: "translateY(-3px)", 
+                  boxShadow: "0px 8px 20px rgba(0,0,0,0.25)" 
+                }
+              }}>
+                <CardActionArea>
                   <CardMedia
                     component="img"
-                    image={blog.image}
-                    alt={blog.title}
+                    image={getBlogImage(blogs[0])}
+                    alt={blogs[0].title}
                     loading="lazy"
                     sx={{
-                      width: { xs: "100%", md: 140 },
-                      height: { xs: 200, md: "100%" },
+                      height: { xs: "200px", sm: "260px", md: "400px" },
                       objectFit: "cover",
                       "&:hover": { opacity: 0.9 },
-                      flexShrink: 0,
                     }}
                   />
-                  <CardContent sx={{ flex: 1 }}>
+                  <CardContent>
                     <Typography
                       variant="caption"
                       color="text.secondary"
@@ -208,35 +179,139 @@ const BlogSection = () => {
                       gap={1}
                     >
                       <CalendarMonthIcon fontSize="inherit" />
-                      {blog.date}
+                      {formatBlogDate(blogs[0].created_at)}
                       <PersonOutlineOutlinedIcon fontSize="inherit" />
-                      {blog.author}
+                      admin
                     </Typography>
                     <Typography
                       variant="h6"
                       color="secondary"
                       fontWeight="bold"
                       sx={{
-                        fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" },
+                        fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
                         wordBreak: "break-word",
                         lineHeight: 1.2,
                       }}
                     >
-                      {blog.title}
+                      {blogs[0].title}
                     </Typography>
                     <Typography 
                       variant="body2" 
                       color="text.secondary"
+                      sx={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
                     >
-                      {blog.description}
+                      {blogs[0].introduction}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
               </Card>
-            </Grid>
-          ))}
+            </Link>
+          </Grid>
+
+          {/* Smaller Blog Cards - Right Side on Large Screens, Stacked on Mobile */}
+          <Grid 
+            container 
+            size={{xs: 12, md: 4}}
+            spacing={0}
+            display="flex"
+            flexDirection="column"
+            justifyContent="space-between"
+            order={{xs: 2, md: 2}}
+          >
+            {blogs.slice(1).map((blog) => (
+              <Grid 
+                key={blog.id} 
+                size={{xs: 16, md: 16}}
+              >
+                <Link href={`/blogs/${blog.id}`} style={{ textDecoration: 'none' }}>
+                  <Card
+                    sx={{
+                      borderRadius: "12px",
+                      height: "100%",
+                      overflow: "hidden",
+                      display: "flex",
+                      flexDirection: { xs: "column", md: "row" },
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                      "&:hover": { 
+                        transform: "translateY(-2px)", 
+                        boxShadow: "0px 6px 20px rgba(0,0,0,0.15)" 
+                      }
+                    }}
+                  >
+                    <CardActionArea
+                      sx={{
+                        display: "flex",
+                        flexDirection: { xs: "column", md: "row" },
+                        height: "100%",
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={getBlogImage(blog)}
+                        alt={blog.title}
+                        loading="lazy"
+                        sx={{
+                          width: { xs: 600, md: 240 },
+                          height: { xs: 400, md: "100%" },
+                          objectFit: "cover",
+                          "&:hover": { opacity: 0.9 },
+                          flexShrink: 0,
+                        }}
+                      />
+                      <CardContent sx={{ flex: 1 }}>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          display="flex"
+                          alignItems="center"
+                          gap={1}
+                        >
+                          <CalendarMonthIcon fontSize="inherit" />
+                          {formatBlogDate(blog.created_at)}
+                          <PersonOutlineOutlinedIcon fontSize="inherit" />
+                          admin
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          color="secondary"
+                          fontWeight="bold"
+                          sx={{
+                            fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" },
+                            wordBreak: "break-word",
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {blog.title}
+                        </Typography>
+                        <Typography 
+                          variant="body2" 
+                          color="text.secondary"
+                          sx={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {blog.introduction}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Link>
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Box>
   );
 };
