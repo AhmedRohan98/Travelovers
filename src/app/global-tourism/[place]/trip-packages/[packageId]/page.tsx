@@ -563,15 +563,7 @@ export default function GlobalPackageDetailPage() {
                 />
               </Typography>
             </Box>
-            <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" fontWeight="bold" mb={1}>
-                  Apply Now
-                </Typography>
-                <Typography variant="body2" color="text.secondary" mb={2}>
-                  Contact our expert consultants for personalized assistance
-                  with your application.
-                </Typography>
-              </Box>
+
             <Box
                 sx={{
                   p: 2,
@@ -586,7 +578,7 @@ export default function GlobalPackageDetailPage() {
                   color="#B90C1C"
                   mb={1}
                 >
-                  📞 Expert Consultation
+                  📞 Apply Now
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Contact{" "}
