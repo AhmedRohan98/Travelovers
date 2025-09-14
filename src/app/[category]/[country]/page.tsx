@@ -328,7 +328,7 @@ export default function CountryDetailPage() {
               ? `/assets/places/${countryName}.jpg`
               : `/assets/countries/${category}/place/${countryName}.jpg`
           }
-          alt={`${country.name} Banner`}
+          alt={`${country?.name} Banner`}
           fill
           style={{ objectFit: "cover", zIndex: 0 }}
           loading="lazy"
@@ -387,9 +387,9 @@ export default function CountryDetailPage() {
                   fontWeight: "bold",
                 }}
               >
-                {country.name.replace("-", " ")}
+                {country?.name.replace("-", " ")}
               </Typography>
-              {category !== "national-tourism" && "flag" in country && (
+              {category !== "national-tourism" && country && "flag" in country && (
                 <Box>
                   <Image
                     src={country.flag}
@@ -421,7 +421,7 @@ export default function CountryDetailPage() {
                 {category.replace("-", " ").toUpperCase()}
               </Link>
               <Typography color="white">
-                {country.name.replace("-", " ")}
+                {country?.name.replace("-", " ")}
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -444,7 +444,7 @@ export default function CountryDetailPage() {
               }}
             >
               {category.replace("-", " ")} {category === "visit" ? "" : "In"}{" "}
-              {country.name.replace("-", " ")}
+              {country?.name.replace("-", " ")}
             </Typography>
 
             {/* Key Aspects Cards for Study Category */}
@@ -635,7 +635,7 @@ export default function CountryDetailPage() {
                   }}
                 >
                   {countryData?.overview ??
-                    `Discover everything you need to know about ${category.replace("-", " ")} in ${country.name.replace("-", " ")}. Get detailed information about requirements, documentation, and processes.`}
+                    `Discover everything you need to know about ${category.replace("-", " ")} in ${country?.name.replace("-", " ")}. Get detailed information about requirements, documentation, and processes.`}
                 </Typography>
               </Box>
             )}
@@ -1466,17 +1466,7 @@ export default function CountryDetailPage() {
                     </Box>
                   </Box>
                 )}
-
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" fontWeight="bold" mb={1}>
-                  Apply Now
-                </Typography>
-                <Typography variant="body2" color="text.secondary" mb={2}>
-                  Contact our expert consultants for personalized assistance
-                  with your application.
-                </Typography>
-              </Box>
-
+                
               <Box
                 sx={{
                   p: 2,
@@ -1491,7 +1481,7 @@ export default function CountryDetailPage() {
                   color="#B90C1C"
                   mb={1}
                 >
-                  📞 Expert Consultation
+                  📞 Apply Now
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Contact{" "}
@@ -1504,7 +1494,7 @@ export default function CountryDetailPage() {
                     0325 9555 999
                   </a>{" "}
                   for expert guidance on your {category.replace("-", " ")} application to{" "}
-                  {country.name.replace("-", " ")}.
+                  {country?.name.replace("-", " ")}.
                 </Typography>
               </Box>
             </Box>
