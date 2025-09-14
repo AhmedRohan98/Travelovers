@@ -563,18 +563,46 @@ export default function GlobalPackageDetailPage() {
                 />
               </Typography>
             </Box>
+            <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" fontWeight="bold" mb={1}>
+                  Apply Now
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mb={2}>
+                  Contact our expert consultants for personalized assistance
+                  with your application.
+                </Typography>
+              </Box>
+            <Box
+                sx={{
+                  p: 2,
+                  bgcolor: "rgba(185, 12, 28, 0.05)",
+                  borderRadius: 2,
+                  border: "1px solid rgba(185, 12, 28, 0.2)",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  fontWeight="bold"
+                  color="#B90C1C"
+                  mb={1}
+                >
+                  📞 Expert Consultation
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Contact{" "}
+                  <a
+                    href="https://wa.me/923291789637"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "#25D366", textDecoration: "none", fontWeight: 500 }}
+                  >
+                    0329 1789637
+                    </a>{" "}
+                    for expert guidance on your Global Tourism application to{" "}
+                    {place}
 
-            <Button
-              variant="outlined"
-              fullWidth
-              sx={{
-                borderColor: "#B90C1C",
-                color: "#B90C1C",
-                "&:hover": { borderColor: "#a00a18", color: "#a00a18" },
-              }}
-            >
-              Contact Us
-            </Button>
+                </Typography>
+              </Box>
           </Card>
         </Grid2>
       </Grid2>

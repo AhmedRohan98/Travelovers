@@ -15,7 +15,6 @@ import {
   Backdrop
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
-import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -53,8 +52,9 @@ const Hero = () => {
           <span style={{ color: "#779431" }}>Migrate</span> with Us
         </Typography>
         <Typography variant="body1" style={{ width: "60%", margin: "0 auto" }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet
-          arcu nunc. Duis egestas ac ante sed tincidunt.
+        Travelovers helps you unlock global opportunities with ease.
+Whether it’s a study visa, a family visit, or an unforgettable tour,
+we guide you every step of the way — making your journey simple, smooth, and stress-free.
         </Typography>
       </Box>
 
@@ -173,9 +173,8 @@ const HeroQuickBar = () => {
           color="secondary" 
           sx={styles.searchButton}
           onClick={handleTravelTypeModalOpen}
-          startIcon={<SearchIcon />}
-        >
-          Plan Your Journey
+          >
+          Start Your Adventure
         </Button>
       </Box>
 

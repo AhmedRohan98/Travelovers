@@ -7,33 +7,34 @@ import { Star, ArrowBack, ArrowForward } from "@mui/icons-material";
 
 const testimonials = [
   {
-    text: "This is an amazing product! I have been using it for a year and I love it.",
-    name: "John Doe",
-    role: "Accountant",
+    text: "It was a wonderful experience with Travelovers! Their team was professional, supportive, and guided me through every step of my student visa process, ensuring everything was smooth and hassle-free. I truly appreciate their dedication and highly recommend their services!",
+    name: "Rohan Ishtiaq",
+    role: "Student",
     rating: 5,
   },
+
   {
-    text: "Excellent service and outstanding quality. Highly recommend!",
-    name: "Jane Smith",
-    role: "Marketing Manager",
-    rating: 4,
-  },
-  {
-    text: "One of the best investments I made. It has helped me a lot!",
-    name: "Alice Brown",
+    text: "I can't thank Travelovers Visa enough for their exceptional service. They handled my visit visa application with utmost professionalism and efficiency. I received my visa without any hassles. Highly recommended!",
+    name: "Amna Jutt",
     role: "CEO, StartupX",
     rating: 5,
   },
   {
-    text: "This has truly made my workflow so much smoother. Thank you!",
-    name: "Michael Lee",
-    role: "Product Designer",
-    rating: 4,
+    text: "It was a wonderful experience with travelovers. Their teams was professional, supportive and guided me in every steps of my student visa process. I truly appreciate their dedications and highly recomended their services.",
+    name: "Hashoo Khan",
+    role: "Student",
+    rating: 5,
   },
   {
-    text: "I appreciate the attention to detail and customer service.",
-    name: "Sophia Wilson",
-    role: "Freelancer",
+    text: "I recently used Travelovers for visa consulting services, and I was really impressed with the quality of their services. Their approach was very professional and efficient. They guided me at every step and provided all the necessary information in a clear and detailed manner. If you’re looking for visa-related services, I highly recommend reaching out to Travelovers. You’ll get excellent services, just like I did. Highly recommended.",
+    name: "Fouzia Abbasi",
+    role: "Traveler ",
+    rating: 5,
+  },
+  {
+    text: "Travelovers is awesome! They help with visas and make everything super easy, and I’ve seen how much they care about their clients. If you need a visa, this is the best place to go! Highly recommend!",
+    name: "Inaya Noor",
+    role: "Student",
     rating: 5,
   },
 ];
