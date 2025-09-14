@@ -98,6 +98,7 @@ export default function CountryDetailPage() {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
+        setLoading(true);
         let countriesData: Country[];
         if (category === "global-tourism") {
           countriesData = await getGlobalTourismCountries();
@@ -116,6 +117,8 @@ export default function CountryDetailPage() {
       } catch (error) {
         console.error("Error fetching countries:", error);
         setCountry(null);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -226,7 +229,43 @@ export default function CountryDetailPage() {
     }).join('<br/>');
   };
 
-  if (!country) {
+  if (!country && loading) {
+    return (
+      <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
+        {/* Header Skeleton */}
+        <Box sx={{ mb: 4 }}>
+          <Skeleton variant="rectangular" height={300} sx={{ borderRadius: 2, mb: 3 }} />
+          <Skeleton variant="text" width="60%" height={60} sx={{ mb: 2 }} />
+          <Skeleton variant="text" width="40%" height={40} sx={{ mb: 3 }} />
+        </Box>
+
+        {/* Content Skeleton */}
+        <Box sx={{ mb: 4 }}>
+          <Skeleton variant="text" width="100%" height={30} sx={{ mb: 2 }} />
+          <Skeleton variant="text" width="90%" height={30} sx={{ mb: 2 }} />
+          <Skeleton variant="text" width="80%" height={30} sx={{ mb: 2 }} />
+          <Skeleton variant="text" width="95%" height={30} sx={{ mb: 2 }} />
+        </Box>
+
+        {/* Cards Skeleton */}
+        <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton key={index} variant="rectangular" width="33%" height={200} sx={{ borderRadius: 2 }} />
+          ))}
+        </Box>
+
+        {/* Additional Content Skeleton */}
+        <Box>
+          <Skeleton variant="text" width="70%" height={40} sx={{ mb: 2 }} />
+          <Skeleton variant="text" width="100%" height={30} sx={{ mb: 1 }} />
+          <Skeleton variant="text" width="85%" height={30} sx={{ mb: 1 }} />
+          <Skeleton variant="text" width="90%" height={30} sx={{ mb: 1 }} />
+        </Box>
+      </Container>
+    );
+  }
+
+  if (!country && !loading) {
     return (
       <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
         <Box sx={{ textAlign: "center", py: 8 }}>
