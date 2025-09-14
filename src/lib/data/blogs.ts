@@ -13,7 +13,7 @@ export interface Blog {
 }
 
 // Fallback blog data
-const fallbackBlogs: Blog[] = [
+export const fallbackBlogs: Blog[] = [
   {
     id: 1,
     title: "Cultural Encounters and Connections Cruise Booking and Packages",
