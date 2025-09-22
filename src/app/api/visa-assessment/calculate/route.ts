@@ -25,8 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid answers format' }, { status: 400 })
     }
 
-    // Convert visa type string to numeric ID
-    const visaTypeId = visaType === 'study' ? 2 : 1
+    // Convert visa type string to numeric ID (not needed for max calc now)
 
     // Calculate total score
     const totalScore = answers.reduce((sum: number, answer: Answer) => sum + answer.points, 0)

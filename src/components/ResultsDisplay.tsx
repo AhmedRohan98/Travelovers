@@ -6,7 +6,6 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown'
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import DownloadIcon from '@mui/icons-material/Download'
 import ShareIcon from '@mui/icons-material/Share'
 
 interface AssessmentResult {
@@ -44,6 +43,7 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
       case 'Low':
         return <TrendingDownIcon className="w-8 h-8 text-red-500" />
     }
+    return null
   }
 
   const getApprovalColor = () => {
@@ -55,6 +55,7 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
       case 'Low':
         return 'text-red-600 bg-red-100'
     }
+    return 'text-gray-600 bg-gray-100'
   }
 
   const getScoreColor = () => {
@@ -140,14 +141,16 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
         <div className="border-b border-gray-100">
           <nav className="flex space-x-8 px-6">
-            {[
-              { id: 'overview', label: 'Overview' },
-              { id: 'recommendations', label: 'Recommendations' },
-              { id: 'details', label: 'Details' }
-            ].map((tab) => (
+            {(
+              [
+                { id: 'overview', label: 'Overview' },
+                { id: 'recommendations', label: 'Recommendations' },
+                { id: 'details', label: 'Details' }
+              ] as Array<{ id: 'overview' | 'recommendations' | 'details'; label: string }>
+            ).map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id)}
                 className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'

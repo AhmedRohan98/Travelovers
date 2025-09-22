@@ -93,7 +93,7 @@ export default function QuestionCard({
       {/* Options */}
       <div className="bg-white rounded-b-2xl p-6">
         <div className="space-y-3">
-          {question.options.map((option, index) => (
+          {question.options.map((option) => (
             <button
               key={option.id}
               onClick={() => handleOptionSelect(option)}

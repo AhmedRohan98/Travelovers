@@ -1,10 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import VisaTypeSelector from '@/components/VisaTypeSelector'
 import QuestionCard from '@/components/QuestionCard'
 import AssessmentProgress from '@/components/AssessmentProgress'
@@ -120,14 +118,7 @@ export default function VisaAssessmentPage() {
     }
   }
 
-  const moveToNextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1)
-    } else {
-      // Assessment complete, calculate results
-      calculateResults()
-    }
-  }
+  // Removed sequential fallback to satisfy strict leads-only flow
 
   const goBack = () => {
     if (questionHistory.length > 0) {

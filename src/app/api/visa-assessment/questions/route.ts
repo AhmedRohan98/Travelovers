@@ -46,11 +46,24 @@ export async function GET(request: NextRequest) {
     }
 
     // Format the response using correct column names
-    const formattedQuestions = questions?.map(question => ({
+    type DBOption = {
+      id: number
+      option: string
+      points: number
+      leads_to_question_id: number | null
+    }
+
+    type DBQuestion = {
+      id: number
+      question: string
+      options: DBOption[]
+    }
+
+    const formattedQuestions = (questions as DBQuestion[] | null)?.map((question) => ({
       id: question.id,
       text: question.question,
       visa_type: visaTypeParam, // Use the original visaType string for consistency
-      options: question.options.map(option => ({
+      options: (question.options as DBOption[]).map((option) => ({
         id: option.id,
         text: option.option,
         points: option.points,

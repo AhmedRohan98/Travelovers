@@ -25,7 +25,7 @@ export default function VisaTypeSelector({ onSelect, loading }: VisaTypeSelector
           Choose Your Visa Type
         </h2>
         <p className="text-lg text-gray-600">
-          Select the type of visa you're applying for to get a personalized assessment
+          Select the type of visa you&apos;re applying for to get a personalized assessment
         </p>
       </div>
 
@@ -118,7 +118,7 @@ export default function VisaTypeSelector({ onSelect, loading }: VisaTypeSelector
 
       <div className="text-center mt-8">
         <p className="text-sm text-gray-500">
-          Don't worry - you can change your selection at any time during the assessment
+          Don&apos;t worry - you can change your selection at any time during the assessment
         </p>
       </div>
     </div>
