@@ -3,7 +3,6 @@ import React, { ReactNode, useState } from "react";
 import { Box, Typography, Collapse, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CircleIcon from "@mui/icons-material/Circle";
 
 interface MyAccordionProps {
   title: ReactNode;
@@ -43,17 +42,7 @@ export const Accordion: React.FC<MyAccordionProps> = ({
   return (
     <AccordionContainer>
       <AccordionHeader onClick={() => setOpen(!open)}>
-        <Typography variant="h6">
-          <IconButton
-            size="small"
-            sx={{
-              transform: open ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 0.2s ease-in-out",
-              color: "#fff",
-            }}
-          >
-            <CircleIcon />
-          </IconButton>
+        <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           {title}
         </Typography>
         <IconButton

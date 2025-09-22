@@ -158,7 +158,6 @@ export default function CountryDetailPage() {
               ? JSON.parse(data.quick_info) 
               : data.quick_info,
           };
-          console.log('Processed country data:', processedData);
           setCountryData(processedData);
           setFetchError(null);
           
@@ -644,33 +643,7 @@ export default function CountryDetailPage() {
             <Box sx={{ "& > *": { mb: 2 } }}>
               {category === "study" && isStudyData(countryData) ? (
                 <>
-                  {/* <Accordion title="Eligibility Criteria">
-                    <Box
-                      sx={{
-                        "& ul": {
-                          listStyleType: "disc",
-                          paddingLeft: "1.5rem",
-                          mb: 2,
-                        },
-                        "& li": {
-                          marginBottom: "0.5rem",
-                          lineHeight: 1.6,
-                        },
-                        "& p": {
-                          marginBottom: "1rem",
-                          lineHeight: 1.7,
-                        },
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          countryData?.eligibility_crit?.replace(
-                            /\n/g,
-                            "<br/>"
-                          ) ??
-                          "<p>Minimum eligibility criteria for study applications:</p><ul><li>Completed secondary education</li><li>English language proficiency</li><li>Financial support proof</li><li>Academic transcripts</li></ul>",
-                      }}
-                    />
-                  </Accordion> */}
+                  
 
 <Accordion title="Admission Requirements" defaultOpen>
                     <Box
@@ -1392,9 +1365,6 @@ export default function CountryDetailPage() {
                     <Box
                       sx={{
                         p: 2,
-                        bgcolor: "rgba(185, 12, 28, 0.05)",
-                        borderRadius: 2,
-                        border: "1px solid rgba(185, 12, 28, 0.2)",
                         maxHeight: 300,
                         overflowY: "auto",
                         "& ul": {
