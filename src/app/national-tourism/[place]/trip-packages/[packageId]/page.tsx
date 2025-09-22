@@ -75,14 +75,6 @@ export default function PackageDetailPage() {
           return;
         }
 
-        console.log("Fetching package data for:", {
-          packageId: packageIdStr,
-          place: placeStr,
-        });
-        console.log("Parameter types:", {
-          packageIdType: typeof packageIdStr,
-          placeType: typeof placeStr,
-        });
 
         // Fetch package data
         const { data: packageData, error: packageError } = await supabase
@@ -92,7 +84,6 @@ export default function PackageDetailPage() {
           .eq("destination", placeStr)
           .single();
 
-        console.log("Package query result:", { packageData, packageError });
 
         if (packageError) {
           setError("Failed to fetch package details. Please try again later.");
@@ -109,11 +100,7 @@ export default function PackageDetailPage() {
 
         setPackageData(packageData);
 
-        // Fetch itinerary data for debugging
-        console.log(
-          "Attempting to fetch itinerary for packageId:",
-          packageIdStr
-        );
+        // Fetch itinerary data
 
         try {
           // Use the JOIN query as specified:
@@ -129,10 +116,6 @@ export default function PackageDetailPage() {
             .eq("trip_id", parseInt(packageIdStr))
             .eq("trips.destination", placeStr.toLowerCase());
 
-          console.log("Itinerary JOIN query result:", {
-            itineraryData,
-            itineraryError,
-          });
 
           if (itineraryError) {
             console.error("Itinerary fetch error:", itineraryError);

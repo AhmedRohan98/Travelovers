@@ -89,7 +89,6 @@ export default function GlobalPackageDetailPage() {
           return;
         }
 
-        console.log("Fetching package for:", { packageIdStr, placeStr });
 
         // Fetch main package details from international_tourism table
         const { data: packageData, error: packageError } = await supabase
@@ -99,7 +98,6 @@ export default function GlobalPackageDetailPage() {
           .eq("destination", placeStr)
           .single();
 
-        console.log("Package query result:", { packageData, packageError });
 
         if (packageError) {
           setError("Failed to fetch package details. Please try again later.");
@@ -117,10 +115,6 @@ export default function GlobalPackageDetailPage() {
         setPackageData(packageData);
 
         // Fetch itinerary data from int_tour_itinerary table
-        console.log(
-          "Attempting to fetch itinerary for packageId:",
-          packageIdStr
-        );
 
         try {
           const { data: itineraryData, error: itineraryError } = await supabase
@@ -129,10 +123,6 @@ export default function GlobalPackageDetailPage() {
             .eq("int_tour_id", parseInt(packageIdStr))
             .single();
 
-          console.log("Itinerary query result:", {
-            itineraryData,
-            itineraryError,
-          });
 
           if (itineraryError) {
             console.error("Itinerary fetch error:", itineraryError);
@@ -155,10 +145,6 @@ export default function GlobalPackageDetailPage() {
               .neq("int_tour_id", parseInt(packageIdStr))
               .limit(6);
 
-          console.log("Other packages query result:", {
-            otherPackagesData,
-            otherPackagesError,
-          });
 
           if (!otherPackagesError && otherPackagesData) {
             setOtherPackages(otherPackagesData);
