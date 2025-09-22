@@ -35,7 +35,10 @@ interface AssessmentResult {
   maxPossibleScore: number
   percentage: number
   approvalChance: 'High' | 'Medium' | 'Low'
-  recommendations: string[]
+  recommendations: Array<{
+    title: string
+    description: string
+  }>
   visaType: string
 }
 

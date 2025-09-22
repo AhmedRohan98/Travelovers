@@ -443,7 +443,7 @@ export default function PackageDetailPage() {
                 <Typography variant="h5" fontWeight="bold" mb={3} color="#B90C1C">
                   Trip Details
                 </Typography>
-                <Accordion title="Adventure Plan" defaultOpen>
+                <Accordion title="Adventure Plan" defaultOpen={true}>
                   <Box
                     sx={{
                       "& h1": {

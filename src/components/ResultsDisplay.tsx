@@ -6,14 +6,17 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown'
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import ShareIcon from '@mui/icons-material/Share'
+import DownloadIcon from '@mui/icons-material/Download'
 
 interface AssessmentResult {
   totalScore: number
   maxPossibleScore: number
   percentage: number
   approvalChance: 'High' | 'Medium' | 'Low'
-  recommendations: string[]
+  recommendations: Array<{
+    title: string
+    description: string
+  }>
   visaType: string
 }
 
@@ -33,6 +36,7 @@ interface ResultsDisplayProps {
 
 export default function ResultsDisplay({ result, answers, onRestart }: ResultsDisplayProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'recommendations' | 'details'>('overview')
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const getApprovalIcon = () => {
     switch (result.approvalChance) {
@@ -70,19 +74,41 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
     return 'from-red-500 to-red-600'
   }
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'Visa Assessment Results',
-        text: `My visa approval chance is ${result.approvalChance} (${result.percentage}%)`,
-        url: window.location.href
+
+  const handleDownloadPDF = async () => {
+    setIsDownloading(true)
+    try {
+      const response = await fetch('/api/visa-assessment/download-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          answers,
+          visaType: result.visaType,
+          results: result
+        }),
       })
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(
-        `Visa Assessment Results: ${result.approvalChance} approval chance (${result.percentage}%)`
-      )
-      alert('Results copied to clipboard!')
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF')
+      }
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = url
+      a.download = `Application Health Check.pdf`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error('Error downloading PDF:', error)
+      alert('Failed to download PDF. Please try again.')
+    } finally {
+      setIsDownloading(false)
     }
   }
 
@@ -213,7 +239,10 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
                 {result.recommendations.map((recommendation, index) => (
                   <div key={index} className="flex items-start space-x-3 p-4 bg-blue-50 rounded-xl">
                     <CheckCircleIcon className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <p className="text-gray-700">{recommendation}</p>
+                    <div>
+                      <h5 className="font-medium text-gray-900 mb-1">{recommendation.title}</h5>
+                      <p className="text-gray-700">{recommendation.description}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -251,12 +280,15 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
         </button>
         
         <button
-          onClick={handleShare}
-          className="flex items-center justify-center px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+          onClick={handleDownloadPDF}
+          disabled={isDownloading}
+          className="flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <ShareIcon className="w-5 h-5 mr-2" />
-          Share Results
+          <DownloadIcon className="w-5 h-5 mr-2" />
+          {isDownloading ? 'Generating...' : 'Download PDF Report'}
         </button>
+        
+
       </div>
 
       {/* Disclaimer */}

@@ -645,7 +645,7 @@ export default function CountryDetailPage() {
                 <>
                   
 
-<Accordion title="Admission Requirements" defaultOpen>
+<Accordion title="Admission Requirements">
                     <Box
                       sx={{
                         "& ul": {
@@ -809,7 +809,7 @@ export default function CountryDetailPage() {
               ) : (
                 /* Visit category accordions */
                 <>
-                  <Accordion title={<>General Checklist{" "}<span style={{ fontSize: "0.85rem", fontWeight: "normal" }}>(All Applicants)</span></>}defaultOpen>
+                  <Accordion title={<>General Checklist{" "}<span style={{ fontSize: "0.85rem", fontWeight: "normal" }}>(All Applicants)</span></>}>
                     <Box
                       sx={{
                         "& ul": {
