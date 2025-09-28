@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="Application Health Check.pdf"`,
+        'Content-Disposition': `attachment; filename="Application Strength Test.pdf"`,
         'Content-Length': pdfBuffer.length.toString(),
       },
     })

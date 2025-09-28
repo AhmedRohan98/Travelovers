@@ -7,6 +7,15 @@ interface Answer {
   points: number
 }
 
+interface MultiSelectAnswer {
+  questionId: number
+  selectedOptions: Array<{
+    optionId: number
+    points: number
+  }>
+  totalPoints: number
+}
+
 interface AssessmentResult {
   totalScore: number
   maxPossibleScore: number
@@ -22,20 +31,24 @@ interface AssessmentResult {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { answers, visaType = 'visit' } = body
+    const { answers = [], multiSelectAnswers = [], visaType = 'visit' } = body
 
-    if (!answers || !Array.isArray(answers)) {
+    if (!Array.isArray(answers) || !Array.isArray(multiSelectAnswers)) {
       return NextResponse.json({ error: 'Invalid answers format' }, { status: 400 })
     }
 
     // Convert visa type string to numeric ID (not needed for max calc now)
 
-    // Calculate total score
-    const totalScore = answers.reduce((sum: number, answer: Answer) => sum + answer.points, 0)
+    // Calculate total score from both single and multi-select answers
+    const singleSelectScore = answers.reduce((sum: number, answer: Answer) => sum + answer.points, 0)
+    const multiSelectScore = multiSelectAnswers.reduce((sum: number, answer: MultiSelectAnswer) => sum + answer.totalPoints, 0)
+    const totalScore = singleSelectScore + multiSelectScore
 
-    // Max possible = sum of max points per question actually asked (answers' questionIds)
+    // Max possible = sum of max points per question actually asked (both single and multi-select)
+    const singleSelectQuestionIds = answers.map(a => a.questionId)
+    const multiSelectQuestionIds = multiSelectAnswers.map(a => a.questionId)
     const answeredQuestionIds: number[] = Array.from(
-      new Set((answers as Answer[]).map(a => a.questionId))
+      new Set([...singleSelectQuestionIds, ...multiSelectQuestionIds])
     )
 
     let maxPossibleScore = 0

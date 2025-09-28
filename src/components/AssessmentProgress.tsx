@@ -14,30 +14,23 @@ export default function AssessmentProgress({ current, total, progress }: Assessm
           Assessment Progress
         </h3>
         <span className="text-sm font-medium text-gray-600">
-          {current} of {total} questions
+          Question {current}
         </span>
       </div>
       
-      {/* Progress Bar */}
+      {/* Progress Bar - Simplified */}
       <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
         <div
           className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 ease-out"
-          style={{ width: `${progress}%` }}
+          style={{ width: `${Math.min(progress, 100)}%` }}
         />
       </div>
       
-      {/* Progress Percentage */}
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-gray-600">Progress</span>
-        <span className="font-semibold text-blue-600">{Math.round(progress)}%</span>
-      </div>
-      
-      {/* Progress Steps */}
+      {/* Progress Steps - Simplified */}
       <div className="mt-4 flex space-x-2">
-        {Array.from({ length: Math.min(total, 10) }, (_, index) => {
-          const stepProgress = ((index + 1) / Math.min(total, 10)) * 100
-          const isCompleted = stepProgress <= progress
-          const isCurrent = Math.abs(stepProgress - progress) < 5
+        {Array.from({ length: Math.min(total, 8) }, (_, index) => {
+          const isCompleted = index < current - 1
+          const isCurrent = index === current - 1
           
           return (
             <div
@@ -52,9 +45,9 @@ export default function AssessmentProgress({ current, total, progress }: Assessm
             />
           )
         })}
-        {total > 10 && (
+        {total > 8 && (
           <div className="text-xs text-gray-500 flex items-center">
-            +{total - 10} more
+            ...
           </div>
         )}
       </div>
