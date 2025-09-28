@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -8,6 +8,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 interface Question {
   id: number
   text: string
+  question_type: 'mcq' | 'selection'
   visa_type: string
   options: Option[]
 }
@@ -23,6 +24,7 @@ interface QuestionCardProps {
   question: Question
   questionNumber: number
   onAnswerSelect: (option: Option) => void
+  onMultiSelectConfirm: (selectedOptions: Option[]) => void
   onBack: () => void
   canGoBack: boolean
 }
@@ -31,35 +33,108 @@ export default function QuestionCard({
   question, 
   questionNumber, 
   onAnswerSelect, 
+  onMultiSelectConfirm,
   onBack, 
   canGoBack 
 }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null)
+  const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
   const [isAnimating, setIsAnimating] = useState(false)
+  const isMultiSelectMode = question.question_type === 'selection'
+  
+  // Debug: Force multi-select for question 11
+  const forceMultiSelect = question.id === 11
+  const actualMultiSelectMode = isMultiSelectMode || forceMultiSelect
+  
+  // Reset selections when question changes
+  React.useEffect(() => {
+    console.log('Question changed - ID:', question.id, 'Type:', question.question_type, 'IsMultiSelect:', isMultiSelectMode)
+    setSelectedOption(null)
+    setSelectedOptions([])
+    setIsAnimating(false)
+  }, [question.id, question.question_type, isMultiSelectMode])
+  
+  // Function to check if an option should be disabled based on current selections
+  const isOptionDisabled = (option: Option) => {
+    if (!actualMultiSelectMode || selectedOptions.length === 0) {
+      return false
+    }
+    
+    // Special handling for question ID 50 - allow multiple selections even with different leads_to_question_id
+    if (question.id === 50) {
+      return false // Never disable options for question 50
+    }
+    
+    // Get the leads_to_question_id of the first selected option
+    const firstSelectedLeadsTo = selectedOptions[0]?.leads_to_question_id
+    
+    // If the current option has a different leads_to_question_id, disable it
+    return option.leads_to_question_id !== firstSelectedLeadsTo
+  }
 
   const handleOptionSelect = (option: Option) => {
-    setSelectedOption(option)
-    setIsAnimating(true)
-    
-    setTimeout(() => {
-      onAnswerSelect(option)
-      setIsAnimating(false)
-      setSelectedOption(null)
-    }, 500)
+    if (actualMultiSelectMode) {
+      // Toggle selection for multi-select mode
+      setSelectedOptions(prev => {
+        const isSelected = prev.some(opt => opt.id === option.id)
+        if (isSelected) {
+          return prev.filter(opt => opt.id !== option.id)
+        } else {
+          return [...prev, option]
+        }
+      })
+    } else {
+      // Single select mode (MCQ)
+      setSelectedOption(option)
+      setIsAnimating(true)
+      
+      setTimeout(() => {
+        onAnswerSelect(option)
+        setIsAnimating(false)
+        setSelectedOption(null)
+      }, 500)
+    }
+  }
+
+  const handleNextClick = () => {
+    if (selectedOptions.length > 0) {
+      setIsAnimating(true)
+      setTimeout(() => {
+        onMultiSelectConfirm(selectedOptions)
+        setIsAnimating(false)
+        setSelectedOptions([])
+      }, 300)
+    }
   }
 
   const getOptionIcon = (option: Option) => {
-    if (selectedOption?.id === option.id) {
-      return <CheckCircleIcon className="w-5 h-5 text-green-500" />
+    if (actualMultiSelectMode) {
+      const isSelected = selectedOptions.some(opt => opt.id === option.id)
+      if (isSelected) {
+        return <CheckCircleIcon className="w-5 h-5 text-green-500" />
+      }
+      return <div className="w-5 h-5 border-2 border-gray-300 rounded-full" />
+    } else {
+      if (selectedOption?.id === option.id) {
+        return <CheckCircleIcon className="w-5 h-5 text-green-500" />
+      }
+      return <div className="w-5 h-5 border-2 border-gray-300 rounded-full" />
     }
-    return <div className="w-5 h-5 border-2 border-gray-300 rounded-full" />
   }
 
   const getOptionStyle = (option: Option) => {
-    if (selectedOption?.id === option.id) {
-      return 'border-green-500 bg-green-50 text-green-900'
+    if (actualMultiSelectMode) {
+      const isSelected = selectedOptions.some(opt => opt.id === option.id)
+      if (isSelected) {
+        return 'border-green-500 bg-green-50 text-green-900'
+      }
+      return 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+    } else {
+      if (selectedOption?.id === option.id) {
+        return 'border-green-500 bg-green-50 text-green-900'
+      }
+      return 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
     }
-    return 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
   }
 
   return (
@@ -88,37 +163,110 @@ export default function QuestionCard({
         <h3 className="text-xl font-semibold text-gray-900 leading-relaxed">
           {question.text}
         </h3>
+        {actualMultiSelectMode && (
+          <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+            <span className="mr-1">☑️</span>
+            Multiple Selection {forceMultiSelect ? '(Forced for Q11)' : ''}
+            {question.id === 50 && (
+              <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                All options allowed
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Options */}
       <div className="bg-white rounded-b-2xl p-6">
         <div className="space-y-3">
-          {question.options.map((option) => (
-            <button
-              key={option.id}
-              onClick={() => handleOptionSelect(option)}
-              disabled={selectedOption !== null}
-              className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left flex items-center space-x-4 ${
-                selectedOption !== null ? 'cursor-not-allowed' : 'cursor-pointer'
-              } ${getOptionStyle(option)}`}
-            >
-              {getOptionIcon(option)}
-              <div className="flex-1">
-                <span className="font-medium">{option.text}</span>
-              </div>
-              {option.leads_to_question_id && (
-                <ArrowForwardIosIcon className="w-4 h-4 text-gray-400" />
-              )}
-            </button>
-          ))}
+          {question.options.map((option) => {
+            const isDisabled = isOptionDisabled(option)
+            const isCurrentlySelected = actualMultiSelectMode 
+              ? selectedOptions.some(opt => opt.id === option.id)
+              : selectedOption?.id === option.id
+            
+            return (
+              <button
+                key={option.id}
+                onClick={() => handleOptionSelect(option)}
+                disabled={
+                  (!actualMultiSelectMode && selectedOption !== null) || 
+                  (actualMultiSelectMode && isDisabled && !isCurrentlySelected)
+                }
+                className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left flex items-center space-x-4 ${
+                  (!actualMultiSelectMode && selectedOption !== null) || 
+                  (actualMultiSelectMode && isDisabled && !isCurrentlySelected)
+                    ? 'cursor-not-allowed opacity-50' 
+                    : 'cursor-pointer'
+                } ${getOptionStyle(option)}`}
+              >
+                {getOptionIcon(option)}
+                <div className="flex-1">
+                  <span className="font-medium">{option.text}</span>
+                  {actualMultiSelectMode && isDisabled && !isCurrentlySelected && (
+                    <span className="block text-xs text-gray-400 mt-1">
+                      Conflicts with selected options
+                    </span>
+                  )}
+                </div>
+                <div className="text-sm text-gray-500 font-medium">
+                  +{option.points} pts
+                </div>
+                {!actualMultiSelectMode && option.leads_to_question_id && (
+                  <ArrowForwardIosIcon className="w-4 h-4 text-gray-400" />
+                )}
+              </button>
+            )
+          })}
         </div>
 
-        {selectedOption && (
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
-            <div className="flex items-center text-green-800">
-              <CheckCircleIcon className="w-5 h-5 mr-2" />
-              <span className="font-medium">Selected: {selectedOption.text}</span>
+        {/* Selection Summary */}
+        {actualMultiSelectMode && selectedOptions.length > 0 && (
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <div className="text-blue-800">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  <CheckCircleIcon className="w-5 h-5 mr-2" />
+                  <span className="font-medium">Selected ({selectedOptions.length}):</span>
+                </div>
+                <span className="text-sm font-bold">
+                  +{selectedOptions.reduce((sum, option) => sum + option.points, 0)} points
+                </span>
+              </div>
+              <div className="text-sm space-y-1">
+                {selectedOptions.map((option) => (
+                  <div key={option.id} className="flex justify-between">
+                    <span>• {option.text}</span>
+                    <span className="text-xs text-blue-600">+{option.points} pts</span>
+                  </div>
+                ))}
+              </div>
             </div>
+          </div>
+        )}
+
+        {!actualMultiSelectMode && selectedOption && (
+          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+            <div className="flex items-center justify-between text-green-800">
+              <div className="flex items-center">
+                <CheckCircleIcon className="w-5 h-5 mr-2" />
+                <span className="font-medium">Selected: {selectedOption.text}</span>
+              </div>
+              <span className="text-sm font-bold">+{selectedOption.points} points</span>
+            </div>
+          </div>
+        )}
+
+        {/* Next Button for Multi-select */}
+        {actualMultiSelectMode && selectedOptions.length > 0 && (
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleNextClick}
+              disabled={isAnimating}
+              className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>
@@ -126,7 +274,10 @@ export default function QuestionCard({
       {/* Helper Text */}
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-500">
-          Choose the option that best describes your situation
+          {actualMultiSelectMode 
+            ? 'Select all options that apply to your situation, then click Next'
+            : 'Choose the option that best describes your situation'
+          }
         </p>
       </div>
     </div>

@@ -28,13 +28,25 @@ interface Answer {
   selectedOption: string
 }
 
+interface MultiSelectAnswer {
+  questionId: number
+  questionText: string
+  selectedOptions: Array<{
+    optionId: number
+    optionText: string
+    points: number
+  }>
+  totalPoints: number
+}
+
 interface ResultsDisplayProps {
   result: AssessmentResult
   answers: Answer[]
+  multiSelectAnswers?: MultiSelectAnswer[]
   onRestart: () => void
 }
 
-export default function ResultsDisplay({ result, answers, onRestart }: ResultsDisplayProps) {
+export default function ResultsDisplay({ result, answers, multiSelectAnswers = [], onRestart }: ResultsDisplayProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'recommendations' | 'details'>('overview')
   const [isDownloading, setIsDownloading] = useState(false)
 
@@ -85,6 +97,7 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
         },
         body: JSON.stringify({
           answers,
+          multiSelectAnswers,
           visaType: result.visaType,
           results: result
         }),
@@ -99,7 +112,7 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
       const a = document.createElement('a')
       a.style.display = 'none'
       a.href = url
-      a.download = `Application Health Check.pdf`
+      a.download = `Application Strength Test.pdf`
       document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)
@@ -117,7 +130,7 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
       {/* Header */}
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          Assessment Complete! 🎉
+          Assessment Complete!
         </h2>
         <p className="text-lg text-gray-600">
           Here are your visa approval results
@@ -253,14 +266,34 @@ export default function ResultsDisplay({ result, answers, onRestart }: ResultsDi
             <div className="space-y-4">
               <h4 className="font-semibold text-gray-900 mb-4">Your Answers</h4>
               <div className="space-y-4">
+                {/* Single-select answers */}
                 {answers.map((answer, index) => (
-                  <div key={index} className="border border-gray-200 rounded-xl p-4">
+                  <div key={`single-${index}`} className="border border-gray-200 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium text-blue-600">Question {index + 1}</span>
                       <span className="text-sm text-gray-500">+{answer.points} points</span>
                     </div>
                     <p className="font-medium text-gray-900 mb-2">{answer.questionText}</p>
                     <p className="text-gray-700">{answer.selectedOption}</p>
+                  </div>
+                ))}
+                
+                {/* Multi-select answers */}
+                {multiSelectAnswers.map((answer, index) => (
+                  <div key={`multi-${index}`} className="border border-gray-200 rounded-xl p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-blue-600">Question {answers.length + index + 1}</span>
+                      <span className="text-sm text-gray-500">+{answer.totalPoints} points</span>
+                    </div>
+                    <p className="font-medium text-gray-900 mb-2">{answer.questionText}</p>
+                    <div className="space-y-1">
+                      {answer.selectedOptions.map((option, optionIndex) => (
+                        <div key={optionIndex} className="flex items-center justify-between text-gray-700">
+                          <span>• {option.optionText}</span>
+                          <span className="text-sm text-gray-500">+{option.points} pts</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>

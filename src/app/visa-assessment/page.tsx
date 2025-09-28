@@ -11,6 +11,7 @@ import ResultsDisplay from '@/components/ResultsDisplay'
 interface Question {
   id: number
   text: string
+  question_type: 'mcq' | 'selection'
   visa_type: string
   options: Option[]
 }
@@ -28,6 +29,17 @@ interface Answer {
   points: number
   questionText: string
   selectedOption: string
+}
+
+interface MultiSelectAnswer {
+  questionId: number
+  questionText: string
+  selectedOptions: Array<{
+    optionId: number
+    optionText: string
+    points: number
+  }>
+  totalPoints: number
 }
 
 interface AssessmentResult {
@@ -49,18 +61,35 @@ export default function VisaAssessmentPage() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Answer[]>([])
+  const [multiSelectAnswers, setMultiSelectAnswers] = useState<MultiSelectAnswer[]>([])
   const [questionHistory, setQuestionHistory] = useState<number[]>([])
+  const [pendingQuestions, setPendingQuestions] = useState<number[]>([]) // Track questions to ask after current path
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<AssessmentResult | null>(null)
 
   const fetchQuestions = async (type: 'visit' | 'study') => {
     setLoading(true)
+    setError(null)
     try {
+      console.log('Fetching questions for type:', type)
       const response = await fetch(`/api/visa-assessment/questions?visa_type=${type}`)
+      console.log('Response status:', response.status, response.ok)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const data = await response.json()
+      console.log('Response data:', data)
       
       if (data.success) {
         const fetchedQuestions: Question[] = data.questions
+
+        if (fetchedQuestions.length === 0) {
+          setError(`No questions found for ${type} visa type in the database. Please contact support.`)
+          return
+        }
 
         // Determine start question:
         // Prefer a question that is not a child AND has at least one outgoing lead
@@ -79,9 +108,11 @@ export default function VisaAssessmentPage() {
         setCurrentStep('questions')
       } else {
         console.error('Failed to fetch questions:', data.error)
+        setError(data.error || 'Failed to fetch questions from database')
       }
     } catch (error) {
       console.error('Error fetching questions:', error)
+      setError('Network error. Please check your connection and try again.')
     } finally {
       setLoading(false)
     }
@@ -103,6 +134,13 @@ export default function VisaAssessmentPage() {
 
     setAnswers(prev => [...prev, newAnswer])
 
+    // Check for pending questions first - if there are pending questions from question 50,
+    // we should ask those before continuing down any path
+    if (pendingQuestions.length > 0) {
+      checkForPendingQuestions()
+      return
+    }
+
     // Handle conditional navigation
     if (option.leads_to_question_id) {
       // Navigate to specific question by ID
@@ -112,12 +150,98 @@ export default function VisaAssessmentPage() {
         setQuestionHistory(prev => [...prev, currentQuestionIndex])
         setCurrentQuestionIndex(targetIndex)
       } else {
-        // If target question not found, end assessment
+        // If target question not found, check for pending questions
+        checkForPendingQuestions()
+      }
+    } else {
+      // No specific next question, check for pending questions
+      checkForPendingQuestions()
+    }
+  }
+
+  // Helper function to check if there are pending questions to ask
+  const checkForPendingQuestions = () => {
+    if (pendingQuestions.length > 0) {
+      // Get the next pending question
+      const nextPendingIndex = pendingQuestions[0]
+      const remainingPending = pendingQuestions.slice(1)
+      
+      // Add current question to history and navigate to pending question
+      setQuestionHistory(prev => [...prev, currentQuestionIndex])
+      setPendingQuestions(remainingPending)
+      setCurrentQuestionIndex(nextPendingIndex)
+    } else {
+      // No more questions to ask, end assessment
+      calculateResults()
+    }
+  }
+
+  const handleMultiSelectConfirm = (selectedOptions: Option[], question: Question) => {
+    const newMultiSelectAnswer: MultiSelectAnswer = {
+      questionId: question.id,
+      questionText: question.text,
+      selectedOptions: selectedOptions.map(option => ({
+        optionId: option.id,
+        optionText: option.text,
+        points: option.points
+      })),
+      totalPoints: selectedOptions.reduce((sum, option) => sum + option.points, 0)
+    }
+
+    setMultiSelectAnswers(prev => [...prev, newMultiSelectAnswer])
+
+    // Special handling for question ID 50 - handle multiple branching paths
+    if (question.id === 50) {
+      // Get all unique leads_to_question_id values from selected options
+      const uniqueLeadsTo = [...new Set(selectedOptions
+        .map(option => option.leads_to_question_id)
+        .filter(id => id !== null)
+      )] as number[]
+      
+      if (uniqueLeadsTo.length > 0) {
+        // Find the question indices for the target questions
+        const targetQuestionIndices = uniqueLeadsTo
+          .map(questionId => questions.findIndex(q => q.id === questionId))
+          .filter(index => index !== -1)
+        
+        if (targetQuestionIndices.length > 0) {
+          // Navigate to the first question
+          const firstTargetIndex = targetQuestionIndices[0]
+          
+          // Store the remaining questions as pending (these are the immediate follow-ups)
+          const remainingIndices = targetQuestionIndices.slice(1)
+          setPendingQuestions(prev => [...prev, ...remainingIndices])
+          
+          // Add current question to history and navigate to first target
+          setQuestionHistory(prev => [...prev, currentQuestionIndex])
+          setCurrentQuestionIndex(firstTargetIndex)
+        } else {
+          calculateResults()
+        }
+      } else {
         calculateResults()
       }
     } else {
-      // No specific next question, end assessment here
-      calculateResults()
+      // For other multi-select questions, navigation is based on leads_to_question_id
+      // Since we've already ensured all selected options have the same leads_to_question_id
+      // (through the disabled logic), we can safely use the first option's leads_to_question_id
+      
+      const targetQuestionId = selectedOptions[0]?.leads_to_question_id
+      
+      if (targetQuestionId) {
+        const targetQuestion = questions.find(q => q.id === targetQuestionId)
+        if (targetQuestion) {
+          const targetIndex = questions.findIndex(q => q.id === targetQuestionId)
+          setQuestionHistory(prev => [...prev, currentQuestionIndex])
+          setCurrentQuestionIndex(targetIndex)
+        } else {
+          // If target question not found, check for pending questions
+          checkForPendingQuestions()
+        }
+      } else {
+        // If no leads_to_question_id, check for pending questions
+        checkForPendingQuestions()
+      }
     }
   }
 
@@ -143,6 +267,7 @@ export default function VisaAssessmentPage() {
         },
         body: JSON.stringify({
           answers,
+          multiSelectAnswers,
           visaType
         })
       })
@@ -167,13 +292,24 @@ export default function VisaAssessmentPage() {
     setQuestions([])
     setCurrentQuestionIndex(0)
     setAnswers([])
+    setMultiSelectAnswers([])
     setQuestionHistory([])
+    setPendingQuestions([])
+    setError(null)
     setResult(null)
   }
 
   const currentQuestion = questions[currentQuestionIndex]
-  // Calculate progress based on answered questions vs total questions
-  const progress = questions.length > 0 ? (answers.length / questions.length) * 100 : 0
+  
+  // Calculate progress based on answered questions
+  // Since the assessment flow is dynamic, we'll show progress based on questions answered
+  const totalAnsweredQuestions = answers.length + multiSelectAnswers.length
+  const currentQuestionNumber = totalAnsweredQuestions + 1
+  
+  // For progress bar, we'll use a simple approach: show progress based on questions answered
+  // with a reasonable maximum to avoid showing 100% too early
+  const maxReasonableQuestions = 20 // Most assessments won't exceed this
+  const progress = Math.min((totalAnsweredQuestions / maxReasonableQuestions) * 100, 95) // Cap at 95% until completion
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
@@ -205,15 +341,16 @@ export default function VisaAssessmentPage() {
         {currentStep === 'questions' && currentQuestion && (
           <div className="space-y-6">
             <AssessmentProgress 
-              current={answers.length + 1}
-              total={questions.length}
+              current={currentQuestionNumber}
+              total={maxReasonableQuestions}
               progress={progress}
             />
             
             <QuestionCard
               question={currentQuestion}
-              questionNumber={answers.length + 1}
+              questionNumber={answers.length + multiSelectAnswers.length + 1}
               onAnswerSelect={(option) => handleAnswerSelect(option, currentQuestion)}
+              onMultiSelectConfirm={(selectedOptions) => handleMultiSelectConfirm(selectedOptions, currentQuestion)}
               onBack={goBack}
               canGoBack={questionHistory.length > 0}
             />
@@ -224,8 +361,32 @@ export default function VisaAssessmentPage() {
           <ResultsDisplay
             result={result}
             answers={answers}
+            multiSelectAnswers={multiSelectAnswers}
             onRestart={resetAssessment}
           />
+        )}
+
+        {error && (
+          <div className="max-w-4xl mx-auto px-4 py-8">
+            <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-red-600 font-bold">!</span>
+                </div>
+                <h3 className="text-lg font-semibold text-red-800">Error</h3>
+              </div>
+              <p className="text-red-700 mb-4">{error}</p>
+              <button
+                onClick={() => {
+                  setError(null)
+                  setCurrentStep('type-selection')
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
         )}
 
         {loading && (

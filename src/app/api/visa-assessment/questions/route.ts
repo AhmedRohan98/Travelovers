@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase/server'
-import { getQuestionsByVisaType } from '@/lib/data/visaQuestions'
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,26 +21,16 @@ export async function GET(request: NextRequest) {
       .order('id')
 
 
-    if (questionsError || !questions || questions.length === 0) {
-      
-      // Fallback to sample data
-      const sampleQuestions = getQuestionsByVisaType(visaTypeParam)
-      const formattedQuestions = sampleQuestions.map(question => ({
-        id: question.id,
-        text: question.question,
-        visa_type: visaTypeParam,
-        options: question.options.map(option => ({
-          id: option.id,
-          text: option.option,
-          points: option.points,
-          leads_to_question_id: option.leads_to_question_id
-        }))
-      }))
+    if (questionsError) {
+      console.error('Error fetching questions from database:', questionsError)
+      return NextResponse.json({ error: 'Failed to fetch questions from database' }, { status: 500 })
+    }
 
-      return NextResponse.json({
-        success: true,
-        questions: formattedQuestions,
-        source: 'sample_data'
+    if (!questions || questions.length === 0) {
+      return NextResponse.json({ 
+        success: true, 
+        questions: [],
+        message: 'No questions found for this visa type in the database'
       })
     }
 
@@ -56,12 +45,14 @@ export async function GET(request: NextRequest) {
     type DBQuestion = {
       id: number
       question: string
+      question_type: string
       options: DBOption[]
     }
 
     const formattedQuestions = (questions as DBQuestion[] | null)?.map((question) => ({
       id: question.id,
       text: question.question,
+      question_type: question.question_type,
       visa_type: visaTypeParam, // Use the original visaType string for consistency
       options: (question.options as DBOption[]).map((option) => ({
         id: option.id,
@@ -73,7 +64,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      questions: formattedQuestions
+      questions: formattedQuestions,
+      source: 'database'
     })
   } catch (error) {
     console.error('Error in questions API:', error)
