@@ -59,16 +59,33 @@ export default function QuestionCard({
     if (!actualMultiSelectMode || selectedOptions.length === 0) {
       return false
     }
-    
-    // Special handling for question ID 50 - allow multiple selections even with different leads_to_question_id
+
+    // Special handling for question ID 50
+    // Rule: If "None of the mentioned" is selected, disable all other options
+    //       If any other option is selected, disable the "None of the mentioned" option
     if (question.id === 50) {
-      return false // Never disable options for question 50
+      const normalize = (text: string) => text.trim().toLowerCase()
+      const isNoneOption = (opt: Option) => normalize(opt.text) === 'none of the mentioned'
+      const anyNoneSelected = selectedOptions.some(isNoneOption)
+      const isCurrentlySelected = selectedOptions.some(opt => opt.id === option.id)
+      const thisIsNone = isNoneOption(option)
+
+      if (anyNoneSelected) {
+        // None is selected → disable all others except the selected none option itself
+        return !thisIsNone && !isCurrentlySelected
+      }
+
+      // Some other options are selected → disable selecting the none option
+      if (thisIsNone) {
+        return true
+      }
+
+      // Otherwise allow multiple selections freely for Q50
+      return false
     }
-    
-    // Get the leads_to_question_id of the first selected option
+
+    // Default multi-select behavior: restrict to same leads_to_question_id group
     const firstSelectedLeadsTo = selectedOptions[0]?.leads_to_question_id
-    
-    // If the current option has a different leads_to_question_id, disable it
     return option.leads_to_question_id !== firstSelectedLeadsTo
   }
 
@@ -166,7 +183,7 @@ export default function QuestionCard({
         {actualMultiSelectMode && (
           <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
             <span className="mr-1">☑️</span>
-            Multiple Selection {forceMultiSelect ? '(Forced for Q11)' : ''}
+            Multiple Selection {forceMultiSelect ? '' : ''}
             {question.id === 50 && (
               <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
                 All options allowed
