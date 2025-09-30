@@ -23,6 +23,7 @@ interface Option {
   text: string
   points: number
   leads_to_question_id: number | null
+  additional_questions?: number | null
 }
 
 interface Answer {
@@ -66,6 +67,7 @@ export default function VisaAssessmentPage() {
   const [multiSelectAnswers, setMultiSelectAnswers] = useState<MultiSelectAnswer[]>([])
   const [questionHistory, setQuestionHistory] = useState<number[]>([])
   const [pendingQuestions, setPendingQuestions] = useState<number[]>([]) // Track questions to ask after current path
+  const [scheduledAdditionalQuestionIds, setScheduledAdditionalQuestionIds] = useState<number[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<AssessmentResult | null>(null)
@@ -136,6 +138,14 @@ export default function VisaAssessmentPage() {
 
     setAnswers(prev => [...prev, newAnswer])
 
+    // Capture additional questions from Q1 selection if present
+    if (question.id === 1 && option.additional_questions) {
+      setScheduledAdditionalQuestionIds(prev => {
+        if (prev.includes(option.additional_questions!)) return prev
+        return [...prev, option.additional_questions!]
+      })
+    }
+
     // Check for pending questions first - if there are pending questions from question 50,
     // we should ask those before continuing down any path
     if (pendingQuestions.length > 0) {
@@ -173,6 +183,33 @@ export default function VisaAssessmentPage() {
       setPendingQuestions(remainingPending)
       setCurrentQuestionIndex(nextPendingIndex)
     } else {
+      // If we are at the end of section 3 and have scheduled additional questions, enqueue them now
+      const currentQ = questions[currentQuestionIndex]
+      const currentSectionName = (currentQ?.section_name || 'PROFILING').toUpperCase()
+      const sectionNamesOrdered: string[] = []
+      for (const q of questions) {
+        const name = (q.section_name || 'PROFILING').toUpperCase()
+        if (!sectionNamesOrdered.includes(name)) sectionNamesOrdered.push(name)
+      }
+      const isEndOfSection3 = sectionNamesOrdered[2] && currentSectionName === sectionNamesOrdered[2]
+
+      if (isEndOfSection3 && scheduledAdditionalQuestionIds.length > 0) {
+        const indices = scheduledAdditionalQuestionIds
+          .map(id => questions.findIndex(q => q.id === id))
+          .filter(idx => idx !== -1)
+        if (indices.length > 0) {
+          setPendingQuestions(indices)
+          setScheduledAdditionalQuestionIds([])
+          // Immediately process the first of these pending questions
+          const nextIndex = indices[0]
+          const remaining = indices.slice(1)
+          setQuestionHistory(prev => [...prev, currentQuestionIndex])
+          setPendingQuestions(remaining)
+          setCurrentQuestionIndex(nextIndex)
+          return
+        }
+      }
+
       // No more questions to ask, end assessment
       calculateResults()
     }
