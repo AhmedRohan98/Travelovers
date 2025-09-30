@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
       option: string
       points: number
       leads_to_question_id: number | null
+      additional_questions?: number | null
     }
 
     type DBQuestion = {
@@ -85,7 +86,8 @@ export async function GET(request: NextRequest) {
             id: option.id,
             text: option.option,
             points: option.points,
-            leads_to_question_id: option.leads_to_question_id
+          leads_to_question_id: option.leads_to_question_id,
+          additional_questions: (option as DBOption).additional_questions ?? null
           }))
       }
     })

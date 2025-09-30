@@ -18,6 +18,7 @@ interface Option {
   text: string
   points: number
   leads_to_question_id: number | null
+  additional_questions?: number | null
 }
 
 interface QuestionCardProps {
@@ -184,11 +185,6 @@ export default function QuestionCard({
           <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
             <span className="mr-1">☑️</span>
             Multiple Selection {forceMultiSelect ? '' : ''}
-            {question.id === 50 && (
-              <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
-                All options allowed
-              </span>
-            )}
           </div>
         )}
       </div>
