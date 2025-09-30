@@ -46,21 +46,49 @@ export async function GET(request: NextRequest) {
       id: number
       question: string
       question_type: string
+      section?: number | string | null
+      sections?: number | null
+      section_name?: string | null
+      sectionname?: string | null
+      section_title?: string | null
+      sectionlabel?: string | null
       options: DBOption[]
     }
 
-    const formattedQuestions = (questions as DBQuestion[] | null)?.map((question) => ({
-      id: question.id,
-      text: question.question,
-      question_type: question.question_type,
-      visa_type: visaTypeParam, // Use the original visaType string for consistency
-      options: (question.options as DBOption[]).map((option) => ({
-        id: option.id,
-        text: option.option,
-        points: option.points,
-        leads_to_question_id: option.leads_to_question_id
-      }))
-    }))
+    const formattedQuestions = (questions as DBQuestion[] | null)?.map((question) => {
+      const rawSection = (question.section ?? question.sections ?? 1) as number | string
+      const parsedSection = typeof rawSection === 'number' ? rawSection : parseInt(String(rawSection), 10)
+      const numericSection = Number.isFinite(parsedSection) && parsedSection >= 1 ? parsedSection : 1
+
+      const explicitSectionName = (
+        question.section_name ??
+        question.sectionname ??
+        question.section_title ??
+        question.sectionlabel ??
+        null
+      ) as string | null
+
+      const rawSectionNameFromSection = typeof rawSection === 'string' && Number.isNaN(parseInt(rawSection, 10))
+        ? rawSection
+        : null
+
+      return {
+        id: question.id,
+        text: question.question,
+        question_type: question.question_type,
+        section: numericSection as number,
+        section_name: (explicitSectionName || rawSectionNameFromSection) as string | null,
+        visa_type: visaTypeParam,
+        options: [...(question.options as DBOption[])]
+          .sort((a, b) => a.id - b.id)
+          .map((option) => ({
+            id: option.id,
+            text: option.option,
+            points: option.points,
+            leads_to_question_id: option.leads_to_question_id
+          }))
+      }
+    })
 
     return NextResponse.json({
       success: true,

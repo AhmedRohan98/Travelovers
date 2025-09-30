@@ -12,6 +12,8 @@ interface Question {
   id: number
   text: string
   question_type: 'mcq' | 'selection'
+  section?: number
+  section_name?: string | null
   visa_type: string
   options: Option[]
 }
@@ -300,6 +302,15 @@ export default function VisaAssessmentPage() {
   }
 
   const currentQuestion = questions[currentQuestionIndex]
+
+  // Determine current section (1-4) and section progress
+  const currentSectionName = (currentQuestion?.section_name || 'PROFILING').toUpperCase()
+  // Build ordered, unique section names list based on the question order
+  const sectionNames: string[] = []
+  for (const q of questions) {
+    const name = (q.section_name || 'PROFILING').toUpperCase()
+    if (!sectionNames.includes(name)) sectionNames.push(name)
+  }
   
   // Calculate progress based on answered questions
   // Since the assessment flow is dynamic, we'll show progress based on questions answered
@@ -308,7 +319,7 @@ export default function VisaAssessmentPage() {
   
   // For progress bar, we'll use a simple approach: show progress based on questions answered
   // with a reasonable maximum to avoid showing 100% too early
-  const maxReasonableQuestions = 20 // Most assessments won't exceed this
+  const maxReasonableQuestions = 25 // Most assessments won't exceed this
   const progress = Math.min((totalAnsweredQuestions / maxReasonableQuestions) * 100, 95) // Cap at 95% until completion
 
   return (
@@ -342,8 +353,9 @@ export default function VisaAssessmentPage() {
           <div className="space-y-6">
             <AssessmentProgress 
               current={currentQuestionNumber}
-              total={maxReasonableQuestions}
               progress={progress}
+            sectionNames={sectionNames}
+            currentSectionName={currentSectionName}
             />
             
             <QuestionCard

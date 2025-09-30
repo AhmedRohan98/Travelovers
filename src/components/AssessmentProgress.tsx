@@ -2,11 +2,14 @@
 
 interface AssessmentProgressProps {
   current: number
-  total: number
   progress: number
+  sectionNames: string[]
+  currentSectionName: string
 }
 
-export default function AssessmentProgress({ current, total, progress }: AssessmentProgressProps) {
+export default function AssessmentProgress({ current, progress, sectionNames, currentSectionName }: AssessmentProgressProps) {
+  const normalizedSectionNames = sectionNames && sectionNames.length > 0 ? sectionNames : ['General']
+  const currentIndex = Math.max(0, normalizedSectionNames.indexOf(currentSectionName))
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-4">
@@ -19,38 +22,45 @@ export default function AssessmentProgress({ current, total, progress }: Assessm
       </div>
       
       {/* Progress Bar - Simplified */}
-      <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+      <div className="w-full bg-gray-200 rounded-full h-3 mb-3">
         <div
           className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 ease-out"
           style={{ width: `${Math.min(progress, 100)}%` }}
         />
       </div>
-      
-      {/* Progress Steps - Simplified */}
-      <div className="mt-4 flex space-x-2">
-        {Array.from({ length: Math.min(total, 8) }, (_, index) => {
-          const isCompleted = index < current - 1
-          const isCurrent = index === current - 1
-          
-          return (
-            <div
-              key={index}
-              className={`flex-1 h-2 rounded-full transition-all duration-300 ${
-                isCompleted
-                  ? 'bg-blue-500'
-                  : isCurrent
-                  ? 'bg-blue-300'
-                  : 'bg-gray-200'
-              }`}
-            />
-          )
-        })}
-        {total > 8 && (
-          <div className="text-xs text-gray-500 flex items-center">
-            ...
+
+      {/* Section Progress Bars with labels */}
+      <div className="mt-2">
+        <div className="flex space-x-2 mb-2">
+          {normalizedSectionNames.map((name, index) => {
+            const isCompleted = index < currentIndex
+            const isCurrent = index === currentIndex
+            return (
+              <div
+                key={name}
+                className={`flex-1 h-2 rounded-full transition-all duration-300 ${
+                  isCompleted
+                    ? 'bg-green-500'
+                    : isCurrent
+                    ? 'bg-blue-500'
+                    : 'bg-gray-200'
+                }`}
+                title={name}
+              />
+            )
+          })}
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm font-semibold">
+            <span className="uppercase tracking-wide">{currentSectionName}</span>
           </div>
-        )}
+          <div className="text-xs text-gray-500">
+            {currentIndex + 1} of {normalizedSectionNames.length}
+          </div>
+        </div>
       </div>
+      
+      {/* Removed bottom per-question step indicators to keep only two bars */}
     </div>
   )
 }
