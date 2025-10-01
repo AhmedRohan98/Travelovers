@@ -16,6 +16,7 @@ interface AssessmentResult {
   recommendations: Array<{
     title: string
     description: string
+    isPositive?: boolean
   }>
   visaType: string
 }
@@ -249,15 +250,42 @@ export default function ResultsDisplay({ result, answers, multiSelectAnswers = [
             <div className="space-y-4">
               <h4 className="font-semibold text-gray-900 mb-4">Recommendations</h4>
               <div className="space-y-3">
-                {result.recommendations.map((recommendation, index) => (
-                  <div key={index} className="flex items-start space-x-3 p-4 bg-blue-50 rounded-xl">
-                    <CheckCircleIcon className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h5 className="font-medium text-gray-900 mb-1">{recommendation.title}</h5>
-                      <p className="text-gray-700">{recommendation.description}</p>
+                {result.recommendations.map((recommendation, index) => {
+                  const isPositive = recommendation.isPositive === true
+                  const isNegative = recommendation.isPositive === false
+                  
+                  return (
+                    <div key={index} className={`flex items-start space-x-3 p-4 rounded-xl ${
+                      isPositive ? 'bg-green-50 border border-green-200' : 
+                      isNegative ? 'bg-red-50 border border-red-200' : 
+                      'bg-blue-50 border border-blue-200'
+                    }`}>
+                      {isPositive ? (
+                        <CheckCircleIcon className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      ) : isNegative ? (
+                        <span className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0 text-xl">✗</span>
+                      ) : (
+                        <CheckCircleIcon className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      )}
+                      <div>
+                        <h5 className={`font-medium mb-1 ${
+                          isPositive ? 'text-green-900' : 
+                          isNegative ? 'text-red-900' : 
+                          'text-gray-900'
+                        }`}>
+                          {recommendation.title}
+                        </h5>
+                        <p className={`${
+                          isPositive ? 'text-green-700' : 
+                          isNegative ? 'text-red-700' : 
+                          'text-gray-700'
+                        }`}>
+                          {recommendation.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )}

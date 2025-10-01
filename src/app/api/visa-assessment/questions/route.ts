@@ -41,6 +41,14 @@ export async function GET(request: NextRequest) {
       points: number
       leads_to_question_id: number | null
       additional_questions?: number | null
+      // Optional recommendation-related columns
+      recommendation?: string | null
+      recommendations?: string | null
+      recommendation_description?: string | null
+      rec_description?: string | null
+      recommendation_title?: string | null
+      rec_title?: string | null
+      remark?: boolean | null // true => positive, false => negative
     }
 
     type DBQuestion = {
@@ -87,7 +95,15 @@ export async function GET(request: NextRequest) {
             text: option.option,
             points: option.points,
           leads_to_question_id: option.leads_to_question_id,
-          additional_questions: (option as DBOption).additional_questions ?? null
+          additional_questions: (option as DBOption).additional_questions ?? null,
+          // Expose recommendation flags
+          hasRecommendation: Boolean(
+            (option as DBOption).rec_description ??
+            (option as DBOption).recommendation_description ??
+            (option as DBOption).recommendation ??
+            (option as DBOption).recommendations ?? null
+          ),
+          remark: (option as DBOption).remark ?? null
           }))
       }
     })
