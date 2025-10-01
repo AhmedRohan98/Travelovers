@@ -19,6 +19,8 @@ interface Option {
   points: number
   leads_to_question_id: number | null
   additional_questions?: number | null
+  hasRecommendation?: boolean
+  remark?: boolean | null
 }
 
 interface QuestionCardProps {
