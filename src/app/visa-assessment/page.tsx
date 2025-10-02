@@ -7,6 +7,7 @@ import VisaTypeSelector from '@/components/VisaTypeSelector'
 import QuestionCard from '@/components/QuestionCard'
 import AssessmentProgress from '@/components/AssessmentProgress'
 import ResultsDisplay from '@/components/ResultsDisplay'
+import CountryRoutingButton from '@/components/CountryRoutingButton'
 
 interface Question {
   id: number
@@ -73,6 +74,7 @@ export default function VisaAssessmentPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<AssessmentResult | null>(null)
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
 
   const fetchQuestions = async (type: 'visit' | 'study') => {
     setLoading(true)
@@ -139,6 +141,11 @@ export default function VisaAssessmentPage() {
     }
 
     setAnswers(prev => [...prev, newAnswer])
+
+    // Capture country selection from first question
+    if (question.id === 1) {
+      setSelectedCountry(option.text)
+    }
 
     // Capture additional questions from Q1 selection if present
     if (question.id === 1 && option.additional_questions) {
@@ -338,6 +345,7 @@ export default function VisaAssessmentPage() {
     setPendingQuestions([])
     setError(null)
     setResult(null)
+    setSelectedCountry(null)
   }
 
   const currentQuestion = questions[currentQuestionIndex]
@@ -372,9 +380,9 @@ export default function VisaAssessmentPage() {
               className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
             >
               <ArrowBackIosIcon className="w-5 h-5 mr-1" />
-              Back
+              Exit
             </button>
-            <h1 className="text-2xl font-bold text-gray-900">Visa Assessment</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Visa Application Strength Check</h1>
             <div className="w-20"></div> {/* Spacer for centering */}
           </div>
         </div>
@@ -405,16 +413,49 @@ export default function VisaAssessmentPage() {
               onBack={goBack}
               canGoBack={questionHistory.length > 0}
             />
+
+            {/* Show country routing after first question is answered */}
+            {selectedCountry && answers.length > 0 && (
+              <div className="flex justify-center items-center">
+                <div className="bg-white rounded-2xl p-6 border border-gray-200 text-center">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Checkout {selectedCountry} Document Requirements Now
+                  </h3>
+                  <CountryRoutingButton 
+                    selectedCountry={selectedCountry}
+                    visaType={visaType}
+                    showAfterFirstQuestion={true}
+                  />
+                </div>
+              </div>
+            )}
+
           </div>
         )}
 
         {currentStep === 'results' && result && (
-          <ResultsDisplay
-            result={result}
-            answers={answers}
-            multiSelectAnswers={multiSelectAnswers}
-            onRestart={resetAssessment}
-          />
+          <div className="space-y-6">
+            <ResultsDisplay
+              result={result}
+              answers={answers}
+              multiSelectAnswers={multiSelectAnswers}
+              onRestart={resetAssessment}
+            />
+            
+            {/* Show country routing on results page as well */}
+            {selectedCountry && (
+              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Checkout {selectedCountry} Document Requirements Now
+                </h3>
+                <CountryRoutingButton 
+                  selectedCountry={selectedCountry}
+                  visaType={visaType}
+                  showAfterFirstQuestion={true}
+                />
+              </div>
+            )}
+          </div>
         )}
 
         {error && (
