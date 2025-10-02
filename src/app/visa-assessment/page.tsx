@@ -443,16 +443,18 @@ export default function VisaAssessmentPage() {
             />
             
             {/* Show country routing on results page as well */}
-            {selectedCountry && (
-              <div className="bg-white rounded-2xl p-6 border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Checkout {selectedCountry} Document Requirements Now
-                </h3>
-                <CountryRoutingButton 
-                  selectedCountry={selectedCountry}
-                  visaType={visaType}
-                  showAfterFirstQuestion={true}
-                />
+            {selectedCountry && answers.length > 0 && (
+              <div className="flex justify-center items-center">
+                <div className="bg-white rounded-2xl p-6 border border-gray-200 text-center">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Checkout {selectedCountry} Document Requirements Now
+                  </h3>
+                  <CountryRoutingButton 
+                    selectedCountry={selectedCountry}
+                    visaType={visaType}
+                    showAfterFirstQuestion={true}
+                  />
+                </div>
               </div>
             )}
           </div>
