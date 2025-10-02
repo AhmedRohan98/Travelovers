@@ -153,7 +153,7 @@ export default function QuestionCard({
       if (selectedOption?.id === option.id) {
         return 'border-green-500 bg-green-50 text-green-900'
       }
-      return 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+      return 'border-gray-200 hover:border-red-300 hover:bg-red-50'
     }
   }
 

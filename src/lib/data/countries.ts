@@ -248,6 +248,44 @@ export async function getGlobalTourismCountries(): Promise<Country[]> {
   }
 }
 
+// Function to get continent information for a specific country
+export async function getCountryContinent(countryName: string, visaType: 'visit' | 'study' = 'visit'): Promise<string | null> {
+  try {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.warn('Supabase not configured, using fallback continent detection');
+      // Fallback to checking against known European countries
+      const europeanCountries = ['Austria', 'Belgium', 'Croatia', 'Czech Republic', 'Denmark', 'Estonia', 
+        'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Italy', 
+        'Latvia', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 
+        'Norway', 'Poland', 'Portugal', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 
+        'Switzerland', 'United Kingdom', 'UK']
+      
+      const isEuropean = europeanCountries.some(country => 
+        countryName.toLowerCase().includes(country.toLowerCase()) || 
+        country.toLowerCase().includes(countryName.toLowerCase())
+      )
+      return isEuropean ? 'Europe' : null
+    }
+
+    const tableName = visaType === 'study' ? 'study_country' : 'visa_country'
+    const { data, error } = await supabase
+      .from(tableName)
+      .select('continent')
+      .eq('name', countryName.toLowerCase())
+      .maybeSingle()
+
+    if (error) {
+      console.error('Error fetching country continent:', error)
+      return null
+    }
+
+    return data?.continent || null
+  } catch (error) {
+    console.error('Error in getCountryContinent:', error)
+    return null
+  }
+}
+
 // Function to get related global tourism countries by continent (excluding current country) with randomization
 export async function getRelatedGlobalTourismCountries(currentCountryName: string, continent: string, limit: number = 5): Promise<Country[]> {
   try {

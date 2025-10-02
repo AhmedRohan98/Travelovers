@@ -32,10 +32,10 @@ export default function VisaTypeSelector({ onSelect, loading }: VisaTypeSelector
       <div className="grid md:grid-cols-2 gap-6">
         {/* Visit Visa */}
         <div
-          className={`relative p-8 rounded-2xl border-2 transition-all duration-300 cursor-pointer group ${
+          className={`relative p-8 rounded-2xl border-2 border-blue-200 transition-all duration-300 cursor-pointer group ${
             selectedType === 'visit'
               ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
-              : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
+              : 'border-blue-200 bg-blue-50 hover:border-blue-300 hover:shadow-md'
           }`}
           onClick={() => handleSelect('visit')}
         >
@@ -48,15 +48,8 @@ export default function VisaTypeSelector({ onSelect, loading }: VisaTypeSelector
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Visit Visa
             </h3>
-            <p className="text-gray-600 mb-4">
-              Tourism, family visits, business trips, and short-term stays
-            </p>
-            <ul className="text-sm text-gray-500 space-y-1">
-              <li>• Tourism and sightseeing</li>
-              <li>• Family and friend visits</li>
-              <li>• Business meetings</li>
-              <li>• Short-term courses</li>
-            </ul>
+            <p>Free Assessment</p>
+            <p>Get Your Application Strength</p>
           </div>
           
           {selectedType === 'visit' && (
@@ -70,10 +63,10 @@ export default function VisaTypeSelector({ onSelect, loading }: VisaTypeSelector
 
         {/* Study Visa */}
         <div
-          className={`relative p-8 rounded-2xl border-2 transition-all duration-300 cursor-pointer group ${
+          className={`relative p-8 rounded-2xl border-2 border-green-200 transition-all duration-300 cursor-pointer group ${
             selectedType === 'study'
-              ? 'border-green-500 bg-green-50 shadow-lg scale-105'
-              : 'border-gray-200 bg-white hover:border-green-300 hover:shadow-md'
+              ? 'border-green-200 bg-green-50 shadow-lg scale-105'
+              : 'border-gray-200 bg-green-50 hover:border-green-300 hover:shadow-md'
           }`}
           onClick={() => handleSelect('study')}
         >
@@ -86,15 +79,8 @@ export default function VisaTypeSelector({ onSelect, loading }: VisaTypeSelector
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Study Visa
             </h3>
-            <p className="text-gray-600 mb-4">
-              Higher education, language courses, and academic programs
-            </p>
-            <ul className="text-sm text-gray-500 space-y-1">
-              <li>• University degrees</li>
-              <li>• Language courses</li>
-              <li>• Vocational training</li>
-              <li>• Research programs</li>
-            </ul>
+            <p>Eligibility Check</p>
+            <p>Get to know where you can apply</p>
           </div>
           
           {selectedType === 'study' && (

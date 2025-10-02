@@ -7,7 +7,7 @@ interface AssessmentProgressProps {
   currentSectionName: string
 }
 
-export default function AssessmentProgress({ current, progress, sectionNames, currentSectionName }: AssessmentProgressProps) {
+export default function AssessmentProgress({ progress, sectionNames, currentSectionName }: AssessmentProgressProps) {
   const normalizedSectionNames = sectionNames && sectionNames.length > 0 ? sectionNames : ['General']
   const currentIndex = Math.max(0, normalizedSectionNames.indexOf(currentSectionName))
   return (
@@ -16,9 +16,6 @@ export default function AssessmentProgress({ current, progress, sectionNames, cu
         <h3 className="text-lg font-semibold text-gray-900">
           Assessment Progress
         </h3>
-        <span className="text-sm font-medium text-gray-600">
-          Question {current}
-        </span>
       </div>
       
       {/* Progress Bar - Simplified */}
@@ -55,7 +52,7 @@ export default function AssessmentProgress({ current, progress, sectionNames, cu
             <span className="uppercase tracking-wide">{currentSectionName}</span>
           </div>
           <div className="text-xs text-gray-500">
-            {currentIndex + 1} of {normalizedSectionNames.length}
+            Section {currentIndex + 1} of {normalizedSectionNames.length}
           </div>
         </div>
       </div>
