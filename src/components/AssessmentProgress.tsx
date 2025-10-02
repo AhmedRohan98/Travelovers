@@ -32,14 +32,17 @@ export default function AssessmentProgress({ progress, sectionNames, currentSect
           {normalizedSectionNames.map((name, index) => {
             const isCompleted = index < currentIndex
             const isCurrent = index === currentIndex
+            const isJustCompleted = index === currentIndex - 1
             return (
               <div
                 key={name}
                 className={`flex-1 h-2 rounded-full transition-all duration-300 ${
                   isCompleted
                     ? 'bg-green-500'
-                    : isCurrent
+                    : isJustCompleted
                     ? 'bg-blue-500'
+                    : isCurrent
+                    ? 'bg-gray-200'
                     : 'bg-gray-200'
                 }`}
                 title={name}
