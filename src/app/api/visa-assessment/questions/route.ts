@@ -49,6 +49,8 @@ export async function GET(request: NextRequest) {
       recommendation_title?: string | null
       rec_title?: string | null
       remark?: boolean | null // true => positive, false => negative
+      // Study country recommendations
+      recommended_countries?: string[] | string | null
     }
 
     type DBQuestion = {
@@ -65,6 +67,21 @@ export async function GET(request: NextRequest) {
     }
 
     const formattedQuestions = (questions as DBQuestion[] | null)?.map((question) => {
+      // Debug: Log questions with country recommendations
+      const hasCountryRecommendations = question.options.some(opt => 
+        (opt as DBOption).recommended_countries && 
+        Array.isArray((opt as DBOption).recommended_countries) && 
+        (opt as DBOption).recommended_countries!.length > 0
+      )
+      if (hasCountryRecommendations) {
+        console.log('Question with country recommendations:', question.id, question.options.filter(opt => 
+          (opt as DBOption).recommended_countries
+        ).map(opt => ({
+          id: opt.id,
+          text: opt.option,
+          recommended_countries: (opt as DBOption).recommended_countries
+        })))
+      }
       const rawSection = (question.section ?? question.sections ?? 1) as number | string
       const parsedSection = typeof rawSection === 'number' ? rawSection : parseInt(String(rawSection), 10)
       const numericSection = Number.isFinite(parsedSection) && parsedSection >= 1 ? parsedSection : 1
@@ -103,7 +120,21 @@ export async function GET(request: NextRequest) {
             (option as DBOption).recommendation ??
             (option as DBOption).recommendations ?? null
           ),
-          remark: (option as DBOption).remark ?? null
+          remark: (option as DBOption).remark ?? null,
+          // Study country recommendations
+          recommended_countries: (() => {
+            const countries = (option as DBOption).recommended_countries
+            if (!countries) return null
+            // Handle both string and array formats
+            if (typeof countries === 'string') {
+              try {
+                return JSON.parse(countries)
+              } catch {
+                return countries.split(',').map(c => c.trim()).filter(c => c.length > 0)
+              }
+            }
+            return countries
+          })()
           }))
       }
     })
