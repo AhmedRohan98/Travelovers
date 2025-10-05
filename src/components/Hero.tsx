@@ -18,6 +18,7 @@ import Carousel from "react-material-ui-carousel";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { getCountriesByCategoryAsync } from "@/lib/data/countries";
 import { Country, TouristPlace } from "@/components/Countries";
 
@@ -176,6 +177,15 @@ const HeroQuickBar = () => {
           >
           Start Your Adventure
         </Button>
+        <Link href="/visa-assessment" style={{ textDecoration: 'none' }}>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            sx={styles.visaButton}
+            >
+            Check Visa Chances
+          </Button>
+        </Link>
       </Box>
 
       {/* Travel Type Selection Modal */}
@@ -333,6 +343,8 @@ const styles = {
     left: "50%",
     transform: "translateX(-50%)",
     zIndex: 10,
+    display: "flex",
+    gap: "20px",
     animation: "jump 3s infinite",
     "@keyframes jump": {
       "0%, 100%": {
@@ -364,6 +376,23 @@ const styles = {
     border: "3px solid #fff",
     "&:hover": {
       background: "linear-gradient(135deg, #a00a18 0%, #b91c1c 100%)",
+      transform: "translateY(-2px)",
+      boxShadow: "0 12px 40px rgba(0, 0, 0, 0.4)",
+    },
+    transition: "all 0.3s ease",
+  },
+
+  visaButton: {
+    borderRadius: "50px",
+    padding: "15px 40px",
+    fontWeight: "bold",
+    fontSize: "18px",
+    minHeight: "60px",
+    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+    background: "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
+    border: "3px solid #fff",
+    "&:hover": {
+      background: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
       transform: "translateY(-2px)",
       boxShadow: "0 12px 40px rgba(0, 0, 0, 0.4)",
     },

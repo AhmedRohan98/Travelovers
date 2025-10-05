@@ -7,10 +7,12 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 interface VisaTypeSelectorProps {
   onSelect: (type: 'visit' | 'study') => void
+  onResume?: () => void
   loading: boolean
+  hasResumableState?: boolean
 }
 
-export default function VisaTypeSelector({ onSelect, loading }: VisaTypeSelectorProps) {
+export default function VisaTypeSelector({ onSelect, onResume, loading, hasResumableState }: VisaTypeSelectorProps) {
   const [selectedType, setSelectedType] = useState<'visit' | 'study' | null>(null)
 
   const handleSelect = (type: 'visit' | 'study') => {
@@ -99,6 +101,18 @@ export default function VisaTypeSelector({ onSelect, loading }: VisaTypeSelector
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
             Loading questions...
           </div>
+        </div>
+      )}
+
+      {/* Resume Assessment Button */}
+      {hasResumableState && onResume && (
+        <div className="text-center mt-6">
+          <button
+            onClick={onResume}
+            className="px-6 py-3 bg-red-400 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium border border-gray-300"
+          >
+            📋 Resume Previous Assessment
+          </button>
         </div>
       )}
 

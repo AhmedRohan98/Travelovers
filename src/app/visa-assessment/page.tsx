@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import VisaTypeSelector from '@/components/VisaTypeSelector'
@@ -27,12 +27,12 @@ interface Option {
   additional_questions?: number | null
   hasRecommendation?: boolean
   remark?: boolean | null
+  recommended_countries?: string[] | null
 }
 
 interface Answer {
   questionId: number
   optionId: number
-  points: number
   questionText: string
   selectedOption: string
 }
@@ -43,16 +43,10 @@ interface MultiSelectAnswer {
   selectedOptions: Array<{
     optionId: number
     optionText: string
-    points: number
   }>
-  totalPoints: number
 }
 
 interface AssessmentResult {
-  totalScore: number
-  maxPossibleScore: number
-  percentage: number
-  approvalChance: 'High' | 'Medium' | 'Low'
   recommendations: Array<{
     title: string
     description: string
@@ -75,6 +69,83 @@ export default function VisaAssessmentPage() {
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<AssessmentResult | null>(null)
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
+  const [hasResumableState, setHasResumableState] = useState(false)
+
+  // State persistence functions
+  const saveAssessmentState = useCallback(() => {
+    const state = {
+      currentStep,
+      visaType,
+      questions,
+      currentQuestionIndex,
+      answers,
+      multiSelectAnswers,
+      questionHistory,
+      pendingQuestions,
+      scheduledAdditionalQuestionIds,
+      selectedCountry,
+      timestamp: Date.now()
+    }
+    localStorage.setItem('visaAssessmentState', JSON.stringify(state))
+  }, [currentStep, visaType, questions, currentQuestionIndex, answers, multiSelectAnswers, questionHistory, pendingQuestions, scheduledAdditionalQuestionIds, selectedCountry])
+
+
+  const clearAssessmentState = () => {
+    localStorage.removeItem('visaAssessmentState')
+    setHasResumableState(false)
+  }
+
+  const resumeAssessment = () => {
+    try {
+      const savedState = localStorage.getItem('visaAssessmentState')
+      if (savedState) {
+        const state = JSON.parse(savedState)
+        setCurrentStep(state.currentStep || 'type-selection')
+        setVisaType(state.visaType || 'visit')
+        setQuestions(state.questions || [])
+        setCurrentQuestionIndex(state.currentQuestionIndex || 0)
+        setAnswers(state.answers || [])
+        setMultiSelectAnswers(state.multiSelectAnswers || [])
+        setQuestionHistory(state.questionHistory || [])
+        setPendingQuestions(state.pendingQuestions || [])
+        setScheduledAdditionalQuestionIds(state.scheduledAdditionalQuestionIds || [])
+        setSelectedCountry(state.selectedCountry || null)
+        console.log('Assessment state resumed from localStorage')
+      }
+    } catch (error) {
+      console.error('Error resuming assessment:', error)
+      clearAssessmentState()
+    }
+  }
+
+  // Check for resumable state on component mount
+  useEffect(() => {
+    try {
+      const savedState = localStorage.getItem('visaAssessmentState')
+      if (savedState) {
+        const state = JSON.parse(savedState)
+        // Check if there's a resumable state (not too old and has progress)
+        if (Date.now() - state.timestamp < 24 * 60 * 60 * 1000 && 
+            (state.answers?.length > 0 || state.multiSelectAnswers?.length > 0)) {
+          setHasResumableState(true)
+          console.log('Found resumable assessment state')
+        } else {
+          // Clear old state
+          clearAssessmentState()
+        }
+      }
+    } catch (error) {
+      console.error('Error checking for resumable state:', error)
+      clearAssessmentState()
+    }
+  }, [])
+
+  // Save state whenever important state changes
+  useEffect(() => {
+    if (currentStep !== 'type-selection') {
+      saveAssessmentState()
+    }
+  }, [currentStep, visaType, questions, currentQuestionIndex, answers, multiSelectAnswers, questionHistory, pendingQuestions, scheduledAdditionalQuestionIds, selectedCountry, saveAssessmentState])
 
   const fetchQuestions = async (type: 'visit' | 'study') => {
     setLoading(true)
@@ -135,12 +206,21 @@ export default function VisaAssessmentPage() {
     const newAnswer: Answer = {
       questionId: question.id,
       optionId: option.id,
-      points: option.points,
       questionText: question.text,
       selectedOption: option.text
     }
 
-    setAnswers(prev => [...prev, newAnswer])
+    console.log('=== ANSWER SELECTED ===')
+    console.log('Question ID:', question.id)
+    console.log('Option ID:', option.id)
+    console.log('Option text:', option.text)
+    console.log('Leads to question ID:', option.leads_to_question_id)
+
+    setAnswers(prev => {
+      const updatedAnswers = [...prev, newAnswer]
+      console.log('Updated answers:', updatedAnswers)
+      return updatedAnswers
+    })
 
     // Capture country selection from first question
     if (question.id === 1) {
@@ -155,29 +235,32 @@ export default function VisaAssessmentPage() {
       })
     }
 
-    // Check for pending questions first - if there are pending questions from question 50,
-    // we should ask those before continuing down any path
-    if (pendingQuestions.length > 0) {
-      checkForPendingQuestions()
-      return
-    }
+    // Use setTimeout to ensure state is updated before checking for pending questions
+    setTimeout(() => {
+      // Check for pending questions first - if there are pending questions from question 50,
+      // we should ask those before continuing down any path
+      if (pendingQuestions.length > 0) {
+        checkForPendingQuestions()
+        return
+      }
 
-    // Handle conditional navigation
-    if (option.leads_to_question_id) {
-      // Navigate to specific question by ID
-      const targetQuestion = questions.find(q => q.id === option.leads_to_question_id)
-      if (targetQuestion) {
-        const targetIndex = questions.findIndex(q => q.id === option.leads_to_question_id)
-        setQuestionHistory(prev => [...prev, currentQuestionIndex])
-        setCurrentQuestionIndex(targetIndex)
+      // Handle conditional navigation
+      if (option.leads_to_question_id) {
+        // Navigate to specific question by ID
+        const targetQuestion = questions.find(q => q.id === option.leads_to_question_id)
+        if (targetQuestion) {
+          const targetIndex = questions.findIndex(q => q.id === option.leads_to_question_id)
+          setQuestionHistory(prev => [...prev, currentQuestionIndex])
+          setCurrentQuestionIndex(targetIndex)
+        } else {
+          // If target question not found, check for pending questions
+          checkForPendingQuestions()
+        }
       } else {
-        // If target question not found, check for pending questions
+        // No specific next question, check for pending questions
         checkForPendingQuestions()
       }
-    } else {
-      // No specific next question, check for pending questions
-      checkForPendingQuestions()
-    }
+    }, 100) // Small delay to ensure state is updated
   }
 
   // Helper function to check if there are pending questions to ask
@@ -220,6 +303,10 @@ export default function VisaAssessmentPage() {
       }
 
       // No more questions to ask, end assessment
+      console.log('=== ENDING ASSESSMENT ===')
+      console.log('Current question ID:', questions[currentQuestionIndex]?.id)
+      console.log('Pending questions:', pendingQuestions)
+      console.log('Scheduled additional questions:', scheduledAdditionalQuestionIds)
       calculateResults()
     }
   }
@@ -230,10 +317,8 @@ export default function VisaAssessmentPage() {
       questionText: question.text,
       selectedOptions: selectedOptions.map(option => ({
         optionId: option.id,
-        optionText: option.text,
-        points: option.points
-      })),
-      totalPoints: selectedOptions.reduce((sum, option) => sum + option.points, 0)
+        optionText: option.text
+      }))
     }
 
     setMultiSelectAnswers(prev => [...prev, newMultiSelectAnswer])
@@ -307,6 +392,11 @@ export default function VisaAssessmentPage() {
 
   const calculateResults = async () => {
     setLoading(true)
+    console.log('=== CALCULATE RESULTS CALLED ===')
+    console.log('Visa Type:', visaType)
+    console.log('Answers:', answers)
+    console.log('MultiSelect Answers:', multiSelectAnswers)
+    
     try {
       const response = await fetch('/api/visa-assessment/calculate', {
         method: 'POST',
@@ -323,8 +413,11 @@ export default function VisaAssessmentPage() {
       const data = await response.json()
       
       if (data.success) {
+        console.log('=== RESULT SET ===')
+        console.log('Result data:', data.result)
         setResult(data.result)
         setCurrentStep('results')
+        // Don't clear state here - let user see results and potentially restart
       } else {
         console.error('Failed to calculate results:', data.error)
       }
@@ -346,6 +439,7 @@ export default function VisaAssessmentPage() {
     setError(null)
     setResult(null)
     setSelectedCountry(null)
+    clearAssessmentState()
   }
 
   const currentQuestion = questions[currentQuestionIndex]
@@ -383,7 +477,14 @@ export default function VisaAssessmentPage() {
               Exit
             </button>
             <h1 className="text-2xl font-bold text-gray-900">Visa Application Strength Check</h1>
-            <div className="w-20"></div> {/* Spacer for centering */}
+            <div className="flex items-center space-x-2">
+              {currentStep !== 'type-selection' && (
+                <div className="flex items-center text-sm text-green-600">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                  Progress Saved
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -392,7 +493,9 @@ export default function VisaAssessmentPage() {
         {currentStep === 'type-selection' && (
           <VisaTypeSelector 
             onSelect={handleVisaTypeSelect}
+            onResume={resumeAssessment}
             loading={loading}
+            hasResumableState={hasResumableState}
           />
         )}
 

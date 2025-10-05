@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import StudyCountryRecommendations from './StudyCountryRecommendations'
 
 interface Question {
   id: number
@@ -21,6 +22,7 @@ interface Option {
   additional_questions?: number | null
   hasRecommendation?: boolean
   remark?: boolean | null
+  recommended_countries?: string[] | null
 }
 
 interface QuestionCardProps {
@@ -38,7 +40,7 @@ export default function QuestionCard({
   onAnswerSelect, 
   onMultiSelectConfirm,
   onBack, 
-  canGoBack 
+  canGoBack
 }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null)
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
@@ -52,6 +54,8 @@ export default function QuestionCard({
   // Reset selections when question changes
   React.useEffect(() => {
     console.log('Question changed - ID:', question.id, 'Type:', question.question_type, 'IsMultiSelect:', isMultiSelectMode)
+    
+    
     setSelectedOption(null)
     setSelectedOptions([])
     setIsAnimating(false)
@@ -106,8 +110,14 @@ export default function QuestionCard({
     } else {
       // Single select mode (MCQ)
       setSelectedOption(option)
-      setIsAnimating(true)
       
+      // For study visa, don't auto-proceed - let user click Next button
+      if (question.visa_type === 'study') {
+        return
+      }
+      
+      // For other cases, proceed as before
+      setIsAnimating(true)
       setTimeout(() => {
         onAnswerSelect(option)
         setIsAnimating(false)
@@ -123,6 +133,14 @@ export default function QuestionCard({
         onMultiSelectConfirm(selectedOptions)
         setIsAnimating(false)
         setSelectedOptions([])
+      }, 300)
+    } else if (selectedOption) {
+      // Handle single select Next button (for study visa with recommendations)
+      setIsAnimating(true)
+      setTimeout(() => {
+        onAnswerSelect(selectedOption)
+        setIsAnimating(false)
+        setSelectedOption(null)
       }, 300)
     }
   }
@@ -159,8 +177,10 @@ export default function QuestionCard({
 
   return (
     <div className={`transition-all duration-300 ${isAnimating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
-      {/* Header */}
-      <div className="bg-white rounded-t-2xl p-6 border-b border-gray-100">
+      {/* Main Container with Question and Recommendations */}
+      <div className="relative">
+        {/* Question Card - Keep Full Width */}
+        <div className="bg-white rounded-t-2xl p-6 border-b border-gray-100">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             {canGoBack && (
@@ -205,11 +225,11 @@ export default function QuestionCard({
                 key={option.id}
                 onClick={() => handleOptionSelect(option)}
                 disabled={
-                  (!actualMultiSelectMode && selectedOption !== null) || 
+                  (!actualMultiSelectMode && selectedOption !== null && question.visa_type !== 'study') || 
                   (actualMultiSelectMode && isDisabled && !isCurrentlySelected)
                 }
                 className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left flex items-center space-x-4 ${
-                  (!actualMultiSelectMode && selectedOption !== null) || 
+                  (!actualMultiSelectMode && selectedOption !== null && question.visa_type !== 'study') || 
                   (actualMultiSelectMode && isDisabled && !isCurrentlySelected)
                     ? 'cursor-not-allowed opacity-50' 
                     : 'cursor-pointer'
@@ -224,9 +244,6 @@ export default function QuestionCard({
                     </span>
                   )}
                 </div>
-                <div className="text-sm text-gray-500 font-medium">
-                  +{option.points} pts
-                </div>
                 {!actualMultiSelectMode && option.leads_to_question_id && (
                   <ArrowForwardIosIcon className="w-4 h-4 text-gray-400" />
                 )}
@@ -239,20 +256,14 @@ export default function QuestionCard({
         {actualMultiSelectMode && selectedOptions.length > 0 && (
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
             <div className="text-blue-800">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center">
-                  <CheckCircleIcon className="w-5 h-5 mr-2" />
-                  <span className="font-medium">Selected ({selectedOptions.length}):</span>
-                </div>
-                <span className="text-sm font-bold">
-                  +{selectedOptions.reduce((sum, option) => sum + option.points, 0)} points
-                </span>
+              <div className="flex items-center mb-2">
+                <CheckCircleIcon className="w-5 h-5 mr-2" />
+                <span className="font-medium">Selected ({selectedOptions.length}):</span>
               </div>
               <div className="text-sm space-y-1">
                 {selectedOptions.map((option) => (
-                  <div key={option.id} className="flex justify-between">
+                  <div key={option.id}>
                     <span>• {option.text}</span>
-                    <span className="text-xs text-blue-600">+{option.points} pts</span>
                   </div>
                 ))}
               </div>
@@ -262,12 +273,9 @@ export default function QuestionCard({
 
         {!actualMultiSelectMode && selectedOption && (
           <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
-            <div className="flex items-center justify-between text-green-800">
-              <div className="flex items-center">
-                <CheckCircleIcon className="w-5 h-5 mr-2" />
-                <span className="font-medium">Selected: {selectedOption.text}</span>
-              </div>
-              <span className="text-sm font-bold">+{selectedOption.points} points</span>
+            <div className="flex items-center text-green-800">
+              <CheckCircleIcon className="w-5 h-5 mr-2" />
+              <span className="font-medium">Selected: {selectedOption.text}</span>
             </div>
           </div>
         )}
@@ -284,17 +292,49 @@ export default function QuestionCard({
             </button>
           </div>
         )}
+
+        {/* Next Button for Study Visa Single Select */}
+        {!actualMultiSelectMode && selectedOption && question.visa_type === 'study' && (
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleNextClick}
+              disabled={isAnimating}
+              className="px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Continue Assessment
+            </button>
+          </div>
+        )}
+        </div>
+
+        {/* Helper Text */}
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-500">
+            {actualMultiSelectMode 
+              ? 'Select all options that apply to your situation, then click Next'
+              : 'Choose the option that best describes your situation'
+            }
+          </p>
+        </div>
+
+        {/* Study Country Recommendations - Beside on Desktop */}
+        {!actualMultiSelectMode && selectedOption && question.visa_type === 'study' && selectedOption.recommended_countries && selectedOption.recommended_countries.length > 0 && (
+          <div className="absolute top-24 right-0 transform translate-x-full ml-4 hidden lg:block">
+            <StudyCountryRecommendations 
+              countries={selectedOption.recommended_countries}
+            />
+          </div>
+        )}
       </div>
 
-      {/* Helper Text */}
-      <div className="mt-4 text-center">
-        <p className="text-sm text-gray-500">
-          {actualMultiSelectMode 
-            ? 'Select all options that apply to your situation, then click Next'
-            : 'Choose the option that best describes your situation'
-          }
-        </p>
-      </div>
+      {/* Study Country Recommendations - Below on Mobile */}
+      {!actualMultiSelectMode && selectedOption && question.visa_type === 'study' && selectedOption.recommended_countries && selectedOption.recommended_countries.length > 0 && (
+        <div className="mt-4 lg:hidden">
+          <StudyCountryRecommendations 
+            countries={selectedOption.recommended_countries}
+          />
+        </div>
+      )}
     </div>
   )
 }

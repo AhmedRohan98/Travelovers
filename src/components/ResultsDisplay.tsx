@@ -1,18 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import TrendingUpIcon from '@mui/icons-material/TrendingUp'
-import TrendingDownIcon from '@mui/icons-material/TrendingDown'
-import TrendingFlatIcon from '@mui/icons-material/TrendingFlat'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import DownloadIcon from '@mui/icons-material/Download'
 
 interface AssessmentResult {
-  totalScore: number
-  maxPossibleScore: number
-  percentage: number
-  approvalChance: 'High' | 'Medium' | 'Low'
   recommendations: Array<{
     title: string
     description: string
@@ -24,7 +17,6 @@ interface AssessmentResult {
 interface Answer {
   questionId: number
   optionId: number
-  points: number
   questionText: string
   selectedOption: string
 }
@@ -35,9 +27,7 @@ interface MultiSelectAnswer {
   selectedOptions: Array<{
     optionId: number
     optionText: string
-    points: number
   }>
-  totalPoints: number
 }
 
 interface ResultsDisplayProps {
@@ -51,41 +41,6 @@ export default function ResultsDisplay({ result, answers, multiSelectAnswers = [
   const [activeTab, setActiveTab] = useState<'overview' | 'recommendations' | 'details'>('overview')
   const [isDownloading, setIsDownloading] = useState(false)
 
-  const getApprovalIcon = () => {
-    switch (result.approvalChance) {
-      case 'High':
-        return <TrendingUpIcon className="w-8 h-8 text-green-500" />
-      case 'Medium':
-        return <TrendingFlatIcon className="w-8 h-8 text-yellow-500" />
-      case 'Low':
-        return <TrendingDownIcon className="w-8 h-8 text-red-500" />
-    }
-    return null
-  }
-
-  const getApprovalColor = () => {
-    switch (result.approvalChance) {
-      case 'High':
-        return 'text-green-600 bg-green-100'
-      case 'Medium':
-        return 'text-yellow-600 bg-yellow-100'
-      case 'Low':
-        return 'text-red-600 bg-red-100'
-    }
-    return 'text-gray-600 bg-gray-100'
-  }
-
-  const getScoreColor = () => {
-    if (result.percentage >= 80) return 'text-green-600'
-    if (result.percentage >= 60) return 'text-yellow-600'
-    return 'text-red-600'
-  }
-
-  const getScoreBarColor = () => {
-    if (result.percentage >= 80) return 'from-green-500 to-green-600'
-    if (result.percentage >= 60) return 'from-yellow-500 to-yellow-600'
-    return 'from-red-500 to-red-600'
-  }
 
 
   const handleDownloadPDF = async () => {
@@ -142,38 +97,16 @@ export default function ResultsDisplay({ result, answers, multiSelectAnswers = [
       <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            {getApprovalIcon()}
+            <CheckCircleIcon className="w-8 h-8 text-green-500" />
           </div>
           
           <h3 className="text-2xl font-bold text-gray-900 mb-2">
-            {result.approvalChance} Approval Chance
+            Assessment Complete
           </h3>
           
-          <div className="flex justify-center mb-6">
-            <span className={`px-4 py-2 rounded-full text-sm font-medium ${getApprovalColor()}`}>
-              {result.percentage}% Score
-            </span>
-          </div>
-
-          {/* Score Bar */}
-          <div className="max-w-md mx-auto">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>0</span>
-              <span className="font-medium">Your Score: {result.totalScore}</span>
-              <span>{result.maxPossibleScore}</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-4">
-              <div
-                className={`h-4 rounded-full bg-gradient-to-r ${getScoreBarColor()} transition-all duration-1000 ease-out`}
-                style={{ width: `${result.percentage}%` }}
-              />
-            </div>
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Low</span>
-              <span>Medium</span>
-              <span>High</span>
-            </div>
-          </div>
+          <p className="text-gray-600">
+            Review your personalized recommendations below
+          </p>
         </div>
       </div>
 
@@ -206,40 +139,20 @@ export default function ResultsDisplay({ result, answers, multiSelectAnswers = [
         <div className="p-6">
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Score Breakdown</h4>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Total Score</span>
-                      <span className="font-medium">{result.totalScore}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Max Possible</span>
-                      <span className="font-medium">{result.maxPossibleScore}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Percentage</span>
-                      <span className={`font-bold ${getScoreColor()}`}>{result.percentage}%</span>
-                    </div>
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h4 className="font-semibold text-gray-900 mb-3">Assessment Information</h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Visa Type</span>
+                    <span className="font-medium capitalize">{result.visaType}</span>
                   </div>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Visa Information</h4>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Visa Type</span>
-                      <span className="font-medium capitalize">{result.visaType}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Questions Answered</span>
-                      <span className="font-medium">{answers.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Assessment Date</span>
-                      <span className="font-medium">{new Date().toLocaleDateString()}</span>
-                    </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Questions Answered</span>
+                    <span className="font-medium">{answers.length + multiSelectAnswers.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Assessment Date</span>
+                    <span className="font-medium">{new Date().toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
@@ -299,7 +212,6 @@ export default function ResultsDisplay({ result, answers, multiSelectAnswers = [
                   <div key={`single-${index}`} className="border border-gray-200 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium text-blue-600">Question {index + 1}</span>
-                      <span className="text-sm text-gray-500">+{answer.points} points</span>
                     </div>
                     <p className="font-medium text-gray-900 mb-2">{answer.questionText}</p>
                     <p className="text-gray-700">{answer.selectedOption}</p>
@@ -311,14 +223,12 @@ export default function ResultsDisplay({ result, answers, multiSelectAnswers = [
                   <div key={`multi-${index}`} className="border border-gray-200 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium text-blue-600">Question {answers.length + index + 1}</span>
-                      <span className="text-sm text-gray-500">+{answer.totalPoints} points</span>
                     </div>
                     <p className="font-medium text-gray-900 mb-2">{answer.questionText}</p>
                     <div className="space-y-1">
                       {answer.selectedOptions.map((option, optionIndex) => (
-                        <div key={optionIndex} className="flex items-center justify-between text-gray-700">
+                        <div key={optionIndex} className="text-gray-700">
                           <span>• {option.optionText}</span>
-                          <span className="text-sm text-gray-500">+{option.points} pts</span>
                         </div>
                       ))}
                     </div>

@@ -59,14 +59,14 @@ export default function CountryRoutingButton({
 
   if (!selectedCountry || loading) return null
 
-  // Handle special cases for country name mapping
+  // Handle special cases for country name mapping for URL routing
   const getCountrySlug = (country: string) => {
     const mappings: { [key: string]: string } = {
       'USA': 'usa',
       'United States': 'usa',
       'United States of America': 'usa',
-      'United Kingdom': 'united_kingdom',
-      'UK': 'united_kingdom',
+      'United Kingdom': 'united-kingdom',
+      'UK': 'united-kingdom',
       'Czech Republic': 'czech-republic',
       'South Korea': 'south-korea',
       'South Africa': 'south-africa',
@@ -83,10 +83,29 @@ export default function CountryRoutingButton({
     return mappings[country] || country.toLowerCase().replace(/\s+/g, '-')
   }
 
-  // Get flag path for a country
+  // Get flag path for a country (different from URL slug)
   const getFlagPath = (country: string) => {
-    const slug = getCountrySlug(country)
-    return `/assets/countries/${visaType}/flags/${slug}.png`
+    const flagMappings: { [key: string]: string } = {
+      'USA': 'usa',
+      'United States': 'usa',
+      'United States of America': 'usa',
+      'United Kingdom': 'united_kingdom',
+      'UK': 'united_kingdom',
+      'Czech Republic': 'czech_republic',
+      'South Korea': 'south_korea',
+      'South Africa': 'south_africa',
+      'New Zealand': 'new_zealand',
+      'North Cyprus': 'north_cyprus',
+      'Hong Kong': 'hong_kong',
+      'Sri Lanka': 'sri_lanka',
+      'United Arab Emirates': 'uae',
+      'UAE': 'uae',
+      'Schengen': 'france',
+      'Schengen Area': 'france'
+    }
+    
+    const flagSlug = flagMappings[country] || country.toLowerCase().replace(/\s+/g, '_')
+    return `/assets/countries/${visaType}/flags/${flagSlug}.png`
   }
 
   const isEuropean = continent === 'Europe'
@@ -254,6 +273,18 @@ export default function CountryRoutingButton({
             }}
           >
             {continent || 'Country'}
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{ 
+              color: '#888',
+              fontSize: '0.7rem',
+              display: 'block',
+              mt: 0.5,
+              textAlign: 'center'
+            }}
+          >
+            Don&apos;t worry, you can resume your assessment.
           </Typography>
         </Card>
       </Link>
