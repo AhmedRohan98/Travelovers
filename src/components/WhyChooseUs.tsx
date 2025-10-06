@@ -5,9 +5,9 @@ import { Box, Stack, Typography, useTheme, useMediaQuery } from "@mui/material";
 
 const WhyChooseUs = () => {
   const counters = [
-    { label: "Happy Clients", target: 300 },
-    { label: "Successful Trips", target: 1200 },
-    { label: "Destinations Covered", target: 80 },
+    { label: "Happy Clients", target: 4000 },
+    { label: "Professional Experience", target: 18 },
+    { label: "Visa Ratio", target: 90 },
   ];
 
   return (
@@ -68,7 +68,7 @@ const AnimatedCounter = ({ target }: { target: number }) => {
 
   useEffect(() => {
     let current = 0;
-    const increment = target / 200;
+    const increment = target / 150;
     const interval = setInterval(() => {
       current += increment;
       if (current >= target) {

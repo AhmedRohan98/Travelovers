@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import PublicIcon from '@mui/icons-material/Public'
-import SchoolIcon from '@mui/icons-material/School'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 interface VisaTypeSelectorProps {
@@ -34,25 +32,26 @@ export default function VisaTypeSelector({ onSelect, onResume, loading, hasResum
       <div className="grid md:grid-cols-2 gap-6">
         {/* Visit Visa */}
         <div
-          className={`relative p-8 rounded-2xl border-2 border-blue-200 transition-all duration-300 cursor-pointer group ${
+          className={`relative p-8 rounded-2xl border-2 transition-all duration-300 cursor-pointer group ${
             selectedType === 'visit'
-              ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
-              : 'border-blue-200 bg-blue-50 hover:border-blue-300 hover:shadow-md'
+              ? 'border-black-500 bg-gradient-to-b from-blue-200 to-blue-400 shadow-lg scale-105'
+              : 'border-black-200 bg-gradient-to-b from-blue-100 to-blue-300 hover:border-black-300 hover:shadow-md'
           }`}
+          
           onClick={() => handleSelect('visit')}
         >
-          <div className="text-center">
-            <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
-              selectedType === 'visit' ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-600'
-            }`}>
-              <PublicIcon className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Visit Visa
-            </h3>
-            <p>Free Assessment</p>
-            <p>Get Your Application Strength</p>
-          </div>
+<div className="text-center p-6 rounded-lg relative">
+  <h3 className="text-4xl font-semibold text-gray-900 mb-1">
+    Visit Visa
+  </h3>
+  <p className="mb-2">Free Assessment</p>
+  <div className="flex justify-center relative">
+    <p className="whitespace-nowrap relative top-[50px]">Get Your Application Strength</p>
+  </div>
+</div>
+
+
+
           
           {selectedType === 'visit' && (
             <div className="absolute top-4 right-4">
@@ -65,24 +64,21 @@ export default function VisaTypeSelector({ onSelect, onResume, loading, hasResum
 
         {/* Study Visa */}
         <div
-          className={`relative p-8 rounded-2xl border-2 border-green-200 transition-all duration-300 cursor-pointer group ${
-            selectedType === 'study'
-              ? 'border-green-200 bg-green-50 shadow-lg scale-105'
-              : 'border-gray-200 bg-green-50 hover:border-green-300 hover:shadow-md'
+          className={`relative p-8 rounded-2xl border-2 border-black-200 transition-all duration-300 cursor-pointer group ${
+            selectedType === 'visit'
+              ? 'border-black-500 bg-gradient-to-b from-green-200 to-green-400 shadow-lg scale-105'
+              : 'border-black-200 bg-gradient-to-b from-green-100 to-green-300 hover:border-black-300 hover:shadow-md'
           }`}
           onClick={() => handleSelect('study')}
         >
-          <div className="text-center">
-            <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
-              selectedType === 'study' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-600'
-            }`}>
-              <SchoolIcon className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="text-center p-6 rounded-lg">
+            <h3 className="text-4xl font-semibold text-gray-900 mb-1">
               Study Visa
             </h3>
-            <p>Eligibility Check</p>
-            <p>Get to know where you can apply</p>
+            <p className="mb-6">Eligibility Check</p>
+            <div className="flex justify-center relative">
+              <p className="whitespace-nowrap relative top-[35px]">Get to know where you can apply</p>
+            </div>
           </div>
           
           {selectedType === 'study' && (

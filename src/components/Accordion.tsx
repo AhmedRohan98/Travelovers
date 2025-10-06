@@ -14,7 +14,7 @@ const AccordionContainer = styled(Box)(({ theme }) => ({
   border: "1px solid #ccc",
   borderRadius: 8,
   overflow: "hidden",
-  marginBottom: theme.spacing(1),
+  marginBottom: theme.spacing(0.25),
 }));
 
 const AccordionHeader = styled(Box)(({ theme }) => ({

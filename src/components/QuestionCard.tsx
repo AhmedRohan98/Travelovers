@@ -32,6 +32,7 @@ interface QuestionCardProps {
   onMultiSelectConfirm: (selectedOptions: Option[]) => void
   onBack: () => void
   canGoBack: boolean
+  isDisabled?: boolean
 }
 
 export default function QuestionCard({ 
@@ -40,7 +41,8 @@ export default function QuestionCard({
   onAnswerSelect, 
   onMultiSelectConfirm,
   onBack, 
-  canGoBack
+  canGoBack,
+  isDisabled = false
 }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null)
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
@@ -186,7 +188,12 @@ export default function QuestionCard({
             {canGoBack && (
               <button
                 onClick={onBack}
-                className="mr-4 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                disabled={isDisabled}
+                className={`mr-4 p-2 rounded-full transition-colors ${
+                  isDisabled 
+                    ? 'text-gray-300 cursor-not-allowed' 
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                }`}
               >
                 <ArrowBackIosIcon className="w-5 h-5" />
               </button>
@@ -225,10 +232,12 @@ export default function QuestionCard({
                 key={option.id}
                 onClick={() => handleOptionSelect(option)}
                 disabled={
+                  isDisabled ||
                   (!actualMultiSelectMode && selectedOption !== null && question.visa_type !== 'study') || 
                   (actualMultiSelectMode && isDisabled && !isCurrentlySelected)
                 }
                 className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left flex items-center space-x-4 ${
+                  isDisabled ||
                   (!actualMultiSelectMode && selectedOption !== null && question.visa_type !== 'study') || 
                   (actualMultiSelectMode && isDisabled && !isCurrentlySelected)
                     ? 'cursor-not-allowed opacity-50' 
