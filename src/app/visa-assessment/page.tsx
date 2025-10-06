@@ -70,6 +70,7 @@ export default function VisaAssessmentPage() {
   const [result, setResult] = useState<AssessmentResult | null>(null)
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
   const [hasResumableState, setHasResumableState] = useState(false)
+  const [isAssessmentEnding, setIsAssessmentEnding] = useState(false)
 
   // State persistence functions
   const saveAssessmentState = useCallback(() => {
@@ -307,6 +308,7 @@ export default function VisaAssessmentPage() {
       console.log('Current question ID:', questions[currentQuestionIndex]?.id)
       console.log('Pending questions:', pendingQuestions)
       console.log('Scheduled additional questions:', scheduledAdditionalQuestionIds)
+      setIsAssessmentEnding(true)
       calculateResults()
     }
   }
@@ -349,9 +351,11 @@ export default function VisaAssessmentPage() {
           setQuestionHistory(prev => [...prev, currentQuestionIndex])
           setCurrentQuestionIndex(firstTargetIndex)
         } else {
+          setIsAssessmentEnding(true)
           calculateResults()
         }
       } else {
+        setIsAssessmentEnding(true)
         calculateResults()
       }
     } else {
@@ -417,12 +421,15 @@ export default function VisaAssessmentPage() {
         console.log('Result data:', data.result)
         setResult(data.result)
         setCurrentStep('results')
+        setIsAssessmentEnding(false) // Reset the ending state
         // Don't clear state here - let user see results and potentially restart
       } else {
         console.error('Failed to calculate results:', data.error)
+        setIsAssessmentEnding(false) // Reset on error too
       }
     } catch (error) {
       console.error('Error calculating results:', error)
+      setIsAssessmentEnding(false) // Reset on error too
     } finally {
       setLoading(false)
     }
@@ -439,6 +446,7 @@ export default function VisaAssessmentPage() {
     setError(null)
     setResult(null)
     setSelectedCountry(null)
+    setIsAssessmentEnding(false)
     clearAssessmentState()
   }
 
@@ -500,7 +508,7 @@ export default function VisaAssessmentPage() {
         )}
 
         {currentStep === 'questions' && currentQuestion && (
-          <div className="space-y-6">
+          <div className="space-y-6 relative">
             <AssessmentProgress 
               current={currentQuestionNumber}
               progress={progress}
@@ -515,7 +523,23 @@ export default function VisaAssessmentPage() {
               onMultiSelectConfirm={(selectedOptions) => handleMultiSelectConfirm(selectedOptions, currentQuestion)}
               onBack={goBack}
               canGoBack={questionHistory.length > 0}
+              isDisabled={isAssessmentEnding}
             />
+
+            {/* Assessment Ending Loader */}
+            {isAssessmentEnding && (
+              <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50 rounded-2xl">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Processing Your Assessment
+                  </h3>
+                  <p className="text-gray-600">
+                    Please wait while we calculate your results...
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Show country routing after first question is answered */}
             {selectedCountry && answers.length > 0 && (

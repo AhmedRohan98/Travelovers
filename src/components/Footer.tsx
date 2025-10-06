@@ -89,7 +89,7 @@ const Footer = () => {
             textAlign={{ xs: "center", md: "left" }}
           >
             <Typography variant="body2" my={2}>
-            Travelovers is a trusted visa consultancy and travel solutions company. We specialize in study visas, visit visas, and tourism services—guiding students to study abroad, assisting travelers with smooth visa processes, and offering tailored tourism experiences for confident, easy travel.
+            From visa guidance to global travel, Travelovers makes it easy. Our team simplifies complex processes, ensuring smooth, secure, and confident journeys for every client.	
             </Typography>
 
             <Box mt={2} style={{ width: "fit-content", margin: "0 auto" }}>

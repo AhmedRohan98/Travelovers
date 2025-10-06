@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Image from "next/image";
-import ForumIcon from "@mui/icons-material/Forum";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 import Link from "next/link";
 
@@ -27,11 +27,11 @@ export function Navbar() {
         backgroundColor: "white",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.05)",
         borderBottom: "3px solid #8B0000",
-        py: 0.8, // makes navbar taller
+        py: 0.4,
       }}
     >
       <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ minHeight: 70 }}> {/* taller toolbar */}
+        <Toolbar disableGutters sx={{ minHeight: 70 }}>
           {/* Logo */}
           <Link href="/" style={{ display: "flex", alignItems: "center" }}>
             <Image
@@ -97,12 +97,12 @@ export function Navbar() {
 
           {/* Help Section */}
           <Box sx={{ display: "flex", alignItems: "center", ml: 3 }}>
-            <ForumIcon sx={{ color: "#8B0000", mr: 1.5, fontSize: 28 }} />
+            <WhatsAppIcon sx={{ color: "#8B0000", mr: 1.5, fontSize: 28 }} />
             <Box>
               <Typography variant="body1" sx={{ color: "black", fontWeight: 600 }}>
                 Need help?
               </Typography>
-              <Typography variant="body2" sx={{ mt: 0.5 }}>
+              <Typography variant="body2" sx={{ mt: 0.3 }}>
                 <a
                   href="https://wa.me/92325123444"
                   target="_blank"

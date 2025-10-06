@@ -5,10 +5,10 @@ import { GenericTabs } from "./Tabs";
 import Grid from "@mui/material/Grid2";
 import { useRouter } from "next/navigation";
 
-export type TabKey = "Road_to_Adventure" | "Study_Abroad" | "Travel_With_Us";
+export type TabKey = "Explore_Pakistan" | "Study_Abroad" | "Explore_The_World";
 
 const tabSections = {
-  Road_to_Adventure: [
+  Explore_Pakistan: [
     {
       src: "/assets/places/neelum-valley.jpg",
       title: "Neelum Valley",
@@ -72,7 +72,7 @@ const tabSections = {
       route: "/study/usa",
     },
   ],
-  Travel_With_Us: [
+  Explore_The_World: [
     {
       src: "/assets/global/baku.jpg",
       title: "Baku",
@@ -230,7 +230,7 @@ const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
 };
 
 const Adventure = () => {
-  const [selectedTab, setSelectedTab] = useState<TabKey>("Road_to_Adventure");
+  const [selectedTab, setSelectedTab] = useState<TabKey>("Explore_Pakistan");
 
   return (
     <Box
@@ -242,11 +242,11 @@ const Adventure = () => {
     >
       <GenericTabs
         tabs={[
-          { value: "Road_to_Adventure", label: "Road to Adventure" },
           { value: "Study_Abroad", label: "Study Abroad" },
-          { value: "Travel_With_Us", label: "Travel With Us" },
+          { value: "Explore_Pakistan", label: "Explore Pakistan" },
+          { value: "Explore_The_World", label: "Explore The World" },
         ]}
-        defaultValue="Road_to_Adventure"
+        defaultValue="Study_Abroad"
         onChange={(value) => setSelectedTab(value)}
       />
 

@@ -3,6 +3,7 @@ import "./globals.css";
 import ClientTemplate from "./template";
 import { Navbar } from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Navbar />
         <ClientTemplate>{children}</ClientTemplate>
         <Footer />
+        <WhatsAppFloat />
       </body>
     </html>
   );

@@ -12,6 +12,9 @@ interface AssessmentResult {
     isPositive?: boolean
   }>
   visaType: string
+  score?: number
+  maxScore?: number
+  scorePercentage?: number
 }
 
 interface Answer {
@@ -38,7 +41,7 @@ interface ResultsDisplayProps {
 }
 
 export default function ResultsDisplay({ result, answers, multiSelectAnswers = [], onRestart }: ResultsDisplayProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'recommendations' | 'details'>('overview')
+  const [activeTab, setActiveTab] = useState<'recommendations' | 'overview' | 'details'>('recommendations')
   const [isDownloading, setIsDownloading] = useState(false)
 
 
@@ -116,8 +119,8 @@ export default function ResultsDisplay({ result, answers, multiSelectAnswers = [
           <nav className="flex space-x-8 px-6">
             {(
               [
-                { id: 'overview', label: 'Overview' },
                 { id: 'recommendations', label: 'Recommendations' },
+                { id: 'overview', label: 'Overview' },
                 { id: 'details', label: 'Details' }
               ] as Array<{ id: 'overview' | 'recommendations' | 'details'; label: string }>
             ).map((tab) => (
@@ -139,6 +142,59 @@ export default function ResultsDisplay({ result, answers, multiSelectAnswers = [
         <div className="p-6">
           {activeTab === 'overview' && (
             <div className="space-y-6">
+              {/* Score Display for Visit Visa Type */}
+              {result.visaType === 'visit' && result.score !== undefined && result.maxScore !== undefined && (
+                <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-6 border border-blue-200">
+                  <h4 className="font-semibold text-gray-900 mb-4">Your Application Strength Score</h4>
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="relative w-32 h-32">
+                      <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="50"
+                          stroke="currentColor"
+                          strokeWidth="8"
+                          fill="none"
+                          className="text-gray-200"
+                        />
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="50"
+                          stroke="currentColor"
+                          strokeWidth="8"
+                          fill="none"
+                          strokeDasharray={`${2 * Math.PI * 50}`}
+                          strokeDashoffset={`${2 * Math.PI * 50 * (1 - (result.scorePercentage || 0) / 100)}`}
+                          className="text-blue-600 transition-all duration-1000 ease-out"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-2xl font-bold text-gray-900">
+                          {result.scorePercentage || 0}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-lg font-semibold text-gray-900 mb-2">
+                      Score: {result.score} / {result.maxScore}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {result.scorePercentage && result.scorePercentage >= 70 ? (
+                        <span className="text-green-600 font-medium">Strong Application</span>
+                      ) : result.scorePercentage && result.scorePercentage >= 50 ? (
+                        <span className="text-yellow-600 font-medium">Moderate Application</span>
+                      ) : (
+                        <span className="text-red-600 font-medium">Needs Improvement</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div className="bg-gray-50 rounded-xl p-6">
                 <h4 className="font-semibold text-gray-900 mb-3">Assessment Information</h4>
                 <div className="space-y-3">

@@ -47,15 +47,13 @@ const Hero = () => {
 
       {/* Hero Text */}
       <Box sx={styles.heroText}>
-        <Typography variant="h1" style={{ marginBottom: "20px" }}>
-          Journey with Confidence
+        <Typography variant="h2" style={{ marginBottom: "20px" }}>
+          Need help with your <span style={{ color: "#D30000" }}>Visa Application?</span>
           <br />
-          <span style={{ color: "#779431" }}>Migrate</span> with Us
+          <span style={{ color: "#779431" }}>You&apos;re</span> In The Right Place
         </Typography>
         <Typography variant="body1" style={{ width: "60%", margin: "0 auto" }}>
-        Travelovers helps you unlock global opportunities with ease.
-Whether it’s a study visa, a family visit, or an unforgettable tour,
-we guide you every step of the way — making your journey simple, smooth, and stress-free.
+          From your first question to your dream destination, we simplify the process, handle every detail, and guide you every step of the way — so you can focus on your trip while we strengthen your visa application.
         </Typography>
       </Box>
 
@@ -267,9 +265,9 @@ const HeroQuickBar = () => {
                   </Typography>
                 </Box>
               ) : (
-                <Grid container spacing={2}>
+                <Grid container spacing={2} justifyContent="center">
                   {destinations.map((item, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
                       <Card
                         sx={styles.destinationCard}
                         onClick={() => handleDestinationSelect(item.name)}
@@ -435,7 +433,7 @@ const styles = {
     },
   },
   modalContent: {
-    p: 4,
+    p: 3,
     maxHeight: "70vh",
     overflowY: "auto",
   },
@@ -489,13 +487,13 @@ const styles = {
   },
   destinationCardContent: {
     textAlign: "center",
-    p: 2,
+    p: 1.5,
   },
   destinationAvatar: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     mx: "auto",
-    mb: 2,
+    mb: 1.5,
     border: "3px solid #e0e0e0",
   },
   destinationName: {
