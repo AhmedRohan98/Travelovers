@@ -100,11 +100,11 @@ export function Navbar() {
             <WhatsAppIcon sx={{ color: "#8B0000", mr: 1.5, fontSize: 28 }} />
             <Box>
               <Typography variant="body1" sx={{ color: "black", fontWeight: 600 }}>
-                Need help?
+                Contact Us
               </Typography>
               <Typography variant="body2" sx={{ mt: 0.3 }}>
                 <a
-                  href="https://wa.me/92325123444"
+                  href="https://wa.me/923255123444"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

@@ -3,7 +3,7 @@
 import React from 'react'
 
 const WhatsAppFloat = () => {
-  const phoneNumber = "03255123444"
+  const phoneNumber = "923255123444"
   const message = "Hi! I'm interested in your visa services."
 
   const handleWhatsAppClick = () => {
