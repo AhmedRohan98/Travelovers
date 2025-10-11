@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
       yPosition += 6
 
       let totalPoints = 0
-      answer.selectedOptions.forEach((option, idx) => {
+      answer.selectedOptions.forEach((option) => {
         doc.text(`  • ${option.optionText}`, margin + 15, yPosition)
         yPosition += 6
         
