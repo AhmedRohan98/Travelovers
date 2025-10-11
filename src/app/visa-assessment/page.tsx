@@ -22,7 +22,7 @@ interface Question {
 interface Option {
   id: number
   text: string
-  points: number
+  points?: number | null
   leads_to_question_id: number | null
   additional_questions?: number | null
   hasRecommendation?: boolean
@@ -35,6 +35,7 @@ interface Answer {
   optionId: number
   questionText: string
   selectedOption: string
+  points?: number | null
 }
 
 interface MultiSelectAnswer {
@@ -43,6 +44,7 @@ interface MultiSelectAnswer {
   selectedOptions: Array<{
     optionId: number
     optionText: string
+    points?: number | null
   }>
 }
 
@@ -208,7 +210,8 @@ export default function VisaAssessmentPage() {
       questionId: question.id,
       optionId: option.id,
       questionText: question.text,
-      selectedOption: option.text
+      selectedOption: option.text,
+      points: option.points ?? null
     }
 
     console.log('=== ANSWER SELECTED ===')
@@ -319,7 +322,8 @@ export default function VisaAssessmentPage() {
       questionText: question.text,
       selectedOptions: selectedOptions.map(option => ({
         optionId: option.id,
-        optionText: option.text
+        optionText: option.text,
+        points: option.points ?? null
       }))
     }
 
