@@ -4,7 +4,7 @@ import jsPDF from 'jspdf'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { answers, visaType, results } = body
+    const { answers, multiSelectAnswers = [], visaType, results } = body
 
     if (!answers || !Array.isArray(answers) || !results) {
       return NextResponse.json({ error: 'Invalid request data' }, { status: 400 })
@@ -47,20 +47,28 @@ export async function POST(request: NextRequest) {
     doc.text('Assessment Results', margin, yPosition)
     yPosition += 15
 
-    // Score and Percentage
-    doc.setFontSize(14)
-    doc.setTextColor(0, 0, 0)
-    doc.text(`Total Score: ${results.totalScore}/${results.maxPossibleScore}`, margin, yPosition)
-    doc.text(`Percentage: ${results.percentage}%`, margin + 80, yPosition)
-    yPosition += 10
+    // Score and Percentage (only for visit visa)
+    if (visaType === 'visit' && results.score !== undefined && results.maxScore !== undefined) {
+      doc.setFontSize(14)
+      doc.setTextColor(0, 0, 0)
+      doc.text(`Total Score: ${results.score}/${results.maxScore}`, margin, yPosition)
+      doc.text(`Percentage: ${results.scorePercentage}%`, margin + 80, yPosition)
+      yPosition += 10
 
-    // Approval Chance
-    const approvalChanceColor = results.percentage >= 70 ? successColor : 
-                               results.percentage >= 50 ? warningColor : dangerColor
-    doc.setTextColor(approvalChanceColor[0], approvalChanceColor[1], approvalChanceColor[2])
-    doc.setFontSize(12)
-    doc.text(`Visa Approval Chance: ${results.approvalChance}`, margin, yPosition)
-    yPosition += 20
+      // Approval Chance
+      const approvalChanceColor = results.scorePercentage >= 70 ? successColor : 
+                                 results.scorePercentage >= 50 ? warningColor : dangerColor
+      doc.setTextColor(approvalChanceColor[0], approvalChanceColor[1], approvalChanceColor[2])
+      doc.setFontSize(12)
+      const approvalChance = results.scorePercentage >= 70 ? 'Strong Application' :
+                            results.scorePercentage >= 50 ? 'Moderate Application' :
+                            'Needs Improvement'
+      doc.text(`Application Strength: ${approvalChance}`, margin, yPosition)
+      yPosition += 20
+    } else {
+      // For study visa, just add some spacing
+      yPosition += 5
+    }
 
     // Check if we need a new page
     if (yPosition > 250) {
@@ -78,10 +86,21 @@ export async function POST(request: NextRequest) {
     type Answer = {
       questionText: string
       selectedOption: string
-      points: number
+      points?: number | null
+    }
+
+    type MultiSelectAnswer = {
+      questionText: string
+      selectedOptions: Array<{
+        optionText: string
+        points?: number | null
+      }>
     }
     
-    answers.forEach((answer: Answer, index: number) => {
+    let questionNumber = 1
+    
+    // Single-select answers
+    answers.forEach((answer: Answer) => {
       // Check if we need a new page
       if (yPosition > 250) {
         doc.addPage()
@@ -94,7 +113,7 @@ export async function POST(request: NextRequest) {
       doc.setFont('helvetica', 'bold')
       
       // Split long questions into multiple lines
-      const questionText = `${index + 1}. ${answer.questionText}`
+      const questionText = `${questionNumber}. ${answer.questionText}`
       const splitQuestion = doc.splitTextToSize(questionText, contentWidth)
       doc.text(splitQuestion, margin, yPosition)
       yPosition += (splitQuestion.length * 6) + 3
@@ -105,10 +124,60 @@ export async function POST(request: NextRequest) {
       doc.text(`Selected: ${answer.selectedOption}`, margin + 10, yPosition)
       yPosition += 8
 
-      // Points earned
-      doc.setTextColor(successColor[0], successColor[1], successColor[2])
-      doc.text(`Points: ${answer.points}`, margin + 10, yPosition)
-      yPosition += 15
+      // Points earned (only for visit visa and if points exist)
+      if (visaType === 'visit' && answer.points !== null && answer.points !== undefined) {
+        doc.setTextColor(successColor[0], successColor[1], successColor[2])
+        doc.text(`Points: ${answer.points}`, margin + 10, yPosition)
+        yPosition += 10
+      }
+      
+      yPosition += 5
+      questionNumber++
+    })
+
+    // Multi-select answers
+    multiSelectAnswers.forEach((answer: MultiSelectAnswer) => {
+      // Check if we need a new page
+      if (yPosition > 250) {
+        doc.addPage()
+        yPosition = 20
+      }
+
+      // Question number and text
+      doc.setFontSize(12)
+      doc.setTextColor(0, 0, 0)
+      doc.setFont('helvetica', 'bold')
+      
+      const questionText = `${questionNumber}. ${answer.questionText}`
+      const splitQuestion = doc.splitTextToSize(questionText, contentWidth)
+      doc.text(splitQuestion, margin, yPosition)
+      yPosition += (splitQuestion.length * 6) + 3
+
+      // Selected options
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2])
+      doc.text('Selected:', margin + 10, yPosition)
+      yPosition += 6
+
+      let totalPoints = 0
+      answer.selectedOptions.forEach((option, idx) => {
+        doc.text(`  • ${option.optionText}`, margin + 15, yPosition)
+        yPosition += 6
+        
+        if (visaType === 'visit' && option.points !== null && option.points !== undefined) {
+          totalPoints += option.points
+        }
+      })
+
+      // Total points for multi-select (only for visit visa)
+      if (visaType === 'visit' && totalPoints > 0) {
+        doc.setTextColor(successColor[0], successColor[1], successColor[2])
+        doc.text(`Total Points: ${totalPoints}`, margin + 10, yPosition)
+        yPosition += 10
+      }
+      
+      yPosition += 5
+      questionNumber++
     })
 
     // Check if we need a new page for recommendations

@@ -22,6 +22,7 @@ interface Answer {
   optionId: number
   questionText: string
   selectedOption: string
+  points?: number | null
 }
 
 interface MultiSelectAnswer {
@@ -30,6 +31,7 @@ interface MultiSelectAnswer {
   selectedOptions: Array<{
     optionId: number
     optionText: string
+    points?: number | null
   }>
 }
 

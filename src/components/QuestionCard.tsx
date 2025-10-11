@@ -17,7 +17,7 @@ interface Question {
 interface Option {
   id: number
   text: string
-  points: number
+  points?: number | null
   leads_to_question_id: number | null
   additional_questions?: number | null
   hasRecommendation?: boolean

@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     type DBOption = {
       id: number
       option: string
-      points: number
+      points?: number | null
       leads_to_question_id: number | null
       additional_questions?: number | null
       // Optional recommendation-related columns
@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
           .map((option) => ({
             id: option.id,
             text: option.option,
-            points: option.points,
+            points: option.points ?? null,
           leads_to_question_id: option.leads_to_question_id,
           additional_questions: (option as DBOption).additional_questions ?? null,
           // Expose recommendation flags
