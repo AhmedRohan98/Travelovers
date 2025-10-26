@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   Box,
   Typography,
@@ -14,6 +15,10 @@ import {
   Avatar,
   Breadcrumbs,
   Container,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Image from "next/image";
@@ -73,13 +78,13 @@ export default function Countries({
       : locations.filter((loc) => loc.category === selectedFilter);
 
   return (
-    <Container maxWidth="lg" sx={{ py: 5 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, px: { xs: 2, sm: 3 } }}>
       {/* Banner */}
       <Box
         sx={{
           position: "relative",
           width: "100%",
-          height: 300,
+          height: { xs: 200, sm: 250, md: 300 },
           mb: 4,
           borderRadius: "12px",
           overflow: "hidden",
@@ -117,20 +122,24 @@ export default function Countries({
           sx={{
             position: "absolute",
             top: "50%",
-            left: "10%",
+            left: { xs: "5%", sm: "10%" },
             transform: "translateY(-50%)",
             color: "white",
             zIndex: 2,
           }}
         >
-          <Typography variant="h3" fontWeight="bold">
+          <Typography 
+            variant="h3" 
+            fontWeight="bold"
+            sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" } }}
+          >
             {category === "national-tourism"
               ? "National Tourism"
               : category === "global-tourism"
               ? "Global Tourism"
               : "Countries"}
           </Typography>
-          <Breadcrumbs aria-label="breadcrumb" sx={{ color: "white" }}>
+          <Breadcrumbs aria-label="breadcrumb" sx={{ color: "white", fontSize: { xs: "0.75rem", sm: "1rem" } }}>
             <Link href="/" passHref>
               Home
             </Link>
@@ -145,11 +154,42 @@ export default function Countries({
         </Box>
       </Box>
 
+      {/* Mobile Filter Dropdown */}
+      <Box sx={{ display: { xs: "block", sm: "none" }, mb: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel id="mobile-filter-label">
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <FilterListIcon />
+              Filter by Category
+            </Box>
+          </InputLabel>
+          <Select
+            labelId="mobile-filter-label"
+            value={selectedFilter}
+            label="Filter by Category"
+            onChange={(e) => setSelectedFilter(e.target.value)}
+            sx={{
+              bgcolor: "white",
+              borderRadius: 2,
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#e0e0e0",
+              },
+            }}
+          >
+            {filters.map((filter) => (
+              <MenuItem key={filter} value={filter}>
+                {filter}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+
       <Box display="flex" gap={4}>
-        {/* Sidebar Filter */}
+        {/* Desktop Sidebar Filter */}
         <Box
           flexShrink={0}
-          width={250}
+          width={{ sm: 220, md: 250 }}
           bgcolor="white"
           borderRadius={2}
           sx={{
@@ -191,7 +231,7 @@ export default function Countries({
         </Box>
 
         {/* Cards */}
-        <Grid container spacing={2} flex={3}>
+        <Grid container spacing={2} flex={1} sx={{ width: "100%" }}>
           {filteredLocations.map((loc) => {
             const isSelected = selectedLocation === loc.name;
             const href =

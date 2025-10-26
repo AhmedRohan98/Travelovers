@@ -182,45 +182,47 @@ export default function QuestionCard({
       {/* Main Container with Question and Recommendations */}
       <div className="relative">
         {/* Question Card - Keep Full Width */}
-        <div className="bg-white rounded-t-2xl p-6 border-b border-gray-100">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center">
+        <div className="bg-white rounded-t-2xl p-4 sm:p-6 border-b border-gray-100">
+        <div className="flex items-center justify-between mb-3 sm:mb-4 gap-2">
+          <div className="flex items-center flex-1">
             {canGoBack && (
               <button
                 onClick={onBack}
                 disabled={isDisabled}
-                className={`mr-4 p-2 rounded-full transition-colors ${
+                className={`mr-2 sm:mr-4 p-1.5 sm:p-2 rounded-full transition-colors ${
                   isDisabled 
                     ? 'text-gray-300 cursor-not-allowed' 
                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <ArrowBackIosIcon className="w-5 h-5" />
+                <ArrowBackIosIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             )}
-            <span className="text-sm font-medium text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
-              Question {questionNumber}
+            <span className="text-xs sm:text-sm font-medium text-blue-600 bg-blue-100 px-2 sm:px-3 py-1 rounded-full">
+              Q {questionNumber}
             </span>
           </div>
-          <div className="text-sm text-gray-500">
-            {question.visa_type.charAt(0).toUpperCase() + question.visa_type.slice(1)} Visa
+          <div className="text-xs sm:text-sm text-gray-500 flex-shrink-0">
+            <span className="hidden sm:inline">{question.visa_type.charAt(0).toUpperCase() + question.visa_type.slice(1)} Visa</span>
+            <span className="sm:hidden">{question.visa_type.charAt(0).toUpperCase() + question.visa_type.slice(1)}</span>
           </div>
         </div>
         
-        <h3 className="text-xl font-semibold text-gray-900 leading-relaxed">
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 leading-relaxed">
           {question.text}
         </h3>
         {actualMultiSelectMode && (
-          <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+          <div className="mt-2 inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-800">
             <span className="mr-1">☑️</span>
-            Multiple Selection {forceMultiSelect ? '' : ''}
+            <span className="hidden sm:inline">Multiple Selection {forceMultiSelect ? '' : ''}</span>
+            <span className="sm:hidden">Multi-Select</span>
           </div>
         )}
       </div>
 
       {/* Options */}
-      <div className="bg-white rounded-b-2xl p-6">
-        <div className="space-y-3">
+      <div className="bg-white rounded-b-2xl p-4 sm:p-6">
+        <div className="space-y-2 sm:space-y-3">
           {question.options.map((option) => {
             const isDisabled = isOptionDisabled(option)
             const isCurrentlySelected = actualMultiSelectMode 
@@ -236,7 +238,7 @@ export default function QuestionCard({
                   (!actualMultiSelectMode && selectedOption !== null && question.visa_type !== 'study') || 
                   (actualMultiSelectMode && isDisabled && !isCurrentlySelected)
                 }
-                className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left flex items-center space-x-4 ${
+                className={`w-full p-3 sm:p-4 rounded-xl border-2 transition-all duration-200 text-left flex items-center space-x-3 sm:space-x-4 ${
                   isDisabled ||
                   (!actualMultiSelectMode && selectedOption !== null && question.visa_type !== 'study') || 
                   (actualMultiSelectMode && isDisabled && !isCurrentlySelected)
@@ -246,7 +248,7 @@ export default function QuestionCard({
               >
                 {getOptionIcon(option)}
                 <div className="flex-1">
-                  <span className="font-medium">{option.text}</span>
+                  <span className="font-medium text-sm sm:text-base">{option.text}</span>
                   {actualMultiSelectMode && isDisabled && !isCurrentlySelected && (
                     <span className="block text-xs text-gray-400 mt-1">
                       Conflicts with selected options
@@ -254,7 +256,7 @@ export default function QuestionCard({
                   )}
                 </div>
                 {!actualMultiSelectMode && option.leads_to_question_id && (
-                  <ArrowForwardIosIcon className="w-4 h-4 text-gray-400" />
+                  <ArrowForwardIosIcon className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
                 )}
               </button>
             )
@@ -263,13 +265,13 @@ export default function QuestionCard({
 
         {/* Selection Summary */}
         {actualMultiSelectMode && selectedOptions.length > 0 && (
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-xl">
             <div className="text-blue-800">
               <div className="flex items-center mb-2">
-                <CheckCircleIcon className="w-5 h-5 mr-2" />
-                <span className="font-medium">Selected ({selectedOptions.length}):</span>
+                <CheckCircleIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                <span className="font-medium text-sm sm:text-base">Selected ({selectedOptions.length}):</span>
               </div>
-              <div className="text-sm space-y-1">
+              <div className="text-xs sm:text-sm space-y-1">
                 {selectedOptions.map((option) => (
                   <div key={option.id}>
                     <span>• {option.text}</span>
@@ -281,21 +283,21 @@ export default function QuestionCard({
         )}
 
         {!actualMultiSelectMode && selectedOption && (
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+          <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-xl">
             <div className="flex items-center text-green-800">
-              <CheckCircleIcon className="w-5 h-5 mr-2" />
-              <span className="font-medium">Selected: {selectedOption.text}</span>
+              <CheckCircleIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              <span className="font-medium text-sm sm:text-base">Selected: {selectedOption.text}</span>
             </div>
           </div>
         )}
 
         {/* Next Button for Multi-select */}
         {actualMultiSelectMode && selectedOptions.length > 0 && (
-          <div className="mt-6 flex justify-center">
+          <div className="mt-4 sm:mt-6 flex justify-center">
             <button
               onClick={handleNextClick}
               disabled={isAnimating}
-              className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 sm:px-8 py-2.5 sm:py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base w-full sm:w-auto"
             >
               Next
             </button>
@@ -304,11 +306,11 @@ export default function QuestionCard({
 
         {/* Next Button for Study Visa Single Select */}
         {!actualMultiSelectMode && selectedOption && question.visa_type === 'study' && (
-          <div className="mt-6 flex justify-center">
+          <div className="mt-4 sm:mt-6 flex justify-center">
             <button
               onClick={handleNextClick}
               disabled={isAnimating}
-              className="px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 sm:px-8 py-2.5 sm:py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base w-full sm:w-auto"
             >
               Continue Assessment
             </button>
@@ -317,8 +319,8 @@ export default function QuestionCard({
         </div>
 
         {/* Helper Text */}
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-500">
+        <div className="mt-3 sm:mt-4 text-center px-2">
+          <p className="text-xs sm:text-sm text-gray-500">
             {actualMultiSelectMode 
               ? 'Select all options that apply to your situation, then click Next'
               : 'Choose the option that best describes your situation'
