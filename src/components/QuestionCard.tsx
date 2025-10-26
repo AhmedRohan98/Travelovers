@@ -37,7 +37,6 @@ interface QuestionCardProps {
 
 export default function QuestionCard({ 
   question, 
-  questionNumber, 
   onAnswerSelect, 
   onMultiSelectConfirm,
   onBack, 
@@ -198,9 +197,6 @@ export default function QuestionCard({
                 <ArrowBackIosIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             )}
-            <span className="text-xs sm:text-sm font-medium text-blue-600 bg-blue-100 px-2 sm:px-3 py-1 rounded-full">
-              Q {questionNumber}
-            </span>
           </div>
           <div className="text-xs sm:text-sm text-gray-500 flex-shrink-0">
             <span className="hidden sm:inline">{question.visa_type.charAt(0).toUpperCase() + question.visa_type.slice(1)} Visa</span>
