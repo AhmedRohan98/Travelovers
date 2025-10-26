@@ -82,25 +82,28 @@ export function Navbar() {
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "left",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "left",
+                horizontal: "right",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: "block", md: "none" },
                 "& .MuiPaper-root": {
-                  width: "100vw",          // full width
-                  left: "0 !important",    // align to screen left
-                  right: "0 !important",   // align to screen right
+                  width: "100vw !important",
+                  maxWidth: "100vw !important",
+                  left: "0 !important",
+                  right: "0 !important",
+                  marginLeft: "0 !important",
+                  marginRight: "0 !important",
                   borderRadius: 0,
                   boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
                   border: "1px solid #e0e0e0",
-                  minWidth: 200,
+                  marginTop: "8px !important",
                 }
               }}
             >
