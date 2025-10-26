@@ -327,15 +327,19 @@ export default function TripPackagesPage() {
                       }}>
                       {pkg.title || `${pkg.days} Days ${pkg.nights} Nights`}
                     </Typography>
-                        <Typography
-                          variant="h6"
-                          fontWeight="bold"
-                          color="#B90C1C"
-                          mb={2}
-                          sx={{ textAlign: "right" }}
-                        >
-                          {pkg.price || "Contact for Price"}
-                        </Typography>
+                    
+                    {/* Mobile: Price before details, Desktop: Price after details */}
+                    <Box sx={{ display: { xs: "block", md: "none" }, mb: 2 }}>
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        color="#B90C1C"
+                        sx={{ textAlign: "center" }}
+                      >
+                        {pkg.price || "Contact for Price"}
+                      </Typography>
+                    </Box>
+                    
                     <Box
                       component="ul"
                       sx={{
@@ -376,6 +380,19 @@ export default function TripPackagesPage() {
                         />{" "}
                         Top Attractions: {pkg.nearby}
                       </li>
+                    </Box>
+                    
+                    {/* Desktop: Price after details */}
+                    <Box sx={{ display: { xs: "none", md: "block" } }}>
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        color="#B90C1C"
+                        mb={2}
+                        sx={{ textAlign: "right" }}
+                      >
+                        {pkg.price || "Contact for Price"}
+                      </Typography>
                     </Box>
                   </Box>
                   <Button
