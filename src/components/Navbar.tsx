@@ -23,17 +23,6 @@ const pages = [
   { name: "BLOGS", path: "/blogs" },
 ];
 
-const visiblePages = [
-  { name: "VISIT", path: "/visit" },
-  { name: "STUDY", path: "/study" },
-  { name: "BLOGS", path: "/blogs" },
-];
-
-const hiddenPages = [
-  { name: "GLOBAL TOURISM", path: "/global-tourism" },
-  { name: "NATIONAL TOURISM", path: "/national-tourism" },
-];
-
 export function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
@@ -69,53 +58,22 @@ export function Navbar() {
             />
           </Link>
 
-          {/* Mobile Visible Menu Items and Hamburger */}
+          {/* Mobile Hamburger Menu */}
           <Box 
             sx={{ 
               flexGrow: 1, 
               display: { xs: "flex", md: "none" }, 
-              justifyContent: "center",
-              alignItems: "center",
-              gap: { xs: 0.5, sm: 1 }
+              justifyContent: "flex-end",
+              alignItems: "center"
             }}
           >
-            {/* Visible Menu Items on Mobile */}
-            {visiblePages.map((page) => (
-              <Link 
-                key={page.name} 
-                href={page.path} 
-                passHref
-                style={{ textDecoration: 'none' }}
-              >
-                <Button
-                  size="small"
-                  sx={{
-                    color: page.name === "BLOGS" ? "white" : "#8B0000",
-                    backgroundColor: page.name === "BLOGS" ? "#8B0000" : "transparent",
-                    fontWeight: "bold",
-                    fontSize: { xs: "0.65rem", sm: "0.75rem" },
-                    px: { xs: 1, sm: 1.5 },
-                    py: 0.5,
-                    borderRadius: "15px",
-                    minWidth: "auto",
-                    "&:hover": {
-                      backgroundColor: page.name === "BLOGS" ? "#600000" : "rgba(139,0,0,0.08)",
-                    },
-                  }}
-                >
-                  {page.name}
-                </Button>
-              </Link>
-            ))}
-
-            {/* Hamburger Menu Icon */}
             <IconButton
               size="large"
               aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              sx={{ color: "#8B0000", ml: { xs: 0.5, sm: 1 } }}
+              sx={{ color: "#8B0000" }}
             >
               <MenuIcon />
             </IconButton>
@@ -124,29 +82,70 @@ export function Navbar() {
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "right",
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right",
+                horizontal: "left",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: "block", md: "none" },
+                "& .MuiPaper-root": {
+                  width: "100vw",          // full width
+                  left: "0 !important",    // align to screen left
+                  right: "0 !important",   // align to screen right
+                  borderRadius: 0,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+                  border: "1px solid #e0e0e0",
+                  minWidth: 200,
+                }
               }}
             >
-              {hiddenPages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Link href={page.path} style={{ textDecoration: "none", color: "#8B0000", width: "100%" }}>
-                    <Typography textAlign="center">
+              {pages.map((page) => (
+                <MenuItem 
+                  key={page.name} 
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    borderBottom: "1px solid #f0f0f0",
+                    py: 2,
+                    px: 3,
+                    "&:last-child": {
+                      borderBottom: "none"
+                    },
+                    "&:hover": {
+                      backgroundColor: "rgba(139, 0, 0, 0.05)"
+                    }
+                  }}
+                >
+                  <Link href={page.path} style={{ textDecoration: "none", color: "#333", width: "100%" }}>
+                    <Typography 
+                      textAlign="center" 
+                      sx={{ 
+                        fontWeight: "bold",
+                        fontSize: "0.9rem",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px"
+                      }}
+                    >
                       {page.name}
                     </Typography>
                   </Link>
                 </MenuItem>
               ))}
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem 
+                onClick={handleCloseNavMenu}
+                sx={{
+                  borderBottom: "1px solid #f0f0f0",
+                  py: 2,
+                  px: 3,
+                  "&:hover": {
+                    backgroundColor: "rgba(139, 0, 0, 0.05)"
+                  }
+                }}
+              >
                 <a
                   href="https://wa.me/923255123444"
                   target="_blank"
@@ -154,7 +153,9 @@ export function Navbar() {
                   style={{ textDecoration: "none", color: "#25D366", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
                 >
                   <WhatsAppIcon />
-                  <Typography>Contact Us</Typography>
+                  <Typography sx={{ fontWeight: "bold", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                    Contact Us
+                  </Typography>
                 </a>
               </MenuItem>
             </Menu>

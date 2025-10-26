@@ -19,7 +19,7 @@ const Home = () => {
         }}
       >
         <WhyChooseUs />
-        <Box sx={{ mb: { xs: 4, md: 6 } }}>
+        <Box sx={{ mb: { xs: 4, md: 6 }, display: { xs: "none", md: "block" } }}>
           <Adventure />
         </Box>
         <Box sx={{ mb: { xs: 4, md: 6 } }}>
