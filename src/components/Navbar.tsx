@@ -74,7 +74,7 @@ export function Navbar() {
             sx={{ 
               flexGrow: 1, 
               display: { xs: "flex", md: "none" }, 
-              justifyContent: "flex-end",
+              justifyContent: "center",
               alignItems: "center",
               gap: { xs: 0.5, sm: 1 }
             }}

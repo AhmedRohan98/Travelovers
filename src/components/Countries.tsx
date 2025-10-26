@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   Box,
   Typography,
@@ -157,16 +156,11 @@ export default function Countries({
       {/* Mobile Filter Dropdown */}
       <Box sx={{ display: { xs: "block", sm: "none" }, mb: 3 }}>
         <FormControl fullWidth>
-          <InputLabel id="mobile-filter-label">
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <FilterListIcon />
-              Filter by Category
-            </Box>
-          </InputLabel>
+          <InputLabel id="mobile-filter-label">Filter By Category</InputLabel>
           <Select
             labelId="mobile-filter-label"
             value={selectedFilter}
-            label="Filter by Category"
+            label="Filter By Category"
             onChange={(e) => setSelectedFilter(e.target.value)}
             sx={{
               bgcolor: "white",

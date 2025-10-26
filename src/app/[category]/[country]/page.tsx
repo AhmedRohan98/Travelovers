@@ -346,6 +346,34 @@ export default function CountryDetailPage() {
             borderRadius: "12px",
           }}
         />
+        {/* Back Button - Top Right Corner */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: { xs: 16, md: 20 },
+            right: { xs: 16, md: 20 },
+            zIndex: 3,
+          }}
+        >
+          <Link href={`/${category}`}>
+            <ArrowBackIosIcon
+              sx={{
+                color: "white",
+                fontSize: { xs: "1.5rem", md: "2rem" },
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                borderRadius: "50%",
+                p: 1,
+                cursor: "pointer",
+                "&:hover": {
+                  color: "#660D17",
+                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                },
+                transition: "all 0.3s",
+              }}
+            />
+          </Link>
+        </Box>
+
         {/* Overlay Content */}
         <Box
           sx={{
@@ -357,26 +385,14 @@ export default function CountryDetailPage() {
             color: "white",
             zIndex: 2,
             display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            alignItems: "center",
+            flexDirection: "column",
+            alignItems: "flex-start",
             gap: 2,
-            textAlign: { xs: "center", sm: "left" },
+            textAlign: "left",
           }}
         >
-          <Link href={`/${category}`}>
-            <ArrowBackIosIcon
-              sx={{
-                color: "white",
-                fontSize: "2rem",
-                "&:hover": {
-                  color: "#660D17",
-                },
-                transition: "color 0.3s",
-              }}
-            />
-          </Link>
-          <Box sx={{ flex: 1 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1, flexWrap: "wrap" }}>
               <Typography
                 variant="h1"
                 sx={{
@@ -384,6 +400,13 @@ export default function CountryDetailPage() {
                   textTransform: "uppercase",
                   fontStyle: "italic",
                   fontWeight: "bold",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  lineHeight: 1.2,
+                  maxWidth: "100%",
                 }}
               >
                 {country?.name.replace("-", " ")}
