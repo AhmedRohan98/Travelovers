@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   Box,
   Typography,
