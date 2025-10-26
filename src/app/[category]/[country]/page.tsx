@@ -622,6 +622,254 @@ export default function CountryDetailPage() {
                 </Box>
               )}
 
+            {/* Mobile Quick Information - Show after Visa Processing Time but before Overview */}
+            <Box sx={{ display: { xs: "block", md: "none" }, mb: 4 }}>
+              <Typography variant="h5" fontWeight="bold" mb={3}>
+                Quick Information
+              </Typography>
+
+              {/* Contact Information */}
+              <Box
+                sx={{
+                  p: 3,
+                  bgcolor: "background.paper",
+                  borderRadius: 3,
+                  border: "1px solid #e0e0e0",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                {/* Quick Info - Logo/Label/Value Layout */}
+                {!loading &&
+                  isVisaData(countryData) &&
+                  countryData?.quick_info && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 3,
+                        mb: 3,
+                      }}
+                    >
+                      {countryData.quick_info.visa_fee && (
+                        <Box>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                              mb: 0.5,
+                            }}
+                          >
+                            <AccountBalanceWalletIcon
+                              sx={{ fontSize: 24, color: "#B90C1C" }}
+                            />
+                            <Typography variant="body1" fontWeight="medium">
+                              Visa Fee
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            paddingLeft={1}
+                          >
+                            {countryData.quick_info.visa_fee}
+                          </Typography>
+                        </Box>
+                      )}
+                      {countryData.consultancy_charges && (
+                        <Box>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                              mb: 0.5,
+                            }}
+                          >
+                            <HandshakeIcon
+                              sx={{ fontSize: 24, color: "#B90C1C" }}
+                            />
+                            <Typography variant="body1" fontWeight="medium">
+                              Consultancy Charges
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            paddingLeft={1}
+                          >
+                            {countryData.consultancy_charges}
+                          </Typography>
+                        </Box>
+                      )}
+
+                      {countryData.quick_info.interview && (
+                        <Box>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                              mb: 0.5,
+                            }}
+                          >
+                            <PersonIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
+                            <Typography variant="body1" fontWeight="medium">
+                              Interview
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            paddingLeft={1}
+                          >
+                            {countryData.quick_info.interview}
+                          </Typography>
+                        </Box>
+                      )}
+                      {countryData.quick_info.application_submission && (
+                        <Box>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                              mb: 0.5,
+                            }}
+                          >
+                            <SendIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
+                            <Typography variant="body1" fontWeight="medium">
+                              Application Submission
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            paddingLeft={1}
+                          >
+                            {countryData.quick_info.application_submission}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+                  )}
+
+                {/* Eligibility Criteria for Study Category */}
+                {!loading &&
+                  isStudyData(countryData) &&
+                  countryData?.eligibility_crit && (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="h6" fontWeight="bold" mb={2}>
+                        Eligibility Criteria
+                      </Typography>
+                      <Box
+                        sx={{
+                          p: 2,
+                          maxHeight: 300,
+                          overflowY: "auto",
+                          "& ul": {
+                            listStyleType: "disc",
+                            paddingLeft: "1.5rem",
+                            mb: 2,
+                          },
+                          "& li": {
+                            marginBottom: "0.5rem",
+                            lineHeight: 1.6,
+                            fontSize: "0.9rem",
+                          },
+                          "& p": {
+                            marginBottom: "0.001rem",
+                            lineHeight: 1.0,
+                            fontSize: "0.9rem",
+                          },
+                        }}
+                      >
+                        {(() => {
+                          try {
+                            // Try to parse as JSON first
+                            const eligibilityData = JSON.parse(countryData.eligibility_crit);
+                            return (
+                              <Box>
+                                {eligibilityData.minimum_education && (
+                                  <Box sx={{ mb: 2 }}>
+                                    <Typography variant="subtitle2" fontWeight="bold" color="#B90C1C" mb={0.5}>
+                                      Minimum Education:
+                                    </Typography>
+                                    <Typography variant="body2">
+                                      {eligibilityData.minimum_education}
+                                    </Typography>
+                                  </Box>
+                                )}
+                                {eligibilityData.minimum_marks && (
+                                  <Box sx={{ mb: 2 }}>
+                                    <Typography variant="subtitle2" fontWeight="bold" color="#B90C1C" mb={0.5}>
+                                      Minimum Marks:
+                                    </Typography>
+                                    <Typography variant="body2">
+                                      {eligibilityData.minimum_marks}
+                                    </Typography>
+                                  </Box>
+                                )}
+                                {eligibilityData.educational_gap && (
+                                  <Box sx={{ mb: 2 }}>
+                                    <Typography variant="subtitle2" fontWeight="bold" color="#B90C1C" mb={0.5}>
+                                      Educational Gap:
+                                    </Typography>
+                                    <Typography variant="body2">
+                                      {eligibilityData.educational_gap}
+                                    </Typography>
+                                  </Box>
+                                )}
+                              </Box>
+                            );
+                          } catch {
+                            // Fallback to HTML rendering if not valid JSON
+                            return (
+                              <Box
+                                dangerouslySetInnerHTML={{
+                                  __html: countryData.eligibility_crit.replace(/\n/g, "<br/>"),
+                                }}
+                              />
+                            );
+                          }
+                        })()}
+                      </Box>
+                    </Box>
+                  )}
+                  
+                <Box
+                  sx={{
+                    p: 2,
+                    bgcolor: "rgba(185, 12, 28, 0.05)",
+                    borderRadius: 2,
+                    border: "1px solid rgba(185, 12, 28, 0.2)",
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    fontWeight="bold"
+                    color="#B90C1C"
+                    mb={1}
+                  >
+                    📞 Apply Now
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Contact{" "}
+                    <a
+                      href="https://wa.me/923259555999"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "#25D366", textDecoration: "none", fontWeight: 500 }}
+                    >
+                      0325 9555 999
+                    </a>{" "}
+                    for expert guidance on your {category.replace("-", " ")} application to{" "}
+                    {country?.name.replace("-", " ")}.
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+
             {/* Overview Section */}
             {loading ? (
               <Skeleton
@@ -1425,7 +1673,7 @@ export default function CountryDetailPage() {
         </Grid2>
 
         {/* Right Sidebar */}
-        <Grid2 size={{ xs: 12, md: 4 }}>
+        <Grid2 size={{ xs: 0, md: 4 }} sx={{ display: { xs: "none", md: "block" } }}>
           <Box sx={{ position: "sticky", top: 20 }}>
             <Typography variant="h5" fontWeight="bold" mb={3}>
               Quick Information
