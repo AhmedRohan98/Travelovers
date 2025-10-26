@@ -15,13 +15,19 @@ const Home = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          px: 2,
+          px: { xs: 1, md: 2 },
         }}
       >
         <WhyChooseUs />
-        <Adventure />
-        <BlogSection />
-        <Testimonials />
+        <Box sx={{ mb: { xs: 4, md: 6 } }}>
+          <Adventure />
+        </Box>
+        <Box sx={{ mb: { xs: 4, md: 6 } }}>
+          <BlogSection />
+        </Box>
+        <Box sx={{ mb: { xs: 4, md: 6 } }}>
+          <Testimonials />
+        </Box>
       </Box>
     </main>
   );

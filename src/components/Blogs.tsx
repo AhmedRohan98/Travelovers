@@ -221,24 +221,30 @@ const BlogSection = () => {
             spacing={0}
             display="flex"
             flexDirection="column"
-            justifyContent="space-between"
+            justifyContent="flex-start"
             order={{xs: 2, md: 2}}
+            gap={{ xs: 2, md: 0 }}
           >
             {blogs.slice(1).map((blog) => (
               <Grid 
                 key={blog.id} 
-                size={{xs: 16, md: 16}}
+                size={{xs: 12}}
+                sx={{ 
+                  display: "flex",
+                  height: { xs: "auto", md: "calc((100% - 24px) / 2)" }
+                }}
               >
-                <Link href={`/blogs/${blog.id}`} style={{ textDecoration: 'none' }}>
+                <Link href={`/blogs/${blog.id}`} style={{ textDecoration: 'none', width: "100%", display: "flex" }}>
                   <Card
                     sx={{
                       borderRadius: "12px",
                       height: "100%",
                       overflow: "hidden",
                       display: "flex",
-                      flexDirection: { xs: "column", md: "row" },
+                      flexDirection: { xs: "row", md: "row" },
                       cursor: "pointer",
                       transition: "all 0.3s ease",
+                      width: "100%",
                       "&:hover": { 
                         transform: "translateY(-2px)", 
                         boxShadow: "0px 6px 20px rgba(0,0,0,0.15)" 
@@ -248,7 +254,7 @@ const BlogSection = () => {
                     <CardActionArea
                       sx={{
                         display: "flex",
-                        flexDirection: { xs: "column", md: "row" },
+                        flexDirection: { xs: "row", md: "row" },
                         height: "100%",
                       }}
                     >
@@ -258,51 +264,53 @@ const BlogSection = () => {
                         alt={blog.title}
                         loading="lazy"
                         sx={{
-                          width: { xs: 600, md: 240 },
-                          height: { xs: 400, md: "100%" },
+                          width: { xs: "40%", md: "45%" },
+                          height: { xs: "140px", md: "180px" },
                           objectFit: "cover",
                           "&:hover": { opacity: 0.9 },
                           flexShrink: 0,
                         }}
                       />
-                      <CardContent sx={{ flex: 1 }}>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          display="flex"
-                          alignItems="center"
-                          gap={1}
-                        >
-                          <CalendarMonthIcon fontSize="inherit" />
-                          {formatBlogDate(blog.created_at)}
-                          <PersonOutlineOutlinedIcon fontSize="inherit" />
-                          admin
-                        </Typography>
-                        <Typography
-                          variant="h6"
-                          color="secondary"
-                          fontWeight="bold"
-                          sx={{
-                            fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" },
-                            wordBreak: "break-word",
-                            lineHeight: 1.2,
-                          }}
-                        >
-                          {blog.title}
-                        </Typography>
-                        <Typography 
-                          variant="body2" 
-                          color="text.secondary"
-                          sx={{
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          {blog.introduction}
-                        </Typography>
+                      <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="flex"
+                            alignItems="center"
+                            gap={0.5}
+                            sx={{ fontSize: "0.7rem" }}
+                          >
+                            <CalendarMonthIcon fontSize="inherit" />
+                            {formatBlogDate(blog.created_at)}
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            color="secondary"
+                            fontWeight="bold"
+                            sx={{
+                              fontSize: { xs: "0.85rem", md: "0.95rem" },
+                              wordBreak: "break-word",
+                              lineHeight: 1.3,
+                              mt: 0.5,
+                            }}
+                          >
+                            {blog.title}
+                          </Typography>
+                          <Typography 
+                            variant="caption" 
+                            color="text.secondary"
+                            sx={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {blog.introduction}
+                          </Typography>
+                        </Box>
                       </CardContent>
                     </CardActionArea>
                   </Card>

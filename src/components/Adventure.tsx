@@ -107,8 +107,6 @@ const tabSections = {
 };
 
 const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const router = useRouter();
   const images = tabSections[activeTab];
 
@@ -116,128 +114,67 @@ const TabContentSection = ({ activeTab }: { activeTab: TabKey }) => {
     router.push(route);
   };
 
-  // Determine the number of columns based on screen size
-  const getColumnCount = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 600) return 1; // Mobile
-      if (window.innerWidth < 900) return 2; // Tablet
-      return 3; // Desktop
-    }
-    return 3; // Default to 3 columns
-  };
-
-  // Calculate rows based on column count
-  const columnCount = getColumnCount();
-  const rows = Math.ceil(images.length / columnCount);
-
   return (
-    <Box sx={{ width: "90%", margin: "auto", paddingY: 4 }}>
-      {[...Array(rows)].map((_, row) => (
-        <Grid
-          key={row}
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: columnCount, sm: columnCount, md: columnCount }}
-          sx={{ marginBottom: 2 }}
-        >
-          {images
-            .slice(row * columnCount, (row + 1) * columnCount)
-            .map((image, index) => {
-              const actualIndex = row * columnCount + index;
-
-              return (
-                <Grid
-                  key={actualIndex}
-                  size={{xs: 1}}
-                  sx={{
-                    display: "flex",
-                    flex:
-                      hoveredRow === row
-                        ? hoveredIndex === actualIndex
-                          ? { xs: "2", sm: "4" } 
-                          : "1"
-                        : "1",
-                    transition: "flex 0.3s ease-in-out",
-                  }}
-                >
-                  <Paper
-                    onMouseEnter={() => {
-                      setHoveredIndex(actualIndex);
-                      setHoveredRow(row);
-                    }}
-                    onMouseLeave={() => {
-                      setHoveredIndex(null);
-                      setHoveredRow(null);
-                    }}
-                    onClick={() => handleDestinationClick(image.route)}
-                    sx={{
-                      position: "relative",
-                      width: "100%",
-                      backgroundImage: `url(${image.src})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "flex-end",
-                      justifyContent: "center",
-                      color: "white",
-                      p: 2,
-                      fontWeight: "bold",
-                      textShadow: "0px 0px 10px rgba(0,0,0,0.7)",
-                      height: {
-                        xs: "200px",
-                        sm: "250px",
-                      },
-                      ...(hoveredIndex === actualIndex && {
-                        height: {
-                          xs: "300px",
-                          sm: "250px",
-                        },
-                      }),
-                      transition:
-                        "height 0.3s ease-in-out, flex 0.3s ease-in-out",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {image.title}
-                    {hoveredIndex === actualIndex && (
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "rgba(0, 0, 0, 0.3)",
-                          borderRadius: "12px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          transition: "all 0.3s ease-in-out",
-                        }}
-                      >
-                        {image.title}
-                      </Box>
-                    )}
-                  </Paper>
-                </Grid>
-              );
-            })}
-        </Grid>
-      ))}
+    <Box sx={{ width: { xs: "95%", md: "90%" }, margin: "auto", paddingY: { xs: 3, md: 4 } }}>
+      <Grid 
+        container 
+        spacing={{ xs: 2, md: 3 }}
+        sx={{
+          justifyContent: "center"
+        }}
+      >
+        {images.map((image, index) => (
+          <Grid 
+            key={index}
+            size={{ xs: 12, sm: 6, md: 4 }}
+            sx={{
+              display: "flex",
+            }}
+          >
+            <Paper
+              onClick={() => handleDestinationClick(image.route)}
+              sx={{
+                position: "relative",
+                width: "100%",
+                backgroundImage: `url(${image.src})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                borderRadius: "12px",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "center",
+                color: "white",
+                p: 2,
+                fontWeight: "bold",
+                textShadow: "0px 0px 10px rgba(0,0,0,0.7)",
+                height: { xs: "180px", sm: "220px", md: "250px" },
+                transition: "all 0.3s ease-in-out",
+                cursor: "pointer",
+                "&:hover": {
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+                },
+              }}
+            >
+              {image.title}
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   );
 };
 
 const Adventure = () => {
-  const [selectedTab, setSelectedTab] = useState<TabKey>("Explore_Pakistan");
+  const [selectedTab, setSelectedTab] = useState<TabKey>("Study_Abroad");
 
   return (
     <Box
       sx={{
         width: "100%",
         textAlign: "center",
-        p: 3,
+        p: { xs: 2, md: 3 },
+        my: { xs: 3, md: 4 }
       }}
     >
       <GenericTabs

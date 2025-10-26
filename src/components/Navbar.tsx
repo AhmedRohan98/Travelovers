@@ -23,6 +23,17 @@ const pages = [
   { name: "BLOGS", path: "/blogs" },
 ];
 
+const visiblePages = [
+  { name: "VISIT", path: "/visit" },
+  { name: "STUDY", path: "/study" },
+  { name: "BLOGS", path: "/blogs" },
+];
+
+const hiddenPages = [
+  { name: "GLOBAL TOURISM", path: "/global-tourism" },
+  { name: "NATIONAL TOURISM", path: "/national-tourism" },
+];
+
 export function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
@@ -58,15 +69,53 @@ export function Navbar() {
             />
           </Link>
 
-          {/* Mobile Menu Icon */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "flex-end" }}>
+          {/* Mobile Visible Menu Items and Hamburger */}
+          <Box 
+            sx={{ 
+              flexGrow: 1, 
+              display: { xs: "flex", md: "none" }, 
+              justifyContent: "flex-end",
+              alignItems: "center",
+              gap: { xs: 0.5, sm: 1 }
+            }}
+          >
+            {/* Visible Menu Items on Mobile */}
+            {visiblePages.map((page) => (
+              <Link 
+                key={page.name} 
+                href={page.path} 
+                passHref
+                style={{ textDecoration: 'none' }}
+              >
+                <Button
+                  size="small"
+                  sx={{
+                    color: page.name === "BLOGS" ? "white" : "#8B0000",
+                    backgroundColor: page.name === "BLOGS" ? "#8B0000" : "transparent",
+                    fontWeight: "bold",
+                    fontSize: { xs: "0.65rem", sm: "0.75rem" },
+                    px: { xs: 1, sm: 1.5 },
+                    py: 0.5,
+                    borderRadius: "15px",
+                    minWidth: "auto",
+                    "&:hover": {
+                      backgroundColor: page.name === "BLOGS" ? "#600000" : "rgba(139,0,0,0.08)",
+                    },
+                  }}
+                >
+                  {page.name}
+                </Button>
+              </Link>
+            ))}
+
+            {/* Hamburger Menu Icon */}
             <IconButton
               size="large"
               aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              sx={{ color: "#8B0000" }}
+              sx={{ color: "#8B0000", ml: { xs: 0.5, sm: 1 } }}
             >
               <MenuIcon />
             </IconButton>
@@ -75,12 +124,12 @@ export function Navbar() {
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "left",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "left",
+                horizontal: "right",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
@@ -88,10 +137,10 @@ export function Navbar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
+              {hiddenPages.map((page) => (
                 <MenuItem key={page.name} onClick={handleCloseNavMenu}>
                   <Link href={page.path} style={{ textDecoration: "none", color: "#8B0000", width: "100%" }}>
-                    <Typography textAlign="center" sx={{ fontWeight: page.name === "BLOGS" ? "bold" : "normal" }}>
+                    <Typography textAlign="center">
                       {page.name}
                     </Typography>
                   </Link>

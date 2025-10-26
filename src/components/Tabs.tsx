@@ -32,10 +32,11 @@ export const GenericTabs: React.FC<GenericTabsProps> = ({
     <Box
       sx={{
         display: "flex",
-        width: "80%",
+        width: { xs: "100%", md: "80%" },
         margin: "auto",
         justifyContent: "center",
         borderColor: "divider",
+        mb: { xs: 2, md: 3 }
       }}
     >
       <Tabs
@@ -44,6 +45,15 @@ export const GenericTabs: React.FC<GenericTabsProps> = ({
         aria-label="dynamic tabs"
         indicatorColor="secondary"
         textColor="secondary"
+        variant="scrollable"
+        scrollButtons="auto"
+        allowScrollButtonsMobile
+        sx={{
+          width: "100%",
+          "& .MuiTabs-flexContainer": {
+            gap: { xs: 1, md: 2 }
+          }
+        }}
       >
         {tabs.map((tab) => (
           <Tab
@@ -51,6 +61,11 @@ export const GenericTabs: React.FC<GenericTabsProps> = ({
             value={tab.value}
             label={tab.label}
             wrapped={tab.wrapped}
+            sx={{
+              fontSize: { xs: "0.875rem", sm: "1rem", md: "1.125rem" },
+              minWidth: { xs: "auto", md: "120px" },
+              px: { xs: 2, md: 3 }
+            }}
           />
         ))}
       </Tabs>

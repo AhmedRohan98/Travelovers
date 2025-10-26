@@ -14,13 +14,13 @@ const WhyChooseUs = () => {
     <Box
       sx={{
         width: "100%",
-        maxWidth: "80%",
+        maxWidth: { xs: "95%", md: "80%" },
         background: "linear-gradient(to right, #6D0019, #B7001F)",
         borderRadius: "50px",
         color: "white",
         textAlign: "center",
-        padding: { xs: "30px 15px", sm: "40px 20px" },
-        margin: { xs: "30px auto", sm: "50px auto" },
+        padding: { xs: "20px 10px", sm: "30px 15px", md: "40px 20px" },
+        margin: { xs: "20px auto", sm: "30px auto", md: "50px auto" },
       }}
     >
       {/* Heading */}
