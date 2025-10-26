@@ -479,21 +479,24 @@ export default function VisaAssessmentPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
             <button
               onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors flex-shrink-0"
             >
-              <ArrowBackIosIcon className="w-5 h-5 mr-1" />
-              Exit
+              <ArrowBackIosIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
+              <span className="hidden sm:inline">Exit</span>
             </button>
-            <h1 className="text-2xl font-bold text-gray-900">Visa Application Strength Check</h1>
-            <div className="flex items-center space-x-2">
+            <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 text-center flex-1">
+              Visa Application Strength Check
+            </h1>
+            <div className="flex items-center space-x-2 flex-shrink-0">
               {currentStep !== 'type-selection' && (
-                <div className="flex items-center text-sm text-green-600">
+                <div className="flex items-center text-xs sm:text-sm text-green-600">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
-                  Progress Saved
+                  <span className="hidden sm:inline">Progress Saved</span>
+                  <span className="sm:hidden">Saved</span>
                 </div>
               )}
             </div>
@@ -501,7 +504,7 @@ export default function VisaAssessmentPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
         {currentStep === 'type-selection' && (
           <VisaTypeSelector 
             onSelect={handleVisaTypeSelect}
@@ -548,8 +551,8 @@ export default function VisaAssessmentPage() {
             {/* Show country routing after first question is answered */}
             {selectedCountry && answers.length > 0 && (
               <div className="flex justify-center items-center">
-                <div className="bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                <div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-200 text-center w-full sm:w-auto">
+                  <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                     Checkout {selectedCountry} Document Requirements Now
                   </h3>
                   <CountryRoutingButton 
@@ -576,8 +579,8 @@ export default function VisaAssessmentPage() {
             {/* Show country routing on results page as well */}
             {selectedCountry && answers.length > 0 && (
               <div className="flex justify-center items-center">
-                <div className="bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                <div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-200 text-center w-full sm:w-auto">
+                  <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                     Checkout {selectedCountry} Document Requirements Now
                   </h3>
                   <CountryRoutingButton 
@@ -592,21 +595,21 @@ export default function VisaAssessmentPage() {
         )}
 
         {error && (
-          <div className="max-w-4xl mx-auto px-4 py-8">
-            <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-              <div className="flex items-center mb-4">
-                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-red-600 font-bold">!</span>
+          <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 sm:p-6">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-100 rounded-full flex items-center justify-center mr-2 sm:mr-3">
+                  <span className="text-red-600 font-bold text-sm sm:text-base">!</span>
                 </div>
-                <h3 className="text-lg font-semibold text-red-800">Error</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-red-800">Error</h3>
               </div>
-              <p className="text-red-700 mb-4">{error}</p>
+              <p className="text-sm sm:text-base text-red-700 mb-3 sm:mb-4">{error}</p>
               <button
                 onClick={() => {
                   setError(null)
                   setCurrentStep('type-selection')
                 }}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base w-full sm:w-auto"
               >
                 Try Again
               </button>

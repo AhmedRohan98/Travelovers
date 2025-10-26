@@ -47,12 +47,27 @@ const Hero = () => {
 
       {/* Hero Text */}
       <Box sx={styles.heroText}>
-        <Typography variant="h2" style={{ marginBottom: "20px" }}>
+        <Typography 
+          variant="h2" 
+          sx={{ 
+            marginBottom: "20px",
+            fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem", lg: "3rem" },
+            px: { xs: 2, sm: 3, md: 0 }
+          }}
+        >
           Need help with your <span style={{ color: "#D30000" }}>Visa Application?</span>
           <br />
           <span style={{ color: "#779431" }}>You&apos;re</span> In The Right Place
         </Typography>
-        <Typography variant="body1" style={{ width: "60%", margin: "0 auto" }}>
+        <Typography 
+          variant="body1" 
+          sx={{ 
+            width: { xs: "90%", sm: "80%", md: "70%", lg: "60%" }, 
+            margin: "0 auto",
+            fontSize: { xs: "0.875rem", sm: "1rem", md: "1.125rem" },
+            px: { xs: 2, sm: 0 }
+          }}
+        >
           From your first question to your dream destination, we simplify the process, handle every detail, and guide you every step of the way — so you can focus on your trip while we strengthen your visa application.
         </Typography>
       </Box>
@@ -173,7 +188,9 @@ const HeroQuickBar = () => {
           sx={styles.searchButton}
           onClick={handleTravelTypeModalOpen}
           >
-          Start Your Adventure
+          <Typography sx={{ fontSize: { xs: "0.875rem", sm: "1rem", md: "1.125rem" }, fontWeight: "bold" }}>
+            Start Your Adventure
+          </Typography>
         </Button>
         <Link href="/visa-assessment" style={{ textDecoration: 'none' }}>
           <Button 
@@ -181,7 +198,9 @@ const HeroQuickBar = () => {
             color="primary" 
             sx={styles.visaButton}
             >
-            Check Visa Chances
+            <Typography sx={{ fontSize: { xs: "0.875rem", sm: "1rem", md: "1.125rem" }, fontWeight: "bold" }}>
+              Check Visa Chances
+            </Typography>
           </Button>
         </Link>
       </Box>
@@ -309,11 +328,11 @@ const styles = {
   container: {
     position: "relative",
     width: "100%",
-    height: "90vh",
+    height: { xs: "70vh", sm: "80vh", md: "90vh" },
     overflow: "hidden",
   },
   carouselImage: {
-    height: "80vh",
+    height: { xs: "70vh", sm: "80vh", md: "90vh" },
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
@@ -327,22 +346,25 @@ const styles = {
   },
   heroText: {
     position: "absolute",
-    top: "40%",
+    top: { xs: "35%", sm: "40%" },
     left: "50%",
     transform: "translate(-50%, -50%)",
     textAlign: "center",
     color: "white",
     zIndex: 2,
+    width: "100%",
   },
 
   quickBar: {
     position: "absolute",
-    bottom: "25px",
+    bottom: { xs: "15px", sm: "20px", md: "25px" },
     left: "50%",
     transform: "translateX(-50%)",
     zIndex: 10,
     display: "flex",
-    gap: "20px",
+    flexDirection: { xs: "column", sm: "row" },
+    gap: { xs: "10px", sm: "15px", md: "20px" },
+    width: { xs: "90%", sm: "auto" },
     animation: "jump 3s infinite",
     "@keyframes jump": {
       "0%, 100%": {
@@ -365,10 +387,10 @@ const styles = {
   
   searchButton: {
     borderRadius: "50px",
-    padding: "15px 40px",
+    padding: { xs: "12px 24px", sm: "13px 30px", md: "15px 40px" },
     fontWeight: "bold",
-    fontSize: "18px",
-    minHeight: "60px",
+    minHeight: { xs: "50px", sm: "55px", md: "60px" },
+    width: { xs: "100%", sm: "auto" },
     boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
     background: "linear-gradient(135deg, #B90C1C 0%, #dc2626 100%)",
     border: "3px solid #fff",
@@ -382,10 +404,10 @@ const styles = {
 
   visaButton: {
     borderRadius: "50px",
-    padding: "15px 40px",
+    padding: { xs: "12px 24px", sm: "13px 30px", md: "15px 40px" },
     fontWeight: "bold",
-    fontSize: "18px",
-    minHeight: "60px",
+    minHeight: { xs: "50px", sm: "55px", md: "60px" },
+    width: { xs: "100%", sm: "auto" },
     boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
     background: "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
     border: "3px solid #fff",
