@@ -663,14 +663,13 @@ export default function CountryDetailPage() {
                             <AccountBalanceWalletIcon
                               sx={{ fontSize: 24, color: "#B90C1C" }}
                             />
-                            <Typography variant="body1" fontWeight="medium">
+                            <Typography variant="body1" fontWeight="bold">
                               Visa Fee
                             </Typography>
                           </Box>
                           <Typography
                             variant="subtitle1"
-                            fontWeight="bold"
-                            paddingLeft={1}
+                            paddingLeft={4}
                           >
                             {countryData.quick_info.visa_fee}
                           </Typography>
@@ -689,14 +688,13 @@ export default function CountryDetailPage() {
                             <HandshakeIcon
                               sx={{ fontSize: 24, color: "#B90C1C" }}
                             />
-                            <Typography variant="body1" fontWeight="medium">
+                            <Typography variant="body1" fontWeight="bold">
                               Consultancy Charges
                             </Typography>
                           </Box>
                           <Typography
                             variant="subtitle1"
-                            fontWeight="bold"
-                            paddingLeft={1}
+                            paddingLeft={4}
                           >
                             {countryData.consultancy_charges}
                           </Typography>
@@ -714,14 +712,13 @@ export default function CountryDetailPage() {
                             }}
                           >
                             <PersonIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
-                            <Typography variant="body1" fontWeight="medium">
+                            <Typography variant="body1" fontWeight="bold">
                               Interview
                             </Typography>
                           </Box>
                           <Typography
                             variant="subtitle1"
-                            fontWeight="bold"
-                            paddingLeft={1}
+                            paddingLeft={4}
                           >
                             {countryData.quick_info.interview}
                           </Typography>
@@ -738,14 +735,13 @@ export default function CountryDetailPage() {
                             }}
                           >
                             <SendIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
-                            <Typography variant="body1" fontWeight="medium">
+                            <Typography variant="body1" fontWeight="bold">
                               Application Submission
                             </Typography>
                           </Box>
                           <Typography
                             variant="subtitle1"
-                            fontWeight="bold"
-                            paddingLeft={1}
+                            paddingLeft={4}
                           >
                             {countryData.quick_info.application_submission}
                           </Typography>
@@ -1494,18 +1490,18 @@ export default function CountryDetailPage() {
                 sx={{
                   mt: 4,
                   p: 3,
-                  bgcolor: "rgba(255, 193, 7, 0.1)",
+                  bgcolor: "rgba(255, 255, 255, 0.1)",
                   borderRadius: 2,
-                  border: "1px solid #FFC107",
-                  borderLeft: "4px solid #FFC107",
+                  border: "1px solid #ff0707",
+                  borderLeft: "4px solid #ff0707",
                 }}
               >
                 <Typography
                   variant="h6"
                   fontWeight="bold"
-                  sx={{ mb: 2, color: "#E65100", display: "flex", alignItems: "center", gap: 1 }}
+                  sx={{ mb: 2, color: "#E65100", display: "flex", alignItems: "center", gap: 1, textDecoration: "underline", textDecorationColor: "#ff0707", textUnderlineOffset: "4px" }}
                 >
-                  ⚠️ Important Disclaimer
+                Disclaimer
                 </Typography>
                 <Box
                   sx={{
@@ -1714,13 +1710,12 @@ export default function CountryDetailPage() {
                           <AccountBalanceWalletIcon
                             sx={{ fontSize: 24, color: "#B90C1C" }}
                           />
-                          <Typography variant="body1" fontWeight="medium">
+                          <Typography variant="body1" fontWeight="bold">
                             Visa Fee
                           </Typography>
                         </Box>
                         <Typography
                           variant="subtitle1"
-                          fontWeight="bold"
                           paddingLeft={1}
                         >
                           {countryData.quick_info.visa_fee}
@@ -1740,13 +1735,12 @@ export default function CountryDetailPage() {
                           <HandshakeIcon
                             sx={{ fontSize: 24, color: "#B90C1C" }}
                           />
-                          <Typography variant="body1" fontWeight="medium">
+                          <Typography variant="body1" fontWeight="bold">
                             Consultancy Charges
                           </Typography>
                         </Box>
                         <Typography
                           variant="subtitle1"
-                          fontWeight="bold"
                           paddingLeft={1}
                         >
                           {countryData.consultancy_charges}
@@ -1765,14 +1759,13 @@ export default function CountryDetailPage() {
                           }}
                         >
                           <PersonIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
-                          <Typography variant="body1" fontWeight="medium">
+                          <Typography variant="body1" fontWeight="bold">
                             Interview
                           </Typography>
                         </Box>
                         <Typography
                           variant="subtitle1"
-                          fontWeight="bold"
-                          paddingLeft={1}
+                          paddingLeft={3}
                         >
                           {countryData.quick_info.interview}
                         </Typography>
@@ -1789,13 +1782,12 @@ export default function CountryDetailPage() {
                           }}
                         >
                           <SendIcon sx={{ fontSize: 24, color: "#B90C1C" }} />
-                          <Typography variant="body1" fontWeight="medium">
+                          <Typography variant="body1" fontWeight="bold">
                             Application Submission
                           </Typography>
                         </Box>
                         <Typography
                           variant="subtitle1"
-                          fontWeight="bold"
                           paddingLeft={1}
                         >
                           {countryData.quick_info.application_submission}

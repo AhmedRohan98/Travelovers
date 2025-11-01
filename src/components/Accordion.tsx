@@ -40,8 +40,8 @@ export const Accordion: React.FC<MyAccordionProps> = ({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <AccordionContainer>
-      <AccordionHeader onClick={() => setOpen(!open)}>
+    <AccordionContainer onClick={() => setOpen(!open)}>
+      <AccordionHeader>
         <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           {title}
         </Typography>

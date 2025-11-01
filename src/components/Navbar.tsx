@@ -7,31 +7,41 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
 import MenuIcon from "@mui/icons-material/Menu";
 import Image from "next/image";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import FlightIcon from "@mui/icons-material/Flight";
+import SchoolIcon from "@mui/icons-material/School";
+import PublicIcon from "@mui/icons-material/Public";
+import TerrainIcon from "@mui/icons-material/Terrain";
+import ArticleIcon from "@mui/icons-material/Article";
+import CloseIcon from "@mui/icons-material/Close";
 
 import Link from "next/link";
 
 const pages = [
-  { name: "VISIT", path: "/visit" },
-  { name: "STUDY", path: "/study" },
-  { name: "GLOBAL TOURISM", path: "/global-tourism" },
-  { name: "NATIONAL TOURISM", path: "/national-tourism" },
-  { name: "BLOGS", path: "/blogs" },
+  { name: "VISIT", path: "/visit", icon: FlightIcon },
+  { name: "STUDY", path: "/study", icon: SchoolIcon },
+  { name: "GLOBAL TOURISM", path: "/global-tourism", icon: PublicIcon },
+  { name: "NATIONAL TOURISM", path: "/national-tourism", icon: TerrainIcon },
+  { name: "BLOGS", path: "/blogs", icon: ArticleIcon },
 ];
 
 export function Navbar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
   };
 
   return (
@@ -70,98 +80,128 @@ export function Navbar() {
             <IconButton
               size="large"
               aria-label="menu"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
+              onClick={handleDrawerOpen}
               sx={{ color: "#8B0000" }}
             >
               <MenuIcon />
             </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+            
+            {/* Drawer Sidebar */}
+            <Drawer
+              anchor="left"
+              open={drawerOpen}
+              onClose={handleDrawerClose}
               sx={{
                 display: { xs: "block", md: "none" },
-                "& .MuiPaper-root": {
-                  width: "100vw !important",
-                  maxWidth: "100vw !important",
-                  left: "0 !important",
-                  right: "0 !important",
-                  marginLeft: "0 !important",
-                  marginRight: "0 !important",
-                  borderRadius: 0,
+                "& .MuiDrawer-paper": {
+                  width: "70%",
+                  maxWidth: "70%",
                   boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-                  border: "1px solid #e0e0e0",
-                  marginTop: "8px !important",
+                },
+                "& .MuiBackdrop-root": {
+                  backgroundColor: "rgba(0, 0, 0, 0.5)"
                 }
               }}
             >
-              {pages.map((page) => (
-                <MenuItem 
-                  key={page.name} 
-                  onClick={handleCloseNavMenu}
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                }}
+                role="presentation"
+              >
+                {/* Logo and Close Button */}
+                <Box
                   sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    p: 2,
                     borderBottom: "1px solid #f0f0f0",
-                    py: 2,
-                    px: 3,
-                    "&:last-child": {
-                      borderBottom: "none"
-                    },
-                    "&:hover": {
-                      backgroundColor: "rgba(139, 0, 0, 0.05)"
-                    }
                   }}
                 >
-                  <Link href={page.path} style={{ textDecoration: "none", color: "#333", width: "100%" }}>
-                    <Typography 
-                      textAlign="center" 
-                      sx={{ 
-                        fontWeight: "bold",
-                        fontSize: "0.9rem",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.5px"
+                  <Image
+                    src="/assets/travelovers_text.png"
+                    width={120}
+                    height={40}
+                    alt="Travelovers Logo"
+                    style={{ objectFit: "contain" }}
+                  />
+                  <IconButton
+                    onClick={handleDrawerClose}
+                    sx={{ color: "#8B0000" }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Box>
+
+                <List>
+                  {pages.map((page) => {
+                    const IconComponent = page.icon;
+                    return (
+                      <ListItem key={page.name} disablePadding>
+                        <ListItemButton
+                          onClick={handleDrawerClose}
+                          sx={{
+                            py: 2,
+                            px: 3,
+                            borderBottom: "1px solid #f0f0f0",
+                            "&:hover": {
+                              backgroundColor: "rgba(139, 0, 0, 0.05)"
+                            }
+                          }}
+                        >
+                          <Link href={page.path} style={{ textDecoration: "none", color: "#333", width: "100%", display: "flex", alignItems: "center" }}>
+                            <IconComponent sx={{ mr: 2, fontSize: 24, color: "#8B0000" }} />
+                            <ListItemText
+                              primary={
+                                <Typography
+                                  sx={{
+                                    fontWeight: "bold",
+                                    fontSize: "0.9rem",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.5px"
+                                  }}
+                                >
+                                  {page.name}
+                                </Typography>
+                              }
+                            />
+                          </Link>
+                        </ListItemButton>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+                <Divider />
+                <List>
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      onClick={handleDrawerClose}
+                      sx={{
+                        py: 2,
+                        px: 3,
+                        "&:hover": {
+                          backgroundColor: "rgba(139, 0, 0, 0.05)"
+                        }
                       }}
                     >
-                      {page.name}
-                    </Typography>
-                  </Link>
-                </MenuItem>
-              ))}
-              <MenuItem 
-                onClick={handleCloseNavMenu}
-                sx={{
-                  borderBottom: "1px solid #f0f0f0",
-                  py: 2,
-                  px: 3,
-                  "&:hover": {
-                    backgroundColor: "rgba(139, 0, 0, 0.05)"
-                  }
-                }}
-              >
-                <a
-                  href="https://wa.me/923255123444"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: "none", color: "#25D366", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-                >
-                  <WhatsAppIcon />
-                  <Typography sx={{ fontWeight: "bold", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                    Contact Us
-                  </Typography>
-                </a>
-              </MenuItem>
-            </Menu>
+                      <a
+                        href="https://wa.me/923255123444"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ textDecoration: "none", color: "#25D366", width: "100%", display: "flex", alignItems: "center", gap: "8px" }}
+                      >
+                        <WhatsAppIcon />
+                        <Typography sx={{ fontWeight: "bold", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                          Contact Us
+                        </Typography>
+                      </a>
+                    </ListItemButton>
+                  </ListItem>
+                </List>
+              </Box>
+            </Drawer>
           </Box>
 
           {/* Desktop Pages */}
