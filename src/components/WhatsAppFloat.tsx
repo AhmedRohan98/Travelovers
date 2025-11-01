@@ -19,7 +19,7 @@ const WhatsAppFloat = () => {
         aria-label="Contact us on WhatsApp"
       >
         <svg
-          className="w-12 h-12"
+          className="w-9 h-9"
           fill="currentColor"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
